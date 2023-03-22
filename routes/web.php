@@ -7,6 +7,7 @@ use App\Http\Controllers\PlayerController;
 use App\Http\Controllers\TopScoreController;
 use App\Http\Controllers\WinnerController;
 use App\Http\Controllers\PrizeController;
+use App\Http\Controllers\TermsController;
 
 
 Route::get('/', [DashboardController::class, 'index']);
@@ -29,4 +30,8 @@ Route::prefix('winner')->group(function () {
 
 Route::prefix('prize')->group(function () {
   Route::get('/', [PrizeController::class, 'index']);
+});
+
+Route::prefix('terms')->group(function () {
+  Route::get('/', [TermsController::class, 'index']);
 });
