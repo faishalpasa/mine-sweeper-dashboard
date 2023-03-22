@@ -5,16 +5,24 @@
 <meta name="description" content="Minesweeper Admin" />
 @endsection
 
+@section('style')
+<style>
+  .image-prize {
+    width: 150px;
+  }
+</style>
+@endsection
+
 @section('content')
 <div class="container-fluid px-4">
   <ol class="breadcrumb my-4">
     <li class="breadcrumb-item">Dashboard</li>
-    <li class="breadcrumb-item active">Pemenang</li>
+    <li class="breadcrumb-item active">Hadiah</li>
   </ol>
   <div class="card mb-4">
     <div class="card-header d-flex align-items-center">
-      <i class="fas fa-trophy me-1"></i>
-      Daftar Pemenang
+      <i class="fas fa-gift me-1"></i>
+      Daftar Hadiah
       <div class="ms-auto me-0">
         <div class="input-group input-group-sm">
           <span class="input-group-text">
@@ -32,21 +40,25 @@
       <table class="table table-bordered">
         <thead>
           <tr>
-            <th>No. Handphone</th>
+            <th>Peringkat</th>
             <th>Nama</th>
-            <th>Email</th>
-            <th>Level</th>
-            <th>Score</th>
+            <th>Gambar</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
-          @foreach ($players as $player)
+          @foreach ($prizes as $prize)
           <tr class="align-middle">
-            <td>{{$player['msisdn']}}</td>
-            <td>{{$player['name']}}</td>
-            <td>{{$player['email']}}</td>
-            <td>{{$player['level']}}</td>
-            <td>{{$player['score']}}</td>
+            <td>{{$prize['rank']}}</td>
+            <td>{{$prize['name']}}</td>
+            <td><img src="{{$prize['image_url']}}" class="image-prize" /></td>
+            <td>
+              <div class="btn-group btn-group-sm" role="group">
+                <button type="button" class="btn btn-outline-secondary" onclick="handleClickEditButton({{json_encode($prize)}})">
+                  Edit
+                </button>
+              </div>
+            </td>
           </tr>
           @endforeach
         </tbody>
@@ -58,9 +70,8 @@
 
 @section('script')
 <script>
-  const handleChangePeriod = (e) => {
-    const url = new URL(window.location.href)
-    url.searchParams.set('period', e.target.value)
+  const handleClickEditButton = (prize) => {
+    const url = new URL(`${window.location.href}/edit/${prize.id}`)
     window.location.href = url
   }
 </script>

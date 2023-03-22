@@ -83,4 +83,19 @@
 @endsection
 
 @section('script')
+<script>
+  const handleSearch = (e) => {
+    if (e.key === 'Enter') {
+      const url = new URL(window.location.href)
+      url.searchParams.set('search', e.target.value)
+      window.location.href = url
+    }
+  }
+
+  const handleChangePeriod = (e) => {
+    const url = new URL(window.location.href)
+    url.searchParams.set('period', e.target.value)
+    window.location.href = url
+  }
+</script>
 @endsection

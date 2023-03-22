@@ -6,6 +6,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PlayerController;
 use App\Http\Controllers\TopScoreController;
 use App\Http\Controllers\WinnerController;
+use App\Http\Controllers\PrizeController;
 
 
 Route::get('/', [DashboardController::class, 'index']);
@@ -24,4 +25,8 @@ Route::prefix('top-score')->group(function () {
 
 Route::prefix('winner')->group(function () {
   Route::get('/', [WinnerController::class, 'index']);
+});
+
+Route::prefix('prize')->group(function () {
+  Route::get('/', [PrizeController::class, 'index']);
 });
