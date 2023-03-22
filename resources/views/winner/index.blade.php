@@ -46,7 +46,7 @@
             <td>{{$player['name']}}</td>
             <td>{{$player['email']}}</td>
             <td>{{$player['level']}}</td>
-            <td>{{$player['score']}}</td>
+            <td>{{number_format($player['score'])}}</td>
           </tr>
           @endforeach
         </tbody>

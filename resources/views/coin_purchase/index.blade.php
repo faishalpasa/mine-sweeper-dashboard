@@ -9,25 +9,13 @@
 <div class="container-fluid px-4">
   <ol class="breadcrumb my-4">
     <li class="breadcrumb-item">Dashboard</li>
-    <li class="breadcrumb-item active">Top Skor</li>
+    <li class="breadcrumb-item active">Pembelian Koin</li>
   </ol>
   <div class="card mb-4">
     <div class="card-header d-flex align-items-center">
-      <i class="fas fa-crown me-1"></i>
-      Daftar Top Skor
+      <i class="fas fa-server me-1"></i>
+      Daftar Pembelian Koin
       <div class="ms-auto me-0">
-        <div class="input-group input-group-sm">
-          <span class="input-group-text">
-            <i class="fas fa-calendar"></i>
-          </span>
-          <select class="form-select" onchange="handleChangePeriod(event)">
-            @foreach ($periods as $idx => $period)
-              <option {{$idx === 0 ? 'selected' : ''}} value="{{$period['id']}}">{{$period['label']}}</option>
-            @endforeach
-          </select>
-        </div>
-      </div>
-      <div class="ms-1 me-0">
         <div class="input-group input-group-sm">
           <span class="input-group-text">
             <i class="fas fa-search"></i>
@@ -40,21 +28,29 @@
       <table class="table table-bordered">
         <thead>
           <tr>
+            <th>Tanggal</th>
+            <th>No. Invoice</th>
             <th>No. Handphone</th>
             <th>Nama</th>
-            <th>Email</th>
-            <th>Level</th>
-            <th>Score</th>
+            <th>Jumlah Koin</th>
+            <th>Pembayaran Via</th>
+            <th>Total</th>
+            <th>Status</th>
           </tr>
         </thead>
         <tbody>
-          @foreach ($players as $player)
+          @foreach ($coin_purchases as $idx => $coin_purchase)
           <tr class="align-middle">
-            <td>{{$player['msisdn']}}</td>
-            <td>{{$player['name']}}</td>
-            <td>{{$player['email']}}</td>
-            <td>{{$player['level']}}</td>
-            <td>{{number_format($player['score'])}}</td>
+            <td>{{$coin_purchase['created_at']}}</td>
+            <td>{{$coin_purchase['invoice_no']}}</td>
+            <td>{{$coin_purchase['msisdn']}}</td>
+            <td>{{$coin_purchase['name']}}</td>
+            <td>{{$coin_purchase['coin']}}</td>
+            <td>{{$coin_purchase['payment_method_name']}}</td>
+            <td>Rp{{number_format($coin_purchase['amount'])}}</td>
+            <td>
+              {{$coin_purchase['status'] > 0 ? 'Terbayar' : 'Pending'}}
+            </td>
           </tr>
           @endforeach
         </tbody>
@@ -80,10 +76,39 @@
     </div>
   </div>
 </div>
+
+<div class="modal fade" id="modal-status" tabindex="-1" aria-hidden="true">
+  <div class="modal-diacoin_purchase modal-diacoin_purchase-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Ubah Status</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="modal-status-body">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn" onclick="handleCloseModal()">Tutup</button>
+        <button type="button" class="btn btn-secondary" onclick="handleCloseModal()">Simpan</button>
+      </div>
+    </div>
+  </div>
+</div>
 @endsection
 
 @section('script')
 <script>
+  const modal = new bootstrap.Modal(document.getElementById('modal-status'))
+
+  const handleToggleModal = (player) => {
+    document.getElementById('modal-status-body').innerHTML = `<p>Anda yakin ingin mengubah status pemain <b>${player.name}</b> menjadi <b>${player.status === '1' ? 'Banned' : 'Active'}</b>?</p>`
+    console.coin_purchase(player)
+    modal.toggle()
+  }
+
+  const handleCloseModal = () => {
+    modal.hide()
+  }
+
   const handleSearch = (e) => {
     if (e.key === 'Enter') {
       const url = new URL(window.location.href)

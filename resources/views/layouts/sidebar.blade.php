@@ -25,6 +25,12 @@
         Log Permainan
       </a>
 
+      <div class="sb-sidenav-menu-heading">Pembayaran</div>
+      <a class="nav-link" href="{{ base_url('/coin-purchase') }}">
+        <div class="sb-nav-link-icon"><i class="fas fa-coins"></i></div>
+        Pembelian Koin
+      </a>
+
       <div class="sb-sidenav-menu-heading">Pengaturan</div>
       <a class="nav-link" href="{{ base_url('/prize') }}">
         <div class="sb-nav-link-icon"><i class="fas fa-gift"></i></div>
@@ -33,6 +39,10 @@
       <a class="nav-link" href="{{ base_url('/terms') }}">
         <div class="sb-nav-link-icon"><i class="fas fa-book"></i></div>
         Syarat & Ketentuan
+      </a>
+      <a class="nav-link" href="{{ base_url('/payment-method') }}">
+        <div class="sb-nav-link-icon"><i class="fas fa-money-bill-wave"></i></div>
+        Metode Pembayaran
       </a>
       {{-- <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
         <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
