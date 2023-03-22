@@ -6,8 +6,10 @@ use Illuminate\Http\Request;
 
 class PlayerController extends Controller
 {
-  public function index()
+  public function index(Request $request)
   {
+    $query = $request->query('search') ?? '';
+
     $data = [
       [
         'id' => '1',

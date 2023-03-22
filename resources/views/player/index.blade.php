@@ -12,9 +12,17 @@
     <li class="breadcrumb-item active">Pemain</li>
   </ol>
   <div class="card mb-4">
-    <div class="card-header">
+    <div class="card-header d-flex align-items-center">
       <i class="fas fa-table me-1"></i>
       Daftar Pemain
+      <div class="ms-auto me-0">
+        <div class="input-group input-group-sm">
+          <span class="input-group-text">
+            <i class="fas fa-search"></i>
+          </span>
+          <input type="text" class="form-control" placeholder="Nama / No. Handphone" aria-label="Name" onkeypress="handleSearch(event)">
+        </div>
+      </div>
     </div>
     <div class="card-body">
       <table class="table table-bordered">
@@ -99,6 +107,12 @@
 
   const handleCloseModal = () => {
     modal.hide()
+  }
+
+  const handleSearch = (e) => {
+    if (e.key === 'Enter') {
+      window.location.href = `${window.location.href}?search=${e.target.value}`
+    }
   }
 </script>
 @endsection
