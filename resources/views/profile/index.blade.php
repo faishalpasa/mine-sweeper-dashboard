@@ -57,13 +57,13 @@
 
 @section('script')
 <script>
-  const inputPasswordElement = document.getElementById("password")
-  const inputPasswordButtonElement = document.getElementById("password-button")
+  const inputPasswordElement = document.getElementById('password')
+  const inputPasswordButtonElement = document.getElementById('password-button')
 
-  const inputPasswordConfirmationElement = document.getElementById("password-confirmation")
-  const inputPasswordConfirmationButtonElement = document.getElementById("password-confirmation-button")
+  const inputPasswordConfirmationElement = document.getElementById('password-confirmation')
+  const inputPasswordConfirmationButtonElement = document.getElementById('password-confirmation-button')
 
-  const inputPasswordConfirmationMessageElement = document.getElementById("password-confirmation-message")
+  const inputPasswordConfirmationMessageElement = document.getElementById('password-confirmation-message')
 
   let isPasswordRevealed = false
   let isConfirmPasswordRevealed = false
