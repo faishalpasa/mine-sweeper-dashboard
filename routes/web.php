@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PlayerController;
+use App\Http\Controllers\TopScoreController;
 
 
 Route::get('/', [DashboardController::class, 'index']);
@@ -14,4 +15,8 @@ Route::prefix('profile')->group(function () {
 
 Route::prefix('player')->group(function () {
   Route::get('/', [PlayerController::class, 'index']);
+});
+
+Route::prefix('top-score')->group(function () {
+  Route::get('/', [TopScoreController::class, 'index']);
 });
