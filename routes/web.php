@@ -1,16 +1,16 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\PlayerController;
-use App\Http\Controllers\TopScoreController;
-use App\Http\Controllers\WinnerController;
-use App\Http\Controllers\PlayerLogController;
-use App\Http\Controllers\CoinPurchaseController;
-use App\Http\Controllers\PrizeController;
-use App\Http\Controllers\TermsController;
-use App\Http\Controllers\PaymentMethodController;
+use App\Http\Controllers\WebControllers\DashboardController;
+use App\Http\Controllers\WebControllers\ProfileController;
+use App\Http\Controllers\WebControllers\PlayerController;
+use App\Http\Controllers\WebControllers\TopScoreController;
+use App\Http\Controllers\WebControllers\WinnerController;
+use App\Http\Controllers\WebControllers\PlayerLogController;
+use App\Http\Controllers\WebControllers\CoinPurchaseController;
+use App\Http\Controllers\WebControllers\PrizeController;
+use App\Http\Controllers\WebControllers\TermsController;
+use App\Http\Controllers\WebControllers\PaymentMethodController;
 
 
 Route::get('/', [DashboardController::class, 'index']);

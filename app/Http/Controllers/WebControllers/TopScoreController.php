@@ -1,33 +1,41 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\WebControllers;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class PrizeController extends Controller
+class TopScoreController extends Controller
 {
   public function index(Request $request)
   {
+    $query_search = $request->query('search') ?? '';
     $query_period = $request->query('period') ?? '';
 
-    $prizes = [
+    $players = [
       [
         'id' => '1',
-        'name' => 'Hadiah Pertama',
-        'image_url' => 'https://placehold.co/200x200?text=Hadiah+Pertama',
-        'rank' => '1',
+        'name' => 'Test Pemain',
+        'msisdn' => '081234567890',
+        'email' => 'test@email.com',
+        'level' => '1',
+        'score' => '1000'
       ],
       [
         'id' => '2',
-        'name' => 'Hadiah Kedua',
-        'image_url' => 'https://placehold.co/200x200?text=Hadiah+Kedua',
-        'rank' => '2',
+        'name' => 'Test Pemain 2',
+        'msisdn' => '081234567890',
+        'email' => 'test@email.com',
+        'level' => '1',
+        'score' => '2000'
       ],
       [
         'id' => '3',
-        'name' => 'Hadiah Ketiga',
-        'image_url' => 'https://placehold.co/200x200?text=Hadiah+Ketiga',
-        'rank' => '3',
+        'name' => 'Test Pemain 3',
+        'msisdn' => '081234567890',
+        'email' => 'test@email.com',
+        'level' => '1',
+        'score' => '3000'
       ],
     ];
 
@@ -60,6 +68,6 @@ class PrizeController extends Controller
       ];
     }
 
-    return view('prize.index', ['prizes' => $prizes, 'periods' => $periods]);
+    return view('top_score.index', ['players' => $players, 'periods' => $periods]);
   }
 }

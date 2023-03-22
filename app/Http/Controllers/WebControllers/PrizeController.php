@@ -1,39 +1,34 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\WebControllers;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class WinnerController extends Controller
+class PrizeController extends Controller
 {
   public function index(Request $request)
   {
     $query_period = $request->query('period') ?? '';
 
-    $players = [
+    $prizes = [
       [
         'id' => '1',
-        'name' => 'Test Pemain',
-        'msisdn' => '081234567890',
-        'email' => 'test@email.com',
-        'level' => '1',
-        'score' => '1000'
+        'name' => 'Hadiah Pertama',
+        'image_url' => 'https://placehold.co/200x200?text=Hadiah+Pertama',
+        'rank' => '1',
       ],
       [
         'id' => '2',
-        'name' => 'Test Pemain 2',
-        'msisdn' => '081234567890',
-        'email' => 'test@email.com',
-        'level' => '1',
-        'score' => '2000'
+        'name' => 'Hadiah Kedua',
+        'image_url' => 'https://placehold.co/200x200?text=Hadiah+Kedua',
+        'rank' => '2',
       ],
       [
         'id' => '3',
-        'name' => 'Test Pemain 3',
-        'msisdn' => '081234567890',
-        'email' => 'test@email.com',
-        'level' => '1',
-        'score' => '3000'
+        'name' => 'Hadiah Ketiga',
+        'image_url' => 'https://placehold.co/200x200?text=Hadiah+Ketiga',
+        'rank' => '3',
       ],
     ];
 
@@ -66,6 +61,6 @@ class WinnerController extends Controller
       ];
     }
 
-    return view('winner.index', ['players' => $players, 'periods' => $periods]);
+    return view('prize.index', ['prizes' => $prizes, 'periods' => $periods]);
   }
 }

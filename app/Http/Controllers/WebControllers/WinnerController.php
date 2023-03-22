@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\WebControllers;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class TopScoreController extends Controller
+class WinnerController extends Controller
 {
   public function index(Request $request)
   {
-    $query_search = $request->query('search') ?? '';
     $query_period = $request->query('period') ?? '';
 
     $players = [
@@ -67,6 +67,6 @@ class TopScoreController extends Controller
       ];
     }
 
-    return view('top_score.index', ['players' => $players, 'periods' => $periods]);
+    return view('winner.index', ['players' => $players, 'periods' => $periods]);
   }
 }
