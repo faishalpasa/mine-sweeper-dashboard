@@ -6,7 +6,7 @@
       <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
       <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
         <li><p class="m-0 h5 py-1 px-3">Administrator</p></li>
-        <li><a class="dropdown-item" href="{{ base_url('/profil') }}">Profil</a></li>
+        <li><a class="dropdown-item" href="{{ base_url('/profile') }}">Profil</a></li>
         <li><hr class="dropdown-divider" /></li>
         <li><a class="dropdown-item" href="{{ base_url('/logout') }}">Logout</a></li>
       </ul>
