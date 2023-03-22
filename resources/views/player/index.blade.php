@@ -13,7 +13,7 @@
   </ol>
   <div class="card mb-4">
     <div class="card-header d-flex align-items-center">
-      <i class="fas fa-table me-1"></i>
+      <i class="fas fa-users me-1"></i>
       Daftar Pemain
       <div class="ms-auto me-0">
         <div class="input-group input-group-sm">

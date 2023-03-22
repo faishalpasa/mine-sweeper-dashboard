@@ -9,12 +9,12 @@
 <div class="container-fluid px-4">
   <ol class="breadcrumb my-4">
     <li class="breadcrumb-item">Dashboard</li>
-    <li class="breadcrumb-item active">Top Skor</li>
+    <li class="breadcrumb-item active">Pemenang</li>
   </ol>
   <div class="card mb-4">
     <div class="card-header d-flex align-items-center">
-      <i class="fas fa-crown me-1"></i>
-      Daftar Top Skor
+      <i class="fas fa-trophy me-1"></i>
+      Daftar Pemenang
       <div class="ms-auto me-0">
         <div class="input-group input-group-sm">
           <span class="input-group-text">
@@ -25,14 +25,6 @@
               <option {{$idx === 0 ? 'selected' : ''}} value="{{$period['id']}}">{{$period['label']}}</option>
             @endforeach
           </select>
-        </div>
-      </div>
-      <div class="ms-1 me-0">
-        <div class="input-group input-group-sm">
-          <span class="input-group-text">
-            <i class="fas fa-search"></i>
-          </span>
-          <input type="text" class="form-control" placeholder="Nama / No. Handphone" aria-label="Name" onkeypress="handleSearch(event)">
         </div>
       </div>
     </div>
@@ -59,24 +51,6 @@
           @endforeach
         </tbody>
       </table>
-
-      <nav>
-        <ul class="pagination justify-content-end">
-          <li class="page-item disabled">
-            <span class="page-link">
-              <span aria-hidden="true">&laquo;</span>
-            </span>
-          </li>
-          <li class="page-item"><a class="page-link text-black" href="#">1</a></li>
-          <li class="page-item"><a class="page-link text-black" href="#">2</a></li>
-          <li class="page-item"><a class="page-link text-black" href="#">3</a></li>
-          <li class="page-item">
-            <a class="page-link text-black" href="#" aria-label="Next">
-              <span aria-hidden="true">&raquo;</span>
-            </a>
-          </li>
-        </ul>
-      </nav>
     </div>
   </div>
 </div>
