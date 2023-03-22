@@ -6,17 +6,29 @@
 
     @yield('meta')
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-    @yield('style')
-  </head>
-  <body class="antialiased">
-    @include('layouts.navigation')
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" />
+    <link href="{{ base_url('/css/styles.css') }}" rel="stylesheet" />
 
-    <div>
-      @yield('content')
+    @yield('style')
+
+  </head>
+  <body class="sb-nav-fixed">
+    @include('layouts.navigation')
+    <div id="layoutSidenav">
+      <div id="layoutSidenav_nav">
+        @include('layouts.sidebar')
+      </div>
+      <div id="layoutSidenav_content">
+        <main>
+          @yield('content')
+        </main>
+      </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+    <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="{{ base_url('/js/scripts.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
 
     @yield('script')
   </body>
