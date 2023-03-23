@@ -9,10 +9,17 @@
     <meta name="description" content="Minesweeper Admin | Login" />
     <link href="{{base_url('/css/styles.css')}}" rel="stylesheet" />
     <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
+
+    <style>
+      .login-card {
+        width: 100%;
+        max-width: 420px;
+      }
+    </style>
   </head>
   <body class="bg-secondary">
     <div class="row justify-content-center flex-column h-100 align-items-center m-4">
-      <div class="col-lg-5">
+      <div class="col-lg-12 login-card">
         <div class="card shadow-lg border-0 rounded-lg">
           <div class="card-header">
             <h1 class="text-center font-weight-light h3">Minesweeper Admin</h1>
