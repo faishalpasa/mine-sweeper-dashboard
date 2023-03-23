@@ -8,7 +8,12 @@
         <li><p class="m-0 h5 py-1 px-3">Administrator</p></li>
         <li><a class="dropdown-item" href="{{ base_url('/profile') }}">Profil</a></li>
         <li><hr class="dropdown-divider" /></li>
-        <li><a class="dropdown-item" href="{{ base_url('/logout') }}">Logout</a></li>
+        <li>
+          <form action="{{ base_url('/logout') }}" method="POST">
+            @csrf
+            <button class="dropdown-item" type="submit">Logout</button>
+          </form>
+        </li>
       </ul>
     </li>
   </ul>

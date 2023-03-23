@@ -21,6 +21,7 @@ class ProfileController extends Controller
 
   public function update_profile(Request $request)
   {
+    dd($request->cookie());
     $validator = Validator::make($request->all(), [
       'name' => 'required',
       'email' => 'required|email',
