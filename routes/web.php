@@ -17,6 +17,7 @@ Route::get('/', [DashboardController::class, 'index']);
 
 Route::prefix('profile')->group(function () {
   Route::get('/', [ProfileController::class, 'index']);
+  Route::post('/update', [ProfileController::class, 'update_profile']);
 });
 
 Route::prefix('player')->group(function () {

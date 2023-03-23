@@ -31,7 +31,7 @@
     <div class="col-xl-3 col-md-6">
       <div class="card bg-secondary text-white mb-4">
         <div class="card-body">
-          <p>Total Pembelian Koin</p>
+          <p>Total Transaksi Pembelian Koin</p>
           <p class="h1">{{number_format($total_coin_purchases)}}</p>
         </div>
         <div class="card-footer d-flex align-items-center justify-content-between">
@@ -43,7 +43,7 @@
     <div class="col-xl-3 col-md-6">
       <div class="card bg-secondary text-white mb-4">
         <div class="card-body">
-          <p>Pembelian Koin <span class="small-text">(Hari Ini)</span></p>
+          <p>Transaksi Pembelian Koin <span class="small-text">(Hari Ini)</span></p>
           <p class="h1">{{$coin_purchases_per_day}}</p>
         </div>
         <div class="card-footer d-flex align-items-center justify-content-between">
@@ -55,7 +55,7 @@
     <div class="col-xl-3 col-md-6">
       <div class="card bg-secondary text-white mb-4">
         <div class="card-body">
-          <p>Total Pendapatan <span class="small-text">(Perkiraan)</span></p>
+          <p>Total Pendapatan <span class="small-text">(Estimasi)</span></p>
           <p class="h1">Rp{{number_format($total_revenue)}}</p>
         </div>
         <div class="card-footer d-flex align-items-center justify-content-between">

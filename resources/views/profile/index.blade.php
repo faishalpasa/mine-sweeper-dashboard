@@ -16,38 +16,66 @@
   </ol>
   <div class="card">
     <div class="card-body">
-      <form>
+      @if (session('success_message'))
+        <div class="alert alert-secondary alert-dismissible fade show">
+          {{ session('success_message') }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      @endif
+      <form autocomplete="off" method="POST" action="{{base_url('/profile/update')}}">
+        @csrf
         <div class="mb-3 col-md-6">
           <label for="name" class="form-label">Nama Lengkap</label>
-          <input type="text" class="form-control" id="name" placeholder="Nama Lengkap" value="Administrator">
+          <input type="text" class="form-control" placeholder="Nama Lengkap" value="{{ $errors->has('name') ? old('name') : $profile['name'] }}" name="name">
+          <div class="invalid-feedback" id="feedback-text-name"></div>
+          @error('name')
+            <div class="invalid-feedback d-block">
+              {{ $message }}
+            </div>
+          @enderror
         </div>
         <div class="mb-3 col-md-6">
           <label for="exampleFormControlInput1" class="form-label">Email</label>
-          <input type="email" class="form-control" id="email" placeholder="nama@email.com" value="administrator@email.com">
+          <input type="email" class="form-control" placeholder="nama@email.com" value="{{ $errors->has('email') ? old('email') : $profile['email'] }}" name="email">
+          @error('email')
+            <div class="invalid-feedback d-block">
+              {{ $message }}
+            </div>
+          @enderror
         </div>
         <div class="mb-3 col-md-6">
-          <label for="exampleFormControlInput1" class="form-label">Password</label>
-          <div class="input-group">
-            <input type="password" class="form-control" id="password" placeholder="Password" onchange="handleChangePassword()">
-            <button class="btn btn-outline-secondary" type="button" id="password-button" onclick="handleClickPasswordButton('password')">
-              <i class="fas fa-eye"></i>
-            </button>
+          <input class="form-check-input" type="checkbox" value="" onclick="handleClickCheckbox(event.target.checked)" {{$errors->has('password') ? 'checked' : ''}}>
+          <label class="form-check-label">
+            Ubah password?
+          </label>
+        </div>
+        <div id="password-form" class="d-none">
+          <div class="mb-3 col-md-6">
+            <label for="exampleFormControlInput1" class="form-label">Password</label>
+            <div class="input-group">
+              <input type="password" class="form-control" id="password" placeholder="Password" name="password" value="{{old('password')}}">
+              <button class="btn btn-outline-secondary" type="button" id="password-button" onclick="handleClickPasswordButton('password')">
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
           </div>
-        </div>
-        <div class="mb-3 col-md-6">
-          <label for="exampleFormControlInput1" class="form-label">Konfirmasi Password</label>
-          <div class="input-group has-validation">
-            <input type="password" class="form-control" id="password-confirmation" placeholder="Konfirmasi Password" onchange="handleChangePassword()">
-            <button class="btn btn-outline-secondary" type="button" id="password-confirmation-button" onclick="handleClickPasswordButton('password-confirmation')">
-              <i class="fas fa-eye"></i>
-            </button>
-            <div class="invalid-feedback" id="password-confirmation-message">
-              Password konfirmasi tidak sesuai
+          <div class="mb-3 col-md-6">
+            <label for="exampleFormControlInput1" class="form-label">Konfirmasi Password</label>
+            <div class="input-group has-validation">
+              <input type="password" class="form-control" id="password-confirmation" placeholder="Konfirmasi Password" name="password_confirmation" value="{{old('password_confirmation')}}">
+              <button class="btn btn-outline-secondary" type="button" id="password-confirmation-button" onclick="handleClickPasswordButton('password-confirmation')">
+                <i class="fas fa-eye"></i>
+              </button>
+              @error('password')
+                <div class="invalid-feedback d-block">
+                  {{ $message }}
+                </div>
+              @enderror
             </div>
           </div>
         </div>
         <div class="mb-3 col-md-6">
-          <button type="button" class="btn btn-secondary">Simpan</button>
+          <button type="submit" class="btn btn-secondary">Simpan</button>
         </div>
       </form>
     </div>
@@ -58,12 +86,22 @@
 @section('script')
 <script>
   const inputPasswordElement = document.getElementById('password')
-  const inputPasswordButtonElement = document.getElementById('password-button')
-
   const inputPasswordConfirmationElement = document.getElementById('password-confirmation')
+  const passwordFormElement = document.getElementById('password-form')
+
+  const inputPasswordButtonElement = document.getElementById('password-button')
   const inputPasswordConfirmationButtonElement = document.getElementById('password-confirmation-button')
 
-  const inputPasswordConfirmationMessageElement = document.getElementById('password-confirmation-message')
+  const handleClickCheckbox = (value) => {
+    passwordFormElement.classList.add(value ? 'd-block' : 'd-none')
+    passwordFormElement.classList.remove(value ? 'd-none' : 'd-block')
+  }
+
+  const isCheckedFromServer = {{$errors->has('password') ? $errors->has('password') : 0}}
+
+  if (isCheckedFromServer) {
+    handleClickCheckbox(true)
+  }
 
   let isPasswordRevealed = false
   let isConfirmPasswordRevealed = false
@@ -93,21 +131,5 @@
       }
     }
   }
-
-  const handleChangePassword = () => {
-    const passwordValue = inputPasswordElement.value
-    const passwordConfirmationValue = inputPasswordConfirmationElement.value
-
-    if (passwordValue) {
-      if (passwordValue === passwordConfirmationValue) {
-        inputPasswordConfirmationMessageElement.classList.add('d-none')
-        inputPasswordConfirmationMessageElement.classList.remove('d-block')
-      } else {
-        inputPasswordConfirmationMessageElement.classList.add('d-block')
-        inputPasswordConfirmationMessageElement.classList.remove('d-none')
-      }
-    }
-  }
-
 </script>
 @endsection
