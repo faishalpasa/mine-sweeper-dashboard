@@ -32,6 +32,10 @@
       </a>
 
       <div class="sb-sidenav-menu-heading">Pengaturan</div>
+      {{-- <a class="nav-link" href="{{ base_url('/period') }}">
+        <div class="sb-nav-link-icon"><i class="fas fa-calendar"></i></div>
+        Periode
+      </a> --}}
       <a class="nav-link" href="{{ base_url('/prize') }}">
         <div class="sb-nav-link-icon"><i class="fas fa-gift"></i></div>
         Hadiah

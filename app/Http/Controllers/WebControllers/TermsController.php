@@ -65,7 +65,7 @@ class TermsController extends Controller
         ->withInput();
     }
 
-    return redirect('/terms')->with('success_message', 'Berhasil menambah pembelian syarat dan ketentuan');
+    return redirect('/terms')->with('success_message', 'Berhasil menambah syarat dan ketentuan');
   }
 
   public function update($id)
