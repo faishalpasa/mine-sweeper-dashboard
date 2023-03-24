@@ -62,6 +62,10 @@ Route::middleware(['web_auth'])->prefix('prize')->group(function () {
 
 Route::middleware(['web_auth'])->prefix('terms')->group(function () {
   Route::get('/', [TermsController::class, 'index']);
+  Route::get('/create', [TermsController::class, 'create']);
+  Route::post('/create', [TermsController::class, 'post_create']);
+  Route::get('/update/{id}', [TermsController::class, 'update']);
+  Route::post('/update/{id}', [TermsController::class, 'post_update']);
 });
 
 Route::middleware(['web_auth'])->prefix('payment-method')->group(function () {

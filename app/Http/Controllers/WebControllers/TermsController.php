@@ -4,6 +4,7 @@ namespace App\Http\Controllers\WebControllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Validator;
 
 class TermsController extends Controller
 {
@@ -33,5 +34,69 @@ class TermsController extends Controller
     ];
 
     return view('terms.index', ['terms' => $terms]);
+  }
+
+  public function create()
+  {
+    $terms = [
+      'title' => '',
+      'description' => '',
+    ];
+
+    $action_url = base_url('/terms/create');
+
+    return view('terms.form', [
+      'terms' => $terms,
+      'action_url' => $action_url
+    ]);
+  }
+
+  public function post_create(Request $request)
+  {
+    $validator = Validator::make($request->all(), [
+      'title' => 'required',
+      'description' => 'required',
+    ]);
+
+
+    if ($validator->fails()) {
+      return back()
+        ->withErrors($validator)
+        ->withInput();
+    }
+
+    return redirect('/terms')->with('success_message', 'Berhasil menambah pembelian syarat dan ketentuan');
+  }
+
+  public function update($id)
+  {
+    $terms = [
+      'id' => $id,
+      'title' => 'Ini Judul',
+      'description' => 'User dapat mulai memainkan game dengan cara register menggunakan nomer HP dan memasukkan PIN. Setelah itu user di minta untuk membuat PIN untuk login. Nantinya user untuk login setelah melakukan pendaftaran menggunakan nomer HP dan PIN saja.',
+    ];
+
+    $action_url = base_url('/terms/update/' . $id);
+
+    return view('terms.form', [
+      'terms' => $terms,
+      'action_url' => $action_url
+    ]);
+  }
+
+  public function post_update(Request $request, $id)
+  {
+    $validator = Validator::make($request->all(), [
+      'title' => 'required',
+      'description' => 'required',
+    ]);
+
+    if ($validator->fails()) {
+      return back()
+        ->withErrors($validator)
+        ->withInput();
+    }
+
+    return redirect('/terms')->with('success_message', 'Berhasil mengubah syarat dan ketentuan');
   }
 }
