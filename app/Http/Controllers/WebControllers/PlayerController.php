@@ -4,6 +4,7 @@ namespace App\Http\Controllers\WebControllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Validator;
 
 class PlayerController extends Controller
 {
@@ -38,5 +39,62 @@ class PlayerController extends Controller
       ],
     ];
     return view('player.index', ['players' => $data]);
+  }
+
+  public function create()
+  {
+    $player = [
+      'name' => '',
+      'msisdn' => '',
+      'email' => '',
+    ];
+
+    return view('player.form', ['player' => $player]);
+  }
+
+  public function post_create(Request $request)
+  {
+    $validator = Validator::make($request->all(), [
+      'name' => 'required',
+      'email' => 'required|email',
+      'msisdn' => 'required'
+    ]);
+
+    if ($validator->fails()) {
+      return back()
+        ->withErrors($validator)
+        ->withInput();
+    }
+
+    return redirect('/player')->with('success_message', 'Berhasil menambah pemain');
+  }
+
+  public function update($id)
+  {
+    $player = [
+      'id' => $id,
+      'name' => 'Test Player',
+      'msisdn' => '08123',
+      'email' => 'test@email.com',
+    ];
+
+    return view('player.form', ['player' => $player]);
+  }
+
+  public function post_update(Request $request, $id)
+  {
+    $validator = Validator::make($request->all(), [
+      'name' => 'required',
+      'email' => 'required|email',
+      'msisdn' => 'required'
+    ]);
+
+    if ($validator->fails()) {
+      return back()
+        ->withErrors($validator)
+        ->withInput();
+    }
+
+    return redirect('/player')->with('success_message', 'Berhasil mengubah pemain');
   }
 }

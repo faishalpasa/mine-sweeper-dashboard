@@ -25,11 +25,15 @@ Route::middleware(['web_auth'])->get('/', [DashboardController::class, 'index'])
 
 Route::middleware(['web_auth'])->prefix('profile')->group(function () {
   Route::get('/', [ProfileController::class, 'index']);
-  Route::post('/update', [ProfileController::class, 'update_profile']);
+  Route::post('/update', [ProfileController::class, 'post_update']);
 });
 
 Route::middleware(['web_auth'])->prefix('player')->group(function () {
   Route::get('/', [PlayerController::class, 'index']);
+  Route::get('/create', [PlayerController::class, 'create']);
+  Route::post('/create', [PlayerController::class, 'post_create']);
+  Route::get('/update/{id}', [PlayerController::class, 'update']);
+  Route::post('/update/{id}', [PlayerController::class, 'post_update']);
 });
 
 Route::middleware(['web_auth'])->prefix('top-score')->group(function () {

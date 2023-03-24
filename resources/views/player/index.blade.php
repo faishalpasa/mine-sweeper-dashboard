@@ -1,20 +1,33 @@
 @extends('layouts.app')
 
 @section('meta')
-<title>Minesweeper Admin</title>
+<title>Minesweeper Admin | Pemain</title>
 <meta name="description" content="Minesweeper Admin" />
 @endsection
 
 @section('content')
 <div class="container-fluid px-4">
   <ol class="breadcrumb my-4">
-    <li class="breadcrumb-item">Dashboard</li>
+    <li class="breadcrumb-item">
+      <a class="text-decoration-none text-black" href={{base_url('/')}}>Dashboard</a>
+    </li>
     <li class="breadcrumb-item active">Pemain</li>
   </ol>
+
+  @if (session('success_message'))
+    <div class="alert alert-secondary alert-dismissible fade show">
+      {{ session('success_message') }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  @endif
+
   <div class="card mb-4">
     <div class="card-header d-flex align-items-center">
       <i class="fas fa-users me-1"></i>
       Daftar Pemain
+      <div class="ms-2 me-0">
+        <a class="btn btn-sm btn-secondary" href="{{base_url('/player/create')}}">Buat baru</a>
+      </div>
       <div class="ms-auto me-0">
         <div class="input-group input-group-sm">
           <span class="input-group-text">
@@ -33,7 +46,7 @@
             <th>Email</th>
             <th>Level</th>
             <th>Status</th>
-            <th></th>
+            <th style="width: 200px;"></th>
           </tr>
         </thead>
         <tbody>
@@ -44,11 +57,14 @@
             <td>{{$player['email']}}</td>
             <td>{{$player['level']}}</td>
             <td>{{$player['status'] === '1' ? 'Active' : 'Banned'}}</td>
-            <td>
+            <td class="d-flex justify-content-center">
               <div class="btn-group btn-group-sm" role="group">
                 <button type="button" class="btn btn-outline-secondary" onclick="handleToggleModal({{json_encode($player)}})">
                   Ubah Status
                 </button>
+                <a class="btn btn-outline-secondary" href="{{base_url('/player/update/'.$player['id'])}}">
+                  Edit
+                </a>
               </div>
             </td>
           </tr>

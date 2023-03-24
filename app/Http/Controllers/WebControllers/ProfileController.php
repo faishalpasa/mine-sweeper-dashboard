@@ -19,7 +19,7 @@ class ProfileController extends Controller
     return view('profile.index', ['profile' => $profile]);
   }
 
-  public function update_profile(Request $request)
+  public function post_update(Request $request)
   {
     $validator = Validator::make($request->all(), [
       'name' => 'required',
@@ -28,7 +28,7 @@ class ProfileController extends Controller
     ]);
 
     if ($validator->fails()) {
-      return redirect('/profile')
+      return back()
         ->withErrors($validator)
         ->withInput();
     }
