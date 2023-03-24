@@ -25,6 +25,15 @@
       </div>
     </div>
     <div class="card-body">
+      @if (session('success_message'))
+        <div class="alert alert-secondary alert-dismissible fade show">
+          {{ session('success_message') }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      @endif
+      <div class="mb-2">
+        <a class="btn btn-sm btn-secondary" href="{{base_url('/coin-purchase/create')}}">Buat baru</a>
+      </div>
       <table class="table table-bordered">
         <thead>
           <tr>

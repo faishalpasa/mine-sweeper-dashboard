@@ -50,6 +50,10 @@ Route::middleware(['web_auth'])->prefix('player-log')->group(function () {
 
 Route::middleware(['web_auth'])->prefix('coin-purchase')->group(function () {
   Route::get('/', [CoinPurchaseController::class, 'index']);
+  Route::get('/create', [CoinPurchaseController::class, 'create']);
+  Route::post('/create', [CoinPurchaseController::class, 'post_create']);
+  Route::get('/update/{id}', [CoinPurchaseController::class, 'update']);
+  Route::post('/update/{id}', [CoinPurchaseController::class, 'post_update']);
 });
 
 Route::middleware(['web_auth'])->prefix('prize')->group(function () {
