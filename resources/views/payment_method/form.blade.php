@@ -12,10 +12,10 @@
       <a class="text-decoration-none text-black" href={{base_url('/')}}>Dashboard</a>
     </li>
     <li class="breadcrumb-item">
-      <a class="text-decoration-none text-black" href={{base_url('/player')}}>Pemain</a>
+      <a class="text-decoration-none text-black" href={{base_url('/payment-method')}}>Metode Pembayaran</a>
     </li>
-    @if(isset($player['id']))
-    <li class="breadcrumb-item active">Update Pemain</li>
+    @if(isset($payment_method['id']))
+    <li class="breadcrumb-item active">Update Metode Pembayaran</li>
     @else
     <li class="breadcrumb-item active">Buat Baru</li>
     @endif
@@ -23,19 +23,18 @@
   <div class="card mb-4">
     <div class="card-header d-flex align-items-center">
       <i class="fas fa-users me-1"></i>
-      @if(isset($player['id']))
-      Update Pemain
+      @if(isset($payment_method['id']))
+      Update Metode Pembayaran
       @else
-      Buat Pemain Baru
+      Buat Metode Pembayaran Baru
       @endif
     </div>
     <div class="card-body">
-      <form autocomplete="off" method="POST" action="{{$action_url}}">
+      <form autocomplete="off" method="POST" action="{{$action_url}}" enctype="multipart/form-data">
         @csrf
         <div class="mb-3 col-md-6">
-          <label for="name" class="form-label">Nama Lengkap</label>
-          <input type="text" class="form-control" placeholder="Nama Lengkap" value="{{ old('name') ?? $player['name'] }}" name="name">
-          <div class="invalid-feedback" id="feedback-text-name"></div>
+          <label for="name" class="form-label">Nama</label>
+          <input type="text" class="form-control" placeholder="Nama" value="{{ old('name') ?? $payment_method['name'] }}" name="name">
           @error('name')
             <div class="invalid-feedback d-block">
               {{ $message }}
@@ -43,18 +42,19 @@
           @enderror
         </div>
         <div class="mb-3 col-md-6">
-          <label for="exampleFormControlInput1" class="form-label">Email</label>
-          <input type="email" class="form-control" placeholder="nama@email.com" value="{{ old('email') ?? $player['email'] }}" name="email">
-          @error('email')
+          <label class="form-label">No. Akun</label>
+          <input type="text" class="form-control" placeholder="081234567890" value="{{ old('account_no') ?? $payment_method['account_no'] }}" name="account_no">
+          @error('account_no')
             <div class="invalid-feedback d-block">
               {{ $message }}
             </div>
           @enderror
         </div>
         <div class="mb-3 col-md-6">
-          <label for="exampleFormControlInput1" class="form-label">No. Handphone</label>
-          <input type="tel" class="form-control" placeholder="081234567890" value="{{ old('msisdn') ?? $player['msisdn'] }}" name="msisdn">
-          @error('msisdn')
+          <label class="form-label">Logo</label>
+          <input type="file" class="form-control" placeholder="" value="{{ old('image_url') ?? $payment_method['image_url'] }}" name="image_url" onchange="handleChangeImage(event)" accept="image/*">
+          <img id="image-preview" class="mt-3" style="width: 150px;" src="{{$payment_method['image_url']}}" />
+          @error('image_url')
             <div class="invalid-feedback d-block">
               {{ $message }}
             </div>
@@ -92,9 +92,9 @@
   const modal = new bootstrap.Modal(document.getElementById('modal-status'))
 
   const handleToggleModal = () => {
-    const player = @json($player)
+    const player = @json($payment_method)
 
-    const innerHtml = player.id ?  `<p>Anda yakin ingin mengupdate pemain?</p>` :  `<p>Anda yakin ingin menyimpan pemain baru?</p>`
+    const innerHtml = player.id ?  `<p>Anda yakin ingin mengupdate metode pembayaran?</p>` :  `<p>Anda yakin ingin menyimpan metode pembayaran baru?</p>`
     document.getElementById('modal-status-body').innerHTML = innerHtml
     modal.toggle()
   }
@@ -103,9 +103,11 @@
     modal.hide()
   }
 
-  const handleSearch = (e) => {
-    if (e.key === 'Enter') {
-      window.location.href = `${window.location.href}?search=${e.target.value}`
+  const handleChangeImage = (e) => {
+    const output = document.getElementById('image-preview');
+    output.src = URL.createObjectURL(e.target.files[0]);
+    output.onload = () => {
+      URL.revokeObjectURL(output.src)
     }
   }
 </script>

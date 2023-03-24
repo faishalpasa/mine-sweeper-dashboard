@@ -62,4 +62,8 @@ Route::middleware(['web_auth'])->prefix('terms')->group(function () {
 
 Route::middleware(['web_auth'])->prefix('payment-method')->group(function () {
   Route::get('/', [PaymentMethodController::class, 'index']);
+  Route::get('/create', [PaymentMethodController::class, 'create']);
+  Route::post('/create', [PaymentMethodController::class, 'post_create']);
+  Route::get('/update/{id}', [PaymentMethodController::class, 'update']);
+  Route::post('/update/{id}', [PaymentMethodController::class, 'post_update']);
 });

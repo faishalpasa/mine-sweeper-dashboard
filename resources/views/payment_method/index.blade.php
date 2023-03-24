@@ -16,15 +16,28 @@
 @section('content')
 <div class="container-fluid px-4">
   <ol class="breadcrumb my-4">
-    <li class="breadcrumb-item">Dashboard</li>
+    <li class="breadcrumb-item">
+      <a class="text-decoration-none text-black" href={{base_url('/')}}>Dashboard</a>
+    </li>
     <li class="breadcrumb-item active">Metode Pembayaran</li>
   </ol>
+
+  @if (session('success_message'))
+    <div class="alert alert-secondary alert-dismissible fade show">
+      {{ session('success_message') }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  @endif
+
   <div class="card mb-4">
     <div class="card-header d-flex align-items-center">
       <i class="fas fa-gift me-1"></i>
       Daftar Metode Pembayaran
     </div>
     <div class="card-body">
+      <div class="mb-2">
+        <a class="btn btn-sm btn-secondary" href="{{base_url('/payment-method/create')}}">Buat baru</a>
+      </div>
       <table class="table table-bordered">
         <thead>
           <tr>
@@ -44,9 +57,9 @@
             <td>{{$payment_method['is_active'] > 0 ? 'Aktif' : 'Tidak Aktif'}}</td>
             <td>
               <div class="btn-group btn-group-sm" role="group">
-                <button type="button" class="btn btn-outline-secondary" onclick="handleClickEditButton({{json_encode($payment_method)}})">
+                <a class="btn btn-outline-secondary" href="{{base_url('/payment-method/update/'.$payment_method['id'])}}">
                   Edit
-                </button>
+                </a>
               </div>
             </td>
           </tr>

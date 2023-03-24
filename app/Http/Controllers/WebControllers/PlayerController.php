@@ -49,7 +49,9 @@ class PlayerController extends Controller
       'email' => '',
     ];
 
-    return view('player.form', ['player' => $player]);
+    $action_url = base_url('/player/create');
+
+    return view('player.form', ['player' => $player, 'action_url' => $action_url]);
   }
 
   public function post_create(Request $request)
@@ -78,7 +80,9 @@ class PlayerController extends Controller
       'email' => 'test@email.com',
     ];
 
-    return view('player.form', ['player' => $player]);
+    $action_url = base_url('/player/update/' . $id);
+
+    return view('player.form', ['player' => $player, 'action_url' => $action_url]);
   }
 
   public function post_update(Request $request, $id)

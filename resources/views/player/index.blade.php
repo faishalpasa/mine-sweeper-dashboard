@@ -25,9 +25,6 @@
     <div class="card-header d-flex align-items-center">
       <i class="fas fa-users me-1"></i>
       Daftar Pemain
-      <div class="ms-2 me-0">
-        <a class="btn btn-sm btn-secondary" href="{{base_url('/player/create')}}">Buat baru</a>
-      </div>
       <div class="ms-auto me-0">
         <div class="input-group input-group-sm">
           <span class="input-group-text">
@@ -38,6 +35,9 @@
       </div>
     </div>
     <div class="card-body">
+      <div class="mb-2">
+        <a class="btn btn-sm btn-secondary" href="{{base_url('/player/create')}}">Buat baru</a>
+      </div>
       <table class="table table-bordered">
         <thead>
           <tr>
