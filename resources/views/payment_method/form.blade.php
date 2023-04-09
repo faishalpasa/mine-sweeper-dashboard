@@ -14,7 +14,7 @@
     <li class="breadcrumb-item">
       <a class="text-decoration-none text-black" href={{base_url('/payment-method')}}>Metode Pembayaran</a>
     </li>
-    @if(isset($payment_method['id']))
+    @if(isset($payment_method->id))
     <li class="breadcrumb-item active">Update Metode Pembayaran</li>
     @else
     <li class="breadcrumb-item active">Buat Baru</li>
@@ -22,8 +22,8 @@
   </ol>
   <div class="card mb-4">
     <div class="card-header d-flex align-items-center">
-      <i class="fas fa-users me-1"></i>
-      @if(isset($payment_method['id']))
+      <i class="fas fa-money-bill-wave me-1"></i>
+      @if(isset($payment_method->id))
       Update Metode Pembayaran
       @else
       Buat Metode Pembayaran Baru
@@ -34,7 +34,7 @@
         @csrf
         <div class="mb-3 col-md-6">
           <label for="name" class="form-label">Nama</label>
-          <input type="text" class="form-control" placeholder="Nama" value="{{ old('name') ?? $payment_method['name'] }}" name="name">
+          <input type="text" class="form-control" placeholder="Nama" value="{{ isset($payment_method->name) ? $payment_method->name : old('name')  }}" name="name">
           @error('name')
             <div class="invalid-feedback d-block">
               {{ $message }}
@@ -43,8 +43,8 @@
         </div>
         <div class="mb-3 col-md-6">
           <label class="form-label">No. Akun</label>
-          <input type="text" class="form-control" placeholder="081234567890" value="{{ old('account_no') ?? $payment_method['account_no'] }}" name="account_no">
-          @error('account_no')
+          <input type="text" class="form-control" placeholder="081234567890" value="{{ isset($payment_method->account) ? $payment_method->account : old('account')  }}" name="account">
+          @error('account')
             <div class="invalid-feedback d-block">
               {{ $message }}
             </div>
@@ -52,14 +52,31 @@
         </div>
         <div class="mb-3 col-md-6">
           <label class="form-label">Logo</label>
-          <input type="file" class="form-control" placeholder="" value="{{ old('image_url') ?? $payment_method['image_url'] }}" name="image_url" onchange="handleChangeImage(event)" accept="image/*">
-          <img id="image-preview" class="mt-3" style="width: 150px;" src="{{$payment_method['image_url']}}" />
+          <input type="file" class="form-control" placeholder="" value="{{ isset($payment_method->image_url) ? $payment_method->image_url : old('image_url') }}" name="image_url" onchange="handleChangeImage(event)" accept="image/*">
+          <img id="image-preview" class="mt-3" style="width: 150px;" src="{{ isset($payment_method->image_url) ? '/files/'.$payment_method->image_url : ''}}" />
           @error('image_url')
             <div class="invalid-feedback d-block">
               {{ $message }}
             </div>
           @enderror
         </div>
+        @if(isset($payment_method->id))
+        <div class="mb-3 col-md-6">
+          <label for="name" class="form-label">Status</label>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="is_active" value="1" {{$payment_method->is_active == 1 ? 'checked' : ''}}>
+            <label class="form-check-label">
+              Aktif
+            </label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="is_active" value="0" {{$payment_method->is_active == 0 ? 'checked' : ''}}>
+            <label class="form-check-label">
+              Tidak aktif
+            </label>
+          </div>
+        </div>
+        @endif
         <div class="mb-3 col-md-6">
           <button type="button" class="btn btn-secondary" onclick="handleToggleModal()">Simpan</button>
         </div>

@@ -92,4 +92,5 @@ Route::middleware(['web_auth'])->prefix('payment-method')->group(function () {
   Route::post('/create', [PaymentMethodController::class, 'post_create']);
   Route::get('/update/{id}', [PaymentMethodController::class, 'update']);
   Route::post('/update/{id}', [PaymentMethodController::class, 'post_update']);
+  Route::get('/delete/{id}', [PaymentMethodController::class, 'delete']);
 });
