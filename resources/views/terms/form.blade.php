@@ -14,7 +14,7 @@
     <li class="breadcrumb-item">
       <a class="text-decoration-none text-black" href={{base_url('/terms')}}>Syarat dan Ketentuan</a>
     </li>
-    @if(isset($terms['id']))
+    @if(isset($terms->id))
     <li class="breadcrumb-item active">Update Syarat dan Ketentuan</li>
     @else
     <li class="breadcrumb-item active">Buat Baru</li>
@@ -23,8 +23,8 @@
 
   <div class="card mb-4">
     <div class="card-header d-flex align-items-center">
-      <i class="fas fa-users me-1"></i>
-      @if(isset($terms['id']))
+      <i class="fas fa-book me-1"></i>
+      @if(isset($terms->id))
       Update Syarat dan Ketentuan
       @else
       Buat Syarat dan Ketentuan Baru
@@ -35,7 +35,7 @@
         @csrf
         <div class="mb-3 col-md-6">
           <label for="name" class="form-label">Judul</label>
-          <input type="text" class="form-control" placeholder="Judul" value="{{ old('title') ?? $terms['title'] }}" name="title">
+          <input type="text" class="form-control" placeholder="Judul" value="{{ isset($terms->title) ? $terms->title : old('title') }}" name="title">
           @error('title')
             <div class="invalid-feedback d-block">
               {{ $message }}
@@ -44,7 +44,7 @@
         </div>
         <div class="mb-3 col-md-6">
           <label class="form-label">Deskripsi</label>
-          <textarea type="text" class="form-control" placeholder="Deskripsi" name="description" rows="4">{{ old('description') ?? $terms['description'] }}</textarea>
+          <textarea type="text" class="form-control" placeholder="Deskripsi" name="description" rows="4">{{ isset($terms->description) ? $terms->description : old('description') }}</textarea>
           @error('description')
             <div class="invalid-feedback d-block">
               {{ $message }}

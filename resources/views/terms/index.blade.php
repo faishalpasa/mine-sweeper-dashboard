@@ -37,18 +37,21 @@
         <thead>
           <tr>
             <th>Deskripsi</th>
-            <th></th>
+            <th style="width: 100px;"></th>
           </tr>
         </thead>
         <tbody>
           @foreach ($terms as $term)
           <tr class="align-middle">
-            <td>{{$term['description']}}</td>
+            <td>{{$term->description}}</td>
             <td>
               <div class="btn-group btn-group-sm" role="group">
-                <a type="button" class="btn btn-outline-secondary" href="{{base_url('/terms/update/'.$term['id'])}}">
+                <a type="button" class="btn btn-outline-secondary" href="{{base_url('/terms/update/'.$term->id)}}">
                   Edit
                 </a>
+                <button type="button" class="btn btn-outline-secondary" onclick="handleToggleModalDelete({{json_encode($term)}})">
+                  Hapus
+                </button>
               </div>
             </td>
           </tr>
@@ -58,13 +61,44 @@
     </div>
   </div>
 </div>
+
+<div class="modal fade" id="modal-delete" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Hapus Data</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="modal-status-body">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn" onclick="handleCloseModal()">Tutup</button>
+        <button type="button" class="btn btn-secondary" id="delete-button" onclick="handleClickDeleteButton(this)">Hapus</button>
+      </div>
+    </div>
+  </div>
+</div>
 @endsection
 
 @section('script')
 <script>
-  const handleClickEditButton = (prize) => {
-    const url = new URL(`${window.location.href}/edit/${prize.id}`)
-    window.location.href = url
+  const modalDelete = new bootstrap.Modal(document.getElementById('modal-delete'))
+
+  const handleToggleModalDelete = (term) => {
+    document.getElementById('modal-status-body').innerHTML = `<p>Anda yakin ingin menghapus <b>${term.title}</b>?`
+    document.getElementById('delete-button').setAttribute('data-term-id', term.id)
+
+    modalDelete.toggle()
+  }
+
+  const handleCloseModal = () => {
+    modalDelete.hide()
+  }
+
+  const handleClickDeleteButton = (e) => {
+    const id = e.dataset.termId
+    const url = new URL(`${window.location.href}/delete/${id}`)
+    window.location.href = url.toString()
   }
 </script>
 @endsection

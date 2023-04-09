@@ -83,6 +83,7 @@ Route::middleware(['web_auth'])->prefix('terms')->group(function () {
   Route::post('/create', [TermsController::class, 'post_create']);
   Route::get('/update/{id}', [TermsController::class, 'update']);
   Route::post('/update/{id}', [TermsController::class, 'post_update']);
+  Route::get('/delete/{id}', [TermsController::class, 'delete']);
 });
 
 Route::middleware(['web_auth'])->prefix('payment-method')->group(function () {
