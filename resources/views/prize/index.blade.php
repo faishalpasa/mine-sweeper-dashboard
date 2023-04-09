@@ -29,33 +29,39 @@
             <i class="fas fa-calendar"></i>
           </span>
           <select class="form-select" onchange="handleChangePeriod(event)">
-            @foreach ($periods as $idx => $period)
-              <option {{$idx === 0 ? 'selected' : ''}} value="{{$period['id']}}">{{$period['label']}}</option>
+            @foreach ($periods as $period)
+              <option {{$query_period === $period->value ? 'selected' : ''}} value="{{$period->value}}">{{$period->label}}</option>
             @endforeach
           </select>
         </div>
       </div>
     </div>
     <div class="card-body">
+      <div class="mb-2">
+        <a class="btn btn-sm btn-secondary" href="{{base_url('/prize/create')}}">Buat baru</a>
+      </div>
       <table class="table table-bordered">
         <thead>
           <tr>
             <th>Peringkat</th>
-            <th>Nama</th>
-            <th>Gambar</th>
-            <th></th>
+            <th>Nama Hadiah</th>
+            <th>Gambar Hadiah</th>
+            <th style="width: 100px;"></th>
           </tr>
         </thead>
         <tbody>
           @foreach ($prizes as $prize)
           <tr class="align-middle">
-            <td>{{$prize['rank']}}</td>
-            <td>{{$prize['name']}}</td>
-            <td><img src="{{$prize['image_url']}}" class="image-prize" /></td>
+            <td>{{$prize->rank}}</td>
+            <td>{{$prize->name}}</td>
+            <td><img src="/files/{{$prize->image_url}}" class="image-prize" /></td>
             <td>
               <div class="btn-group btn-group-sm" role="group">
-                <button type="button" class="btn btn-outline-secondary" onclick="handleClickEditButton({{json_encode($prize)}})">
+                <a class="btn btn-outline-secondary" href="{{base_url('/prize/update/'.$prize->id)}}">
                   Edit
+                </a>
+                <button type="button" class="btn btn-outline-secondary" onclick="handleToggleModalDelete({{json_encode($prize)}})">
+                  Hapus
                 </button>
               </div>
             </td>
@@ -66,12 +72,48 @@
     </div>
   </div>
 </div>
+<div class="modal fade" id="modal-delete" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Hapus Data</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="modal-status-body">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn" onclick="handleCloseModal()">Tutup</button>
+        <button type="button" class="btn btn-secondary" id="delete-button" onclick="handleClickDeleteButton(this)">Hapus</button>
+      </div>
+    </div>
+  </div>
+</div>
 @endsection
 
 @section('script')
 <script>
-  const handleClickEditButton = (prize) => {
-    const url = new URL(`${window.location.href}/edit/${prize.id}`)
+  const modalDelete = new bootstrap.Modal(document.getElementById('modal-delete'))
+
+  const handleToggleModalDelete = (data) => {
+    document.getElementById('modal-status-body').innerHTML = `<p>Anda yakin ingin menghapus <b>${data.name}</b>?`
+    document.getElementById('delete-button').setAttribute('data-id', data.id)
+
+    modalDelete.toggle()
+  }
+
+  const handleCloseModal = () => {
+    modalDelete.hide()
+  }
+
+  const handleClickDeleteButton = (e) => {
+    const id = e.dataset.id
+    const url = new URL(`${window.location.href}/delete/${id}`)
+    window.location.href = url.toString()
+  }
+
+  const handleChangePeriod = (e) => {
+    const url = new URL(window.location.href)
+    url.searchParams.set('period', e.target.value)
     window.location.href = url
   }
 </script>

@@ -118,6 +118,7 @@ class PaymentMethodController extends Controller
 
     return redirect('/payment-method')->with('success_message', 'Berhasil mengubah metode pembayaran');
   }
+
   public function delete($id)
   {
     DB::table('payment_methods')

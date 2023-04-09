@@ -67,6 +67,11 @@ Route::middleware(['web_auth'])->prefix('payment-method')->group(function () {
 
 Route::middleware(['web_auth'])->prefix('prize')->group(function () {
   Route::get('/', [PrizeController::class, 'index']);
+  Route::get('/create', [PrizeController::class, 'create']);
+  Route::post('/create', [PrizeController::class, 'post_create']);
+  Route::get('/update/{id}', [PrizeController::class, 'update']);
+  Route::post('/update/{id}', [PrizeController::class, 'post_update']);
+  Route::get('/delete/{id}', [PrizeController::class, 'delete']);
 });
 
 // Route::middleware(['web_auth'])->prefix('period')->group(function () {

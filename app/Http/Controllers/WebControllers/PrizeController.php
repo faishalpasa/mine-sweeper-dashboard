@@ -4,63 +4,147 @@ namespace App\Http\Controllers\WebControllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Validator;
+use DB;
+use Illuminate\Support\Facades\Storage;
 
 class PrizeController extends Controller
 {
+  public function __construct()
+  {
+    $this->storage_directory = 'prize';
+  }
+
   public function index(Request $request)
   {
-    $query_period = $request->query('period') ?? '';
 
-    $prizes = [
-      [
-        'id' => '1',
-        'name' => 'Hadiah Pertama',
-        'image_url' => 'https://placehold.co/200x200?text=Hadiah+Pertama',
-        'rank' => '1',
-      ],
-      [
-        'id' => '2',
-        'name' => 'Hadiah Kedua',
-        'image_url' => 'https://placehold.co/200x200?text=Hadiah+Kedua',
-        'rank' => '2',
-      ],
-      [
-        'id' => '3',
-        'name' => 'Hadiah Ketiga',
-        'image_url' => 'https://placehold.co/200x200?text=Hadiah+Ketiga',
-        'rank' => '3',
-      ],
-    ];
+    $periods = DB::table('prizes')->select('period')->groupBy('period')->orderBy('period', 'desc')->get();
 
-    $periods = [
-      [
-        'id' => '2',
-        'start_date' => '2023-03-01',
-        'end_date' => '2023-03-31',
-        'status' => '1'
-      ],
-      [
-        'id' => '1',
-        'start_date' => '2023-02-01',
-        'end_date' => '2023-02-28',
-        'status' => '0'
-      ]
-    ];
+    $query_period = $request->query('period') ?? $periods[0]->period;
+
+    $prizes = DB::table('prizes')->where('period', $query_period)->select('*')->get();
+
 
     foreach ($periods as $idx => $period) {
-      $start_date = explode('-', $period['start_date'])[2] ?? '';
-      $end_date = explode('-', $period['end_date'])[2] ?? '';
+      $exploded_period = explode('-', $period->period);
+      $month_number = $exploded_period[1] ?? '';
+      $period_year = $exploded_period[0] ?? '';
 
-      $date_id = date_id($period['end_date']) ?? '';
-      $month_id = explode(' ', $date_id)[1] ?? '';
-      $year_id = explode(' ', $date_id)[2] ?? '';
+      $month_id = month_id($month_number) ?? '';
 
-      $periods[$idx] = [
-        'id' => $period['id'],
-        'label' => $start_date . ' - ' . $end_date . ' ' . $month_id . ' ' . $year_id
+      $periods[$idx] = (object)[
+        'label' => $month_id . ' ' . $period_year,
+        'value' => $period->period,
       ];
     }
 
-    return view('prize.index', ['prizes' => $prizes, 'periods' => $periods]);
+    return view('prize.index', ['prizes' => $prizes, 'periods' => $periods, 'query_period' => $query_period]);
+  }
+
+  public function create()
+  {
+    $prize = [
+      'rank' => '',
+      'name' => '',
+      'image_url' => '',
+      'period' => ''
+    ];
+
+    $action_url = base_url('/prize/create');
+
+    return view('prize.form', [
+      'prize' => $prize,
+      'action_url' => $action_url
+    ]);
+  }
+
+  public function post_create(Request $request)
+  {
+    $body = $request->all();
+    $validator = Validator::make($body, [
+      'rank' => 'required|numeric',
+      'name' => 'required',
+      'image_url' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:1024',
+      'period' => 'required'
+    ]);
+
+    if ($validator->fails()) {
+      return back()
+        ->withErrors($validator)
+        ->withInput();
+    }
+
+    $name = $request->file('image_url')->getClientOriginalName();
+    $file_path = Storage::disk('public')->putFileAs($this->storage_directory, $request->file('image_url'), date('YmdHis') . '_' . $name);
+
+    $data = [
+      'rank' => $body['rank'],
+      'name' => $body['name'],
+      'image_url' => $file_path,
+      'period' => date('Y') . '-' . $body['period'],
+      'created_at' => date('Y-m-d H:i:s')
+    ];
+
+    DB::table('prizes')->insert($data);
+
+    return redirect('/prize')->with('success_message', 'Berhasil menambah metode pembayaran');
+  }
+
+  public function update($id)
+  {
+    $prize = DB::table('prizes')
+      ->where('id', $id)
+      ->first();
+
+    $action_url = base_url('/prize/update/' . $id);
+
+    return view('prize.form', [
+      'prize' => $prize,
+      'action_url' => $action_url
+    ]);
+  }
+
+  public function post_update(Request $request, $id)
+  {
+    $body = $request->all();
+    $validator = Validator::make($body, [
+      'rank' => 'required|numeric',
+      'name' => 'required',
+      'image_url' => 'image|mimes:jpg,png,jpeg,gif,svg|max:1024',
+      'period' => 'required'
+    ]);
+
+    if ($validator->fails()) {
+      return back()
+        ->withErrors($validator)
+        ->withInput();
+    }
+
+    $data = [
+      'rank' => $body['rank'],
+      'name' => $body['name'],
+      'period' => date('Y') . '-' . $body['period'],
+      'updated_at' => date('Y-m-d H:i:s')
+    ];
+
+    if ($request->file('image_url')) {
+      $name = $request->file('image_url')->getClientOriginalName();
+      $file_path = Storage::disk('public')->putFileAs($this->storage_directory, $request->file('image_url'), date('YmdHis') . '_' . $name);
+
+      array_push($data, ['image_url' => $file_path]);
+    }
+
+    DB::table('prizes')->where('id', $id)->update($data);
+
+    return redirect('/prize')->with('success_message', 'Berhasil mengubah hadiah');
+  }
+
+  public function delete($id)
+  {
+    DB::table('prizes')
+      ->where('id', $id)
+      ->delete();
+
+    return redirect('/prize')->with('success_message', 'Berhasil menghapus hadiah');
   }
 }

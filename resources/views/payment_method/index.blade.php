@@ -95,21 +95,21 @@
 <script>
   const modalDelete = new bootstrap.Modal(document.getElementById('modal-delete'))
 
-const handleToggleModalDelete = (data) => {
-  document.getElementById('modal-status-body').innerHTML = `<p>Anda yakin ingin menghapus <b>${data.name}</b>?`
-  document.getElementById('delete-button').setAttribute('data-id', data.id)
+  const handleToggleModalDelete = (data) => {
+    document.getElementById('modal-status-body').innerHTML = `<p>Anda yakin ingin menghapus <b>${data.name}</b>?`
+    document.getElementById('delete-button').setAttribute('data-id', data.id)
 
-  modalDelete.toggle()
-}
+    modalDelete.toggle()
+  }
 
-const handleCloseModal = () => {
-  modalDelete.hide()
-}
+  const handleCloseModal = () => {
+    modalDelete.hide()
+  }
 
-const handleClickDeleteButton = (e) => {
-  const id = e.dataset.id
-  const url = new URL(`${window.location.href}/delete/${id}`)
-  window.location.href = url.toString()
-}
+  const handleClickDeleteButton = (e) => {
+    const id = e.dataset.id
+    const url = new URL(`${window.location.href}/delete/${id}`)
+    window.location.href = url.toString()
+  }
 </script>
 @endsection
