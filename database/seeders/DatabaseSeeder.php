@@ -3,22 +3,34 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Str;
+use DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     *
-     * @return void
-     */
-    public function run()
-    {
-        // \App\Models\User::factory(10)->create();
+  public function run()
+  {
+    DB::table('users')->insert([
+      'name' => 'Administrator',
+      'email' => 'admin@email.com',
+      'password' => Hash::make('admin123'),
+      'token' => Str::random(20),
+      'role_id' => 1,
+      'created_at' => date('Y-m-d H:i:s'),
+    ]);
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
-    }
+    $roles = [
+      [
+        'name' => 'Administrator',
+        'created_at' => date('Y-m-d H:i:s'),
+      ],
+      [
+        'name' => 'User',
+        'created_at' => date('Y-m-d H:i:s'),
+      ]
+    ];
+    DB::table('roles')->insert($roles);
+  }
 }

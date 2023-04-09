@@ -26,11 +26,18 @@
             <h2 class="text-center font-weight-light h5">Login</h2>
           </div>
           <div class="card-body">
+            @if (session('error_message'))
+              <div class="alert alert-danger alert-dismissible fade show">
+                {{ session('error_message') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            @endif
+
             <form autocomplete="off" method="post" action="{{base_url('/login')}}">
               @csrf
               <div class="mb-3">
                 <label class="form-label">Email</label>
-                <input class="form-control" type="email" placeholder="name@example.com" name="email" />
+                <input class="form-control" type="email" placeholder="name@example.com" name="email" value="{{ old('email') }}" />
               </div>
               <div class="mb-3">
                 <label class="form-label">Password</label>
