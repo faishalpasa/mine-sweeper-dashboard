@@ -44,7 +44,6 @@
             <th>No. Handphone</th>
             <th>Nama</th>
             <th>Email</th>
-            <th>Level</th>
             <th>Status</th>
             <th style="width: 200px;"></th>
           </tr>
@@ -52,17 +51,16 @@
         <tbody>
           @foreach ($players as $idx => $player)
           <tr class="align-middle">
-            <td>{{$player['msisdn']}}</td>
-            <td>{{$player['name']}}</td>
-            <td>{{$player['email']}}</td>
-            <td>{{$player['level']}}</td>
-            <td>{{$player['status'] === '1' ? 'Active' : 'Banned'}}</td>
+            <td>{{$player->msisdn}}</td>
+            <td>{{$player->name}}</td>
+            <td>{{$player->email}}</td>
+            <td>{{$player->status == 1 ? 'Active' : 'Banned'}}</td>
             <td class="d-flex justify-content-center">
               <div class="btn-group btn-group-sm" role="group">
                 <button type="button" class="btn btn-outline-secondary" onclick="handleToggleModal({{json_encode($player)}})">
                   Ubah Status
                 </button>
-                <a class="btn btn-outline-secondary" href="{{base_url('/player/update/'.$player['id'])}}">
+                <a class="btn btn-outline-secondary" href="{{base_url('/player/update/'.$player->id)}}">
                   Edit
                 </a>
               </div>
@@ -104,7 +102,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn" onclick="handleCloseModal()">Tutup</button>
-        <button type="button" class="btn btn-secondary" onclick="handleCloseModal()">Simpan</button>
+        <button type="button" class="btn btn-secondary" onclick="handleClickUpdateButton(this)" id="update-status-button">Update</button>
       </div>
     </div>
   </div>
@@ -116,13 +114,19 @@
   const modal = new bootstrap.Modal(document.getElementById('modal-status'))
 
   const handleToggleModal = (player) => {
-    document.getElementById('modal-status-body').innerHTML = `<p>Anda yakin ingin mengubah status pemain <b>${player.name}</b> menjadi <b>${player.status === '1' ? 'Banned' : 'Active'}</b>?</p>`
-    console.log(player)
+    document.getElementById('modal-status-body').innerHTML = `<p>Anda yakin ingin mengubah status pemain <b>${player.name}</b> menjadi <b>${player.status == 1 ? 'Banned' : 'Active'}</b>?</p>`
+    document.getElementById('update-status-button').setAttribute('data-id', player.id)
     modal.toggle()
   }
 
   const handleCloseModal = () => {
     modal.hide()
+  }
+
+  const handleClickUpdateButton = (e) => {
+    const id = e.dataset.id
+    const url = new URL(`${window.location.href}/update-status/${id}`)
+    window.location.href = url.toString()
   }
 
   const handleSearch = (e) => {

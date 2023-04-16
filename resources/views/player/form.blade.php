@@ -14,7 +14,7 @@
     <li class="breadcrumb-item">
       <a class="text-decoration-none text-black" href={{base_url('/player')}}>Pemain</a>
     </li>
-    @if(isset($player['id']))
+    @if(isset($player->id))
     <li class="breadcrumb-item active">Update Pemain</li>
     @else
     <li class="breadcrumb-item active">Buat Baru</li>
@@ -23,7 +23,7 @@
   <div class="card mb-4">
     <div class="card-header d-flex align-items-center">
       <i class="fas fa-users me-1"></i>
-      @if(isset($player['id']))
+      @if(isset($player->id))
       Update Pemain
       @else
       Buat Pemain Baru
@@ -34,7 +34,7 @@
         @csrf
         <div class="mb-3 col-md-6">
           <label for="name" class="form-label">Nama Lengkap</label>
-          <input type="text" class="form-control" placeholder="Nama Lengkap" value="{{ old('name') ?? $player['name'] }}" name="name">
+          <input type="text" class="form-control" placeholder="Nama Lengkap" value="{{ isset($player->name) ? $player->name : old('name') }}" name="name">
           <div class="invalid-feedback" id="feedback-text-name"></div>
           @error('name')
             <div class="invalid-feedback d-block">
@@ -44,7 +44,7 @@
         </div>
         <div class="mb-3 col-md-6">
           <label for="exampleFormControlInput1" class="form-label">Email</label>
-          <input type="email" class="form-control" placeholder="nama@email.com" value="{{ old('email') ?? $player['email'] }}" name="email">
+          <input type="email" class="form-control" placeholder="nama@email.com" value="{{ isset($player->email) ? $player->email : old('email') }}" name="email">
           @error('email')
             <div class="invalid-feedback d-block">
               {{ $message }}
@@ -53,13 +53,24 @@
         </div>
         <div class="mb-3 col-md-6">
           <label for="exampleFormControlInput1" class="form-label">No. Handphone</label>
-          <input type="tel" class="form-control" placeholder="081234567890" value="{{ old('msisdn') ?? $player['msisdn'] }}" name="msisdn">
+          <input type="tel" class="form-control" placeholder="081234567890" value="{{ isset($player->msisdn) ? $player->msisdn : old('msisdn') }}" name="msisdn">
           @error('msisdn')
             <div class="invalid-feedback d-block">
               {{ $message }}
             </div>
           @enderror
         </div>
+        @if(isset($player->id))
+        <div class="mb-3 col-md-6">
+          <label for="exampleFormControlInput1" class="form-label">Koin</label>
+          <input type="tel" class="form-control" placeholder="081234567890" value="{{ isset($player->coin) ? $player->coin : old('msisdn') }}" name="coin" readonly>
+          @error('coin')
+            <div class="invalid-feedback d-block">
+              {{ $message }}
+            </div>
+          @enderror
+        </div>
+        @endif
         <div class="mb-3 col-md-6">
           <button type="button" class="btn btn-secondary" onclick="handleToggleModal()">Simpan</button>
         </div>
