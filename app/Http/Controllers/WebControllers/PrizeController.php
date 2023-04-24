@@ -131,7 +131,7 @@ class PrizeController extends Controller
       $name = $request->file('image_url')->getClientOriginalName();
       $file_path = Storage::disk('public')->putFileAs($this->storage_directory, $request->file('image_url'), date('YmdHis') . '_' . $name);
 
-      array_push($data, ['image_url' => $file_path]);
+      $data['image_url'] = $file_path;
     }
 
     DB::table('prizes')->where('id', $id)->update($data);

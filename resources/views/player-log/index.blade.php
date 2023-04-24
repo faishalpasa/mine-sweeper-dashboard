@@ -47,21 +47,19 @@
             <th>Level</th>
             <th>Koin</th>
             <th>Skor</th>
-            <th>Total Skor</th>
           </tr>
         </thead>
         <tbody>
           @foreach ($player_logs as $idx => $log)
           <tr class="align-middle">
-            <td>{{$log['created_at']}}</td>
-            <td>{{$log['msisdn']}}</td>
-            <td>{{$log['name']}}</td>
-            <td>{{$log['level']}}</td>
-            <td>{{$log['coin']}}</td>
-            <td class="{{$log['score'] > 0 ? 'text-success' : 'text-danger'}}">
-              {{$log['score'] > 0 ? '+'.$log['score'] : $log['score']}}
+            <td>{{$log->created_at}}</td>
+            <td>{{$log->player_msisdn}}</td>
+            <td>{{$log->player_name}}</td>
+            <td>{{$log->level_name}}</td>
+            <td>{{$log->player_coin}}</td>
+            <td class="{{$log->score > 0 ? 'text-success' : 'text-danger'}}">
+              {{$log->score > 0 ? '+'.$log->score : $log->score}}
             </td>
-            <td>{{number_format($log['total_score'])}}</td>
           </tr>
           @endforeach
         </tbody>

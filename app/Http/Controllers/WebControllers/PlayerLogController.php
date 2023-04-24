@@ -4,6 +4,7 @@ namespace App\Http\Controllers\WebControllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use DB;
 
 class PlayerLogController extends Controller
 {
@@ -11,38 +12,11 @@ class PlayerLogController extends Controller
   {
     $query = $request->query('search') ?? '';
 
-    $player_logs = [
-      [
-        'id' => 1,
-        'name' => 'Test Pemain',
-        'msisdn' => '081234567890',
-        'level' => 1,
-        'coin' => 1,
-        'score' => 10,
-        'total_score' => '100',
-        'created_at' => '2023-03-01 00:00:00',
-      ],
-      [
-        'id' => 2,
-        'name' => 'Test Pemain',
-        'msisdn' => '081234567890',
-        'level' => 1,
-        'coin' => 1,
-        'score' => 10,
-        'total_score' => 100,
-        'created_at' => '2023-03-01 00:00:00',
-      ],
-      [
-        'id' => 3,
-        'name' => 'Test Pemain',
-        'msisdn' => '081234567890',
-        'level' => 1,
-        'coin' => 1,
-        'score' => 0,
-        'total_score' => 100,
-        'created_at' => '2023-03-01 00:00:00',
-      ],
-    ];
+    $player_logs = DB::table('player_logs')
+      ->leftJoin('players', 'player_logs.player_id', 'players.id')
+      ->leftJoin('levels', 'player_logs.level_id', 'levels.id')
+      ->select('player_logs.id', 'player_logs.score', 'player_logs.time', 'player_logs.created_at', 'players.name as player_name', 'players.msisdn as player_msisdn', 'players.coin as player_coin', 'levels.name as level_name')
+      ->get();
 
     $periods = [
       [

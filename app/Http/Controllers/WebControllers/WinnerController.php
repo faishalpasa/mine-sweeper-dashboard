@@ -4,6 +4,7 @@ namespace App\Http\Controllers\WebControllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use DB;
 
 class WinnerController extends Controller
 {
@@ -11,32 +12,26 @@ class WinnerController extends Controller
   {
     $query_period = $request->query('period') ?? '';
 
-    $players = [
-      [
-        'id' => '1',
-        'name' => 'Test Pemain',
-        'msisdn' => '081234567890',
-        'email' => 'test@email.com',
-        'level' => '1',
-        'score' => '1000'
-      ],
-      [
-        'id' => '2',
-        'name' => 'Test Pemain 2',
-        'msisdn' => '081234567890',
-        'email' => 'test@email.com',
-        'level' => '1',
-        'score' => '2000'
-      ],
-      [
-        'id' => '3',
-        'name' => 'Test Pemain 3',
-        'msisdn' => '081234567890',
-        'email' => 'test@email.com',
-        'level' => '1',
-        'score' => '3000'
-      ],
-    ];
+    $s_date = date('Y-m-d 00:00:00');
+    $l_date = date('Y-m-t 23:59:59');
+
+    $players = DB::table('player_logs')
+      ->leftJoin('players', 'player_logs.player_id', 'players.id')
+      ->leftJoin('levels', 'player_logs.level_id', 'levels.id')
+      ->select(
+        'players.id as player_id',
+        'players.name as player_name',
+        'players.msisdn as player_msisdn',
+        'players.email as player_email',
+        DB::raw('SUM(player_logs.score) as total_score'),
+        DB::raw('SUM(player_logs.time) as total_time'),
+        DB::raw('MAX(levels.name) as max_level'),
+      )
+      ->where('player_logs.created_at', '>', $s_date)
+      ->where('player_logs.created_at', '<', $l_date)
+      ->groupBy('players.id')
+      ->orderBy('total_score', 'desc')
+      ->get();
 
     $periods = [
       [

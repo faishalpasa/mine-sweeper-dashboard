@@ -42,11 +42,11 @@
         <tbody>
           @foreach ($players as $player)
           <tr class="align-middle">
-            <td>{{$player['msisdn']}}</td>
-            <td>{{$player['name']}}</td>
-            <td>{{$player['email']}}</td>
-            <td>{{$player['level']}}</td>
-            <td>{{number_format($player['score'])}}</td>
+            <td>{{$player->player_msisdn}}</td>
+            <td>{{$player->player_name}}</td>
+            <td>{{$player->player_email}}</td>
+            <td>{{$player->max_level}}</td>
+            <td>{{number_format($player->total_score)}}</td>
           </tr>
           @endforeach
         </tbody>

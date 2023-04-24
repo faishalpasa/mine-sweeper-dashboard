@@ -36,6 +36,10 @@
         <div class="sb-nav-link-icon"><i class="fas fa-calendar"></i></div>
         Periode
       </a> --}}
+      <a class="nav-link" href="{{ base_url('/level') }}">
+        <div class="sb-nav-link-icon"><i class="fas fa-sort-numeric-up-alt"></i></div>
+        Level
+      </a>
       <a class="nav-link" href="{{ base_url('/prize') }}">
         <div class="sb-nav-link-icon"><i class="fas fa-gift"></i></div>
         Hadiah

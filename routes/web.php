@@ -10,6 +10,7 @@ use App\Http\Controllers\WebControllers\WinnerController;
 use App\Http\Controllers\WebControllers\PlayerLogController;
 use App\Http\Controllers\WebControllers\CoinPurchaseController;
 use App\Http\Controllers\WebControllers\PeriodController;
+use App\Http\Controllers\WebControllers\LevelController;
 use App\Http\Controllers\WebControllers\PrizeController;
 use App\Http\Controllers\WebControllers\TermsController;
 use App\Http\Controllers\WebControllers\PaymentMethodController;
@@ -56,6 +57,15 @@ Route::middleware(['web_auth'])->prefix('coin-purchase')->group(function () {
   Route::post('/create', [CoinPurchaseController::class, 'post_create']);
   Route::get('/update/{id}', [CoinPurchaseController::class, 'update']);
   Route::post('/update/{id}', [CoinPurchaseController::class, 'post_update']);
+});
+
+Route::middleware(['web_auth'])->prefix('level')->group(function () {
+  Route::get('/', [LevelController::class, 'index']);
+  Route::get('/create', [LevelController::class, 'create']);
+  Route::post('/create', [LevelController::class, 'post_create']);
+  Route::get('/update/{id}', [LevelController::class, 'update']);
+  Route::post('/update/{id}', [LevelController::class, 'post_update']);
+  Route::get('/delete/{id}', [LevelController::class, 'delete']);
 });
 
 Route::middleware(['web_auth'])->prefix('payment-method')->group(function () {
