@@ -199,9 +199,148 @@ class PlayerController extends Controller
 
       DB::table('player_logs')->insert($data);
 
+      $last_state = DB::table('player_logs')
+        ->leftJoin('players', 'player_logs.player_id', 'players.id')
+        ->leftJoin('levels', 'player_logs.level_id', 'levels.id')
+        ->select(
+          'players.id as player_id',
+          'players.name as player_name',
+          'players.msisdn as player_msisdn',
+          'players.email as player_email',
+          DB::raw('SUM(player_logs.score) as total_score'),
+          DB::raw('SUM(player_logs.time) as total_time'),
+          DB::raw('MAX(levels.id) as max_level'),
+        )
+        ->where('players.id', $player->id)
+        ->groupBy('players.id')
+        ->orderBy('total_score', 'desc')
+        ->first();
+
       return Response::json([
         'success' => true,
         'code' => 200,
+        'data' => $last_state
+      ], 200);
+    } catch (\Throwable $e) {
+      return Response::json([
+        'success' => false,
+        'code' => 500,
+        'message' => 'Terjadi kesalahan ketika memproses data.'
+      ], 500);
+    }
+  }
+
+  public function get_log(Request $request)
+  {
+    $body = $request->all();
+    $token = $request->header('x-token');
+
+    $player = DB::table('players')->where('token', $token)->first();
+    $first_level = DB::table('levels')->orderBy('id', 'asc')->first();
+
+    if (!$player) {
+      return Response::json([
+        'success' => false,
+        'code' => 200,
+        'message' => 'Data tidak ditemukan.',
+        'data' => [
+          'columns' => $first_level->cols,
+          'rows' => $first_level->rows,
+          'mines' => $first_level->mines,
+          'state' => '',
+        ]
+      ], 200);
+    }
+
+    try {
+      $last_state = DB::table('player_logs')
+        ->where('player_id', $player->id)
+        ->orderBy('id', 'desc')
+        ->first();
+
+      $last_level = DB::table('levels')
+        ->where('id', $last_state->level_id ?? '')
+        ->orderBy('id', 'desc')
+        ->first();
+
+      $level = $last_level ?? $first_level;
+
+      return Response::json([
+        'success' => true,
+        'code' => 200,
+        'data' => [
+          'columns' => $level->cols,
+          'rows' => $level->rows,
+          'mines' => $level->mines,
+          'state' => $last_state->state ?? '',
+        ]
+      ], 200);
+    } catch (\Throwable $e) {
+      return Response::json([
+        'success' => false,
+        'code' => 500,
+        'message' => 'Terjadi kesalahan ketika memproses data.'
+      ], 500);
+    }
+  }
+
+  public function get_data(Request $request)
+  {
+    $body = $request->all();
+    $token = $request->header('x-token');
+
+    $player = DB::table('players')->where('token', $token)->first();
+    $first_level = DB::table('levels')->orderBy('id', 'asc')->first();
+
+    if (!$player) {
+      return Response::json([
+        'success' => false,
+        'code' => 200,
+        'message' => 'Data tidak ditemukan.',
+        'data' => [
+          'coins' => 0,
+          'level_id' => $first_level->id,
+          'level' => $first_level->name,
+          'points' => 0,
+        ]
+      ], 200);
+    }
+
+    try {
+      $last_state = DB::table('player_logs')
+        ->leftJoin('players', 'player_logs.player_id', 'players.id')
+        ->leftJoin('levels', 'player_logs.level_id', 'levels.id')
+        ->select(
+          'players.id as player_id',
+          'players.name as player_name',
+          'players.msisdn as player_msisdn',
+          'players.email as player_email',
+          DB::raw('SUM(player_logs.score) as total_score'),
+          DB::raw('SUM(player_logs.time) as total_time'),
+          DB::raw('MAX(levels.id) as max_level'),
+        )
+        ->where('players.id', $player->id)
+        ->groupBy('players.id')
+        ->orderBy('total_score', 'desc')
+        ->first();
+
+
+      $last_level = DB::table('levels')
+        ->where('id', $last_state->max_level ?? '')
+        ->orderBy('id', 'desc')
+        ->first();
+
+      $level = $last_level ?? $first_level;
+
+      return Response::json([
+        'success' => false,
+        'code' => 200,
+        'data' => [
+          'coins' => $player->coin ?? 0,
+          'level_id' => $level->id ?? 1,
+          'level' => $level->name ?? 1,
+          'points' => $last_state->total_score ?? 0,
+        ]
       ], 200);
     } catch (\Throwable $e) {
       return Response::json([
@@ -216,7 +355,7 @@ class PlayerController extends Controller
   {
     $token = $request->header('x-token');
 
-    $player = DB::table('players')->where('token', $token)->select('name', 'email', 'pin', 'token', 'msisdn', 'id')->first();
+    $player = DB::table('players')->where('token', $token)->select('name', 'email', 'pin', 'token', 'msisdn', 'id', 'coin')->first();
 
     if (!$player) {
       return Response::json([

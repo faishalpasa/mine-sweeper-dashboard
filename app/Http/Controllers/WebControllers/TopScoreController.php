@@ -13,7 +13,7 @@ class TopScoreController extends Controller
     $query_search = $request->query('search') ?? '';
     $query_period = $request->query('period') ?? '';
 
-    $s_date = date('Y-m-d 00:00:00');
+    $s_date = date('Y-m-01 00:00:00');
     $l_date = date('Y-m-t 23:59:59');
 
     $players = DB::table('player_logs')

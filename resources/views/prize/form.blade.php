@@ -88,7 +88,7 @@
           <label class="form-label">Gambar Hadiah</label>
           <input type="file" class="form-control" placeholder="" value="{{ isset($prize->image_url) ? $prize->image_url : old('image_url') }}" name="image_url" onchange="handleChangeImage(event)" accept="image/*">
           <img id="image-preview" class="mt-3" style="width: 150px;" src="{{ isset($prize->image_url) ? '/files/'.$prize->image_url : ''}}" />
-          <small>Pastikan resolusi gambar 3:2</small>
+          <small>Pastikan resolusi gambar 3:1</small>
           @error('image_url')
             <div class="invalid-feedback d-block">
               {{ $message }}
