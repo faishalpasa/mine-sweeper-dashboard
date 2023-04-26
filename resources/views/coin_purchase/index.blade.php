@@ -34,7 +34,7 @@
     </div>
     <div class="card-body">
       <div class="mb-2">
-        <a class="btn btn-sm btn-secondary" href="{{base_url('/coin-purchase/create')}}">Buat baru</a>
+        {{-- <a class="btn btn-sm btn-secondary" href="{{base_url('/coin-purchase/create')}}">Buat baru</a> --}}
       </div>
       <table class="table table-bordered">
         <thead>
@@ -43,7 +43,6 @@
             <th>No. Invoice</th>
             <th>No. Handphone</th>
             <th>Nama</th>
-            <th>Jumlah Koin</th>
             <th>Pembayaran Via</th>
             <th>Total</th>
             <th>Status</th>
@@ -52,15 +51,14 @@
         <tbody>
           @foreach ($coin_purchases as $idx => $coin_purchase)
           <tr class="align-middle">
-            <td>{{$coin_purchase['created_at']}}</td>
-            <td>{{$coin_purchase['invoice_no']}}</td>
-            <td>{{$coin_purchase['msisdn']}}</td>
-            <td>{{$coin_purchase['name']}}</td>
-            <td>{{$coin_purchase['coin']}}</td>
-            <td>{{$coin_purchase['payment_method_name']}}</td>
-            <td>Rp{{number_format($coin_purchase['amount'])}}</td>
+            <td>{{$coin_purchase->created_at}}</td>
+            <td>{{$coin_purchase->invoice_no}}</td>
+            <td>{{$coin_purchase->msisdn}}</td>
+            <td>{{$coin_purchase->player_name}}</td>
+            <td>{{$coin_purchase->channel}}</td>
+            <td>Rp{{number_format($coin_purchase->amount)}}</td>
             <td>
-              {{$coin_purchase['status'] > 0 ? 'Terbayar' : 'Pending'}}
+              {{$coin_purchase->status != "PENDING" ? 'Terbayar' : 'Pending'}}
             </td>
           </tr>
           @endforeach

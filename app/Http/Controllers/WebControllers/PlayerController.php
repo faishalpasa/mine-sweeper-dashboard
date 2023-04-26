@@ -55,6 +55,7 @@ class PlayerController extends Controller
       'pin' => rand(100000, 999999),
       'status' => 1,
       'is_first_time_pin' => 1,
+      'is_game_over' => 0,
       'coin' => 5,
       'created_at' => date('Y-m-d H:i:s')
     ];

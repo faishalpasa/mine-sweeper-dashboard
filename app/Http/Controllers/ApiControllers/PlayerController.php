@@ -46,7 +46,8 @@ class PlayerController extends Controller
         'pin' => rand(100000, 999999),
         'status' => 1,
         'is_first_time_pin' => 1,
-        'coin' => 0,
+        'is_game_over' => 0,
+        'coin' => 5,
         'created_at' => date('Y-m-d H:i:s')
       ];
 
@@ -198,6 +199,12 @@ class PlayerController extends Controller
       ];
 
       DB::table('player_logs')->insert($data);
+
+      if ($score == 0) {
+        DB::table('players')->where('id', $player->id)->update([
+          'is_game_over' => 1,
+        ]);
+      }
 
       $last_state = DB::table('player_logs')
         ->leftJoin('players', 'player_logs.player_id', 'players.id')
@@ -355,7 +362,7 @@ class PlayerController extends Controller
   {
     $token = $request->header('x-token');
 
-    $player = DB::table('players')->where('token', $token)->select('name', 'email', 'pin', 'token', 'msisdn', 'id', 'coin')->first();
+    $player = DB::table('players')->where('token', $token)->select('name', 'email', 'pin', 'token', 'msisdn', 'id', 'coin', 'is_game_over')->first();
 
     if (!$player) {
       return Response::json([

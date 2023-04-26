@@ -4,6 +4,7 @@ namespace App\Http\Controllers\ApiControllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Validator;
 use DB;
 use Str;
@@ -224,6 +225,179 @@ class GameController extends Controller
         'success' => true,
         'code' => 200,
         'data' => $winners
+      ], 200);
+    } catch (\Throwable $e) {
+      return Response::json([
+        'success' => false,
+        'code' => 500,
+        'message' => 'Terjadi kesalahan ketika memproses data.'
+      ], 500);
+    }
+  }
+
+  public function continue_play(Request $request)
+  {
+    $token = $request->header('x-token');
+    $player = DB::table('players')->where('token', $token)->first();
+
+    if (!$player) {
+      return Response::json([
+        'success' => false,
+        'code' => 404,
+        'message' => 'Data tidak ditemukan.'
+      ], 404);
+    }
+
+    try {
+      DB::table('players')->where('id', $player->id)->update([
+        'coin' => $player->coin - 1,
+        'is_game_over' => 0
+      ]);
+
+      return Response::json([
+        'success' => true,
+        'code' => 200,
+      ], 200);
+    } catch (\Throwable $e) {
+      return Response::json([
+        'success' => false,
+        'code' => 500,
+        'message' => 'Terjadi kesalahan ketika memproses data.'
+      ], 500);
+    }
+  }
+
+  public function pay_ovo(Request $request)
+  {
+    $token = $request->header('x-token');
+    $player = DB::table('players')->where('token', $token)->first();
+
+    if (!$player) {
+      return Response::json([
+        'success' => false,
+        'code' => 404,
+        'message' => 'Data tidak ditemukan.'
+      ], 404);
+    }
+
+    $body = $request->all();
+
+    $validator = Validator::make($body, [
+      'msisdn' => 'required',
+      'amount' => 'required|numeric'
+    ]);
+
+    if ($validator->fails()) {
+      $errors = $validator->errors();
+
+      return Response::json([
+        'success' => false,
+        'code' => 500,
+        'message' => $errors->first()
+      ], 500);
+    }
+
+    $secret = 'xnd_development_2o3w1rtPbLnnxtzEVTnmiN1iLepXwWj7lzDhdEoOvdtFr4ny7ZlVXzDtC5S';
+    $public = 'xnd_public_development_WUML4s5jBq4T5PtiankpljGSY9jz7PEfA3ckcsITSSDGE5gYgwwNIGkaiYAHU';
+    $token = $secret . ':' . $public;
+    $encoded_token = base64_encode($token);
+
+    try {
+      $data = [
+        'reference_id' => 'order-id-' . date('YmdHis'),
+        'currency' => 'IDR',
+        'amount' => $body['amount'],
+        'checkout_method' => 'ONE_TIME_PAYMENT',
+        'channel_code' => 'ID_OVO',
+        'channel_properties' => [
+          'mobile_number' => $body['msisdn']
+        ]
+      ];
+      $request = Http::withHeaders([
+        'Authorization' => 'Basic ' . $encoded_token,
+      ])->post('https://api.xendit.co/ewallets/charges', $data);
+
+      $response = json_decode($request, true);
+
+      $data = [
+        'player_id' => $player->id,
+        'channel' => $response['channel_code'],
+        'amount' => $response['charge_amount'],
+        'currency' => $response['currency'],
+        'reference_id' => $response['reference_id'],
+        'invoice_no' => $response['id'],
+        'status' => $response['status'],
+        'msisdn' => $response['channel_properties']['mobile_number'],
+        'created_at' => date('Y-m-d H:i:s')
+      ];
+
+      DB::table('payments')->insert($data);
+      return Response::json([
+        'success' => true,
+        'code' => 200,
+        'data' => $response
+      ], 200);
+    } catch (\Throwable $e) {
+      return Response::json([
+        'success' => false,
+        'code' => 500,
+        'message' => 'Terjadi kesalahan ketika memproses data.'
+      ], 500);
+    }
+  }
+
+  public function pay_ovo_check(Request $request, $id)
+  {
+    $token = $request->header('x-token');
+    $player = DB::table('players')->where('token', $token)->first();
+
+    if (!$player) {
+      return Response::json([
+        'success' => false,
+        'code' => 404,
+        'message' => 'Data tidak ditemukan.'
+      ], 404);
+    }
+
+    $secret = 'xnd_development_2o3w1rtPbLnnxtzEVTnmiN1iLepXwWj7lzDhdEoOvdtFr4ny7ZlVXzDtC5S';
+    $public = 'xnd_public_development_WUML4s5jBq4T5PtiankpljGSY9jz7PEfA3ckcsITSSDGE5gYgwwNIGkaiYAHU';
+    $token = $secret . ':' . $public;
+    $encoded_token = base64_encode($token);
+
+    try {
+      $request = Http::withHeaders([
+        'Authorization' => 'Basic ' . $encoded_token,
+      ])->get('https://api.xendit.co/ewallets/charges/' . $id);
+
+      $response = json_decode($request, true);
+
+      $data = [
+        'status' => $response['status'],
+        'updated_at' => date('Y-m-d H:i:s')
+      ];
+
+      DB::table('payments')
+        ->where('invoice_no', $response['id'])
+        ->where('player_id', $player->id)
+        ->update($data);
+
+      if ($response['status'] == 'SUCCEEDED') {
+        $coin = 0;
+        if ($response['charge_amount'] == 10000) {
+          $coin = 10;
+        } else if ($response['charge_amount'] == 15000) {
+          $coin = 25;
+        }
+
+        DB::table('players')
+          ->where('id', $player->id)
+          ->update(['coin' => $player->coin + $coin]);
+      }
+
+      return Response::json([
+        'success' => true,
+        'code' => 200,
+        'data' => $response
       ], 200);
     } catch (\Throwable $e) {
       return Response::json([

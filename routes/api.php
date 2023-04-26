@@ -20,5 +20,8 @@ Route::middleware(['api_key_token'])->post('/step', [PlayerController::class, 's
 Route::middleware(['api_key'])->get('/step', [PlayerController::class, 'get_log']);
 Route::middleware(['api_key'])->get('/data', [PlayerController::class, 'get_data']);
 Route::middleware(['api_key_token'])->post('/next-level', [GameController::class, 'next_level']);
+Route::middleware(['api_key_token'])->post('/continue-play', [GameController::class, 'continue_play']);
 Route::middleware(['api_key_token'])->get('/top-score', [GameController::class, 'top_score']);
 Route::middleware(['api_key_token'])->get('/winner', [GameController::class, 'winner']);
+Route::middleware(['api_key_token'])->post('/pay/ovo', [GameController::class, 'pay_ovo']);
+Route::middleware(['api_key_token'])->get('/pay/ovo/{id}', [GameController::class, 'pay_ovo_check']);
