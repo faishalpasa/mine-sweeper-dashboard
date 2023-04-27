@@ -314,49 +314,49 @@ class PlayerController extends Controller
       ], 200);
     }
 
-    try {
-      $last_state = DB::table('player_logs')
-        ->leftJoin('players', 'player_logs.player_id', 'players.id')
-        ->leftJoin('levels', 'player_logs.level_id', 'levels.id')
-        ->select(
-          'players.id as player_id',
-          'players.name as player_name',
-          'players.msisdn as player_msisdn',
-          'players.email as player_email',
-          DB::raw('SUM(player_logs.score) as total_score'),
-          DB::raw('SUM(player_logs.time) as total_time'),
-          DB::raw('MAX(levels.id) as max_level'),
-        )
-        ->where('players.id', $player->id)
-        ->groupBy('players.id')
-        ->orderBy('total_score', 'desc')
-        ->first();
+    // try {
+    $last_state = DB::table('player_logs')
+      ->leftJoin('players', 'player_logs.player_id', 'players.id')
+      ->leftJoin('levels', 'player_logs.level_id', 'levels.id')
+      ->select(
+        'players.id as player_id',
+        'players.name as player_name',
+        'players.msisdn as player_msisdn',
+        'players.email as player_email',
+        DB::raw('SUM(player_logs.score) as total_score'),
+        DB::raw('SUM(player_logs.time) as total_time'),
+        DB::raw('MAX(levels.id) as max_level'),
+      )
+      ->where('players.id', $player->id)
+      ->groupBy('players.id')
+      ->orderBy('total_score', 'desc')
+      ->first();
 
 
-      $last_level = DB::table('levels')
-        ->where('id', $last_state->max_level ?? '')
-        ->orderBy('id', 'desc')
-        ->first();
+    $last_level = DB::table('levels')
+      ->where('id', $last_state->max_level ?? '')
+      ->orderBy('id', 'desc')
+      ->first();
 
-      $level = $last_level ?? $first_level;
+    $level = $last_level ?? $first_level;
 
-      return Response::json([
-        'success' => false,
-        'code' => 200,
-        'data' => [
-          'coins' => $player->coin ?? 0,
-          'level_id' => $level->id ?? 1,
-          'level' => $level->name ?? 1,
-          'points' => $last_state->total_score ?? 0,
-        ]
-      ], 200);
-    } catch (\Throwable $e) {
-      return Response::json([
-        'success' => false,
-        'code' => 500,
-        'message' => 'Terjadi kesalahan ketika memproses data.'
-      ], 500);
-    }
+    return Response::json([
+      'success' => false,
+      'code' => 200,
+      'data' => [
+        'coins' => $player->coin ?? 0,
+        'level_id' => $level->id ?? 1,
+        'level' => $level->name ?? 1,
+        'points' => $last_state->total_score ?? 0,
+      ]
+    ], 200);
+    // } catch (\Throwable $e) {
+    //   return Response::json([
+    //     'success' => false,
+    //     'code' => 500,
+    //     'message' => 'Terjadi kesalahan ketika memproses data.'
+    //   ], 500);
+    // }
   }
 
   public function get_profile(Request $request)
