@@ -161,4 +161,51 @@ class LoginController extends Controller
       ], 500);
     }
   }
+
+  public function login_reset_pin(Request $request)
+  {
+    $body = $request->all();
+
+    $validator = Validator::make($body, [
+      'msisdn' => 'required',
+    ]);
+
+
+    if ($validator->fails()) {
+      $errors = $validator->errors();
+
+      return Response::json([
+        'success' => false,
+        'code' => 500,
+        'message' => $errors->first()
+      ], 500);
+    }
+
+    try {
+      $user = DB::table('players')
+        ->select('token')
+        ->where('msisdn', $body['msisdn'])
+        ->first();
+
+      if ($user) {
+        DB::table('players')
+          ->where('msisdn', $body['msisdn'])
+          ->update(['pin' => rand(100000, 999999), 'is_first_time_pin' => 1]);
+      }
+
+      return Response::json([
+        'success' => $user ? true : false,
+        'code' => $user ? 200 : 404,
+        'data' => $user,
+        'message' => $user ? 'Berhasil mereset pin.' : ''
+      ], $user ? 200 : 404);
+    } catch (\Throwable $e) {
+
+      return Response::json([
+        'success' => false,
+        'code' => 500,
+        'message' => 'Terjadi kesalahan ketika memproses data.'
+      ], 500);
+    }
+  }
 }

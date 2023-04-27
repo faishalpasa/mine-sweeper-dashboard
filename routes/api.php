@@ -11,6 +11,7 @@ Route::middleware(['api_key'])->prefix('login')->group(function () {
 });
 
 Route::middleware(['api_key_token'])->put('/change-pin', [LoginController::class, 'login_change_pin']);
+Route::middleware(['api_key'])->post('/reset-pin', [LoginController::class, 'login_reset_pin']);
 Route::middleware(['api_key'])->post('/register', [PlayerController::class, 'create']);
 Route::middleware(['api_key'])->get('/terms', [PlayerController::class, 'terms']);
 Route::middleware(['api_key'])->get('/prize', [GameController::class, 'get_prize']);
