@@ -119,7 +119,6 @@ class GameController extends Controller
     $token = $request->header('x-token');
     $player = DB::table('players')->where('token', $token)->first();
 
-    $player = DB::table('players')->where('token', $token)->first();
     if (!$player) {
       return Response::json([
         'success' => false,
@@ -129,7 +128,7 @@ class GameController extends Controller
     }
 
     try {
-      $s_date = date('Y-m-d 00:00:00');
+      $s_date = date('Y-m-01 00:00:00');
       $l_date = date('Y-m-t 23:59:59');
 
       $players = DB::table('player_logs')

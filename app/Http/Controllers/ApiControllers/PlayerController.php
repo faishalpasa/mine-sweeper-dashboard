@@ -362,9 +362,17 @@ class PlayerController extends Controller
   {
     $token = $request->header('x-token');
 
-    $player = DB::table('players')->where('token', $token)->select('name', 'email', 'pin', 'token', 'msisdn', 'id', 'coin', 'is_game_over')->first();
+    $player = DB::table('players')->where('token', $token)->select('name', 'email', 'pin', 'token', 'msisdn', 'id', 'coin', 'is_game_over', 'status')->first();
 
     if (!$player) {
+      return Response::json([
+        'success' => false,
+        'code' => 404,
+        'message' => 'Data tidak ditemukan.'
+      ], 404);
+    }
+
+    if ($player->status == 0) {
       return Response::json([
         'success' => false,
         'code' => 404,

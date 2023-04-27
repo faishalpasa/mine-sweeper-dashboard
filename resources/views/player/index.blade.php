@@ -21,6 +21,13 @@
     </div>
   @endif
 
+  @if (session('error_message'))
+    <div class="alert alert-danger alert-dismissible fade show">
+      {{ session('error_message') }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  @endif
+
   <div class="card mb-4">
     <div class="card-header d-flex align-items-center">
       <i class="fas fa-users me-1"></i>
@@ -44,8 +51,9 @@
             <th>No. Handphone</th>
             <th>Nama</th>
             <th>Email</th>
+            <th>Jumlah Koin</th>
             <th>Status</th>
-            <th style="width: 200px;"></th>
+            <th style="width: 300px;"></th>
           </tr>
         </thead>
         <tbody>
@@ -54,11 +62,15 @@
             <td>{{$player->msisdn}}</td>
             <td>{{$player->name}}</td>
             <td>{{$player->email}}</td>
+            <td>{{$player->coin}}</td>
             <td>{{$player->status == 1 ? 'Active' : 'Banned'}}</td>
             <td class="d-flex justify-content-center">
               <div class="btn-group btn-group-sm" role="group">
-                <button type="button" class="btn btn-outline-secondary" onclick="handleToggleModal({{json_encode($player)}})">
+                <button type="button" class="btn btn-outline-secondary" onclick="handleToggleModalStatus({{json_encode($player)}})">
                   Ubah Status
+                </button>
+                <button type="button" class="btn btn-outline-secondary" onclick="handleToggleModalCoin({{json_encode($player)}})">
+                  Ubah Koin
                 </button>
                 <a class="btn btn-outline-secondary" href="{{base_url('/player/update/'.$player->id)}}">
                   Edit
@@ -101,32 +113,73 @@
       <div class="modal-body" id="modal-status-body">
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn" onclick="handleCloseModal()">Tutup</button>
-        <button type="button" class="btn btn-secondary" onclick="handleClickUpdateButton(this)" id="update-status-button">Update</button>
+        <button type="button" class="btn" onclick="handleCloseModalStatus()">Tutup</button>
+        <button type="button" class="btn btn-secondary" onclick="handleClickUpdateStatusButton(this)" id="update-status-button">Update</button>
       </div>
     </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modal-coin" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Ubah Koin Pemain</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form autocomplete="off" method="POST" id="form-coin">
+        <div class="modal-body" id="modal-coin-body">
+          @csrf
+          <div class="mb-3 col-md-6">
+            <label for="name" class="form-label">Jumlah Koin Lama</label>
+            <input type="text" class="form-control" placeholder="Koin" id="old-coin" readonly>
+          </div>
+
+          <div class="mb-3 col-md-6">
+            <label for="name" class="form-label">Jumlah Koin Baru</label>
+            <input type="text" class="form-control" placeholder="Masukan jumlah koin" name="coin" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn" onclick="handleCloseModal()">Tutup</button>
+          <button type="submit" class="btn btn-secondary">Update</button>
+        </div>
+      </div>
+    </form>
   </div>
 </div>
 @endsection
 
 @section('script')
 <script>
-  const modal = new bootstrap.Modal(document.getElementById('modal-status'))
+  const modalStatus = new bootstrap.Modal(document.getElementById('modal-status'))
+  const modalCoin = new bootstrap.Modal(document.getElementById('modal-coin'))
 
-  const handleToggleModal = (player) => {
+  const handleToggleModalStatus = (player) => {
     document.getElementById('modal-status-body').innerHTML = `<p>Anda yakin ingin mengubah status pemain <b>${player.name}</b> menjadi <b>${player.status == 1 ? 'Banned' : 'Active'}</b>?</p>`
     document.getElementById('update-status-button').setAttribute('data-id', player.id)
-    modal.toggle()
+    modalStatus.toggle()
   }
 
-  const handleCloseModal = () => {
-    modal.hide()
+  const handleCloseModalStatus = () => {
+    modalStatus.hide()
   }
 
-  const handleClickUpdateButton = (e) => {
+  const handleClickUpdateStatusButton = (e) => {
     const id = e.dataset.id
     const url = new URL(`${window.location.href}/update-status/${id}`)
     window.location.href = url.toString()
+  }
+
+  const handleToggleModalCoin = (player) => {
+    document.getElementById('old-coin').value = player.coin
+    document.getElementById('form-coin').action = `/player/update-coin/${player.id}`
+    document.getElementById('update-status-button').setAttribute('data-id', player.id)
+    modalCoin.toggle()
+  }
+
+  const handleCloseModalCoin = () => {
+    modalCoin.hide()
   }
 
   const handleSearch = (e) => {

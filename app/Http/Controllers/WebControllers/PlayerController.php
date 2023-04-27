@@ -122,4 +122,27 @@ class PlayerController extends Controller
     }
     return redirect('/player')->with('success_message', 'Player tidak ditemukan');
   }
+
+  public function update_coin(Request $request, $id)
+  {
+    $body = $request->all();
+
+    $validator = Validator::make($body, [
+      'coin' => 'required|numeric',
+    ]);
+
+    if ($validator->fails()) {
+      return back()
+        ->with('error_message', 'Terjadi kesalahan ketika mengupdate koin.');
+    }
+
+    $data = [
+      'coin' => $body['coin'],
+      'updated_at' => date('Y-m-d H:i:s')
+    ];
+
+    DB::table('players')->where('id', $id)->update($data);
+
+    return redirect('/player')->with('success_message', 'Berhasil mengubah pemain');
+  }
 }

@@ -13,7 +13,7 @@ class LoginController extends Controller
 {
   public function __construct()
   {
-    $this->user_rows = ['id', 'email', 'name', 'msisdn', 'is_first_time_pin'];
+    $this->user_rows = ['id', 'email', 'name', 'msisdn', 'is_first_time_pin', 'status'];
   }
 
   public function login(Request $request)
@@ -39,8 +39,15 @@ class LoginController extends Controller
       $user = DB::table('players')
         ->select($this->user_rows)
         ->where('msisdn', $body['msisdn'])
-        ->where('status', 1)
         ->first();
+
+      if ($user->status == 0) {
+        return Response::json([
+          'success' =>  false,
+          'code' =>  401,
+          'message' =>  'Nomor handphone telah di banned.'
+        ], 401);
+      }
 
       return Response::json([
         'success' => $user ? true : false,

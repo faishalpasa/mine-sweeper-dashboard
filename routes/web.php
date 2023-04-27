@@ -36,6 +36,7 @@ Route::middleware(['web_auth'])->prefix('player')->group(function () {
   Route::post('/create', [PlayerController::class, 'post_create']);
   Route::get('/update/{id}', [PlayerController::class, 'update']);
   Route::get('/update-status/{id}', [PlayerController::class, 'update_status']);
+  Route::post('/update-coin/{id}', [PlayerController::class, 'update_coin']);
   Route::post('/update/{id}', [PlayerController::class, 'post_update']);
 });
 
