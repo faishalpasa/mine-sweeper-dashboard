@@ -41,7 +41,7 @@ class LoginController extends Controller
         ->where('msisdn', $body['msisdn'])
         ->first();
 
-      if ($user->status == 0) {
+      if ($user && $user->status == 0) {
         return Response::json([
           'success' =>  false,
           'code' =>  401,

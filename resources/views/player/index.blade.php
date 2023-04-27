@@ -156,7 +156,7 @@
   const modalCoin = new bootstrap.Modal(document.getElementById('modal-coin'))
 
   const handleToggleModalStatus = (player) => {
-    document.getElementById('modal-status-body').innerHTML = `<p>Anda yakin ingin mengubah status pemain <b>${player.name}</b> menjadi <b>${player.status == 1 ? 'Banned' : 'Active'}</b>?</p>`
+    document.getElementById('modal-status-body').innerHTML = `<p>Anda yakin ingin mengubah status pemain <b>${player.name || player.msisdn}</b> menjadi <b>${player.status == 1 ? 'Banned' : 'Active'}</b>?</p>`
     document.getElementById('update-status-button').setAttribute('data-id', player.id)
     modalStatus.toggle()
   }
