@@ -296,8 +296,9 @@ class GameController extends Controller
       ], 500);
     }
 
-    $secret = 'xnd_development_2o3w1rtPbLnnxtzEVTnmiN1iLepXwWj7lzDhdEoOvdtFr4ny7ZlVXzDtC5S';
-    $public = 'xnd_public_development_WUML4s5jBq4T5PtiankpljGSY9jz7PEfA3ckcsITSSDGE5gYgwwNIGkaiYAHU';
+    $api_url = env('XENDIT_URL');
+    $secret = env('XENDIT_SECRET_KEY');
+    $public = env('XENDIT_PUBLIC_KEY');
     $token = $secret . ':' . $public;
     $encoded_token = base64_encode($token);
 
@@ -314,7 +315,7 @@ class GameController extends Controller
       ];
       $request = Http::withHeaders([
         'Authorization' => 'Basic ' . $encoded_token,
-      ])->post('https://api.xendit.co/ewallets/charges', $data);
+      ])->post($api_url . '/ewallets/charges', $data);
 
       $response = json_decode($request, true);
 
@@ -358,15 +359,16 @@ class GameController extends Controller
       ], 404);
     }
 
-    $secret = 'xnd_development_2o3w1rtPbLnnxtzEVTnmiN1iLepXwWj7lzDhdEoOvdtFr4ny7ZlVXzDtC5S';
-    $public = 'xnd_public_development_WUML4s5jBq4T5PtiankpljGSY9jz7PEfA3ckcsITSSDGE5gYgwwNIGkaiYAHU';
+    $api_url = env('XENDIT_URL');
+    $secret = env('XENDIT_SECRET_KEY');
+    $public = env('XENDIT_PUBLIC_KEY');
     $token = $secret . ':' . $public;
     $encoded_token = base64_encode($token);
 
     try {
       $request = Http::withHeaders([
         'Authorization' => 'Basic ' . $encoded_token,
-      ])->get('https://api.xendit.co/ewallets/charges/' . $id);
+      ])->get($api_url . '/ewallets/charges/' . $id);
 
       $response = json_decode($request, true);
 
@@ -437,8 +439,9 @@ class GameController extends Controller
       ], 500);
     }
 
-    $server = 'SB-Mid-server-KfTpJDOEU4aLhgdPtzf3g9IL';
-    $client = 'SB-Mid-client-NTXL6SyccpDovLoo';
+    $api_url = env('MIDTRANS_URL');
+    $server = env('MIDTRANS_SERVER_KEY');
+    $client = env('MIDTRANS_CLIENT_KEY');
     $token = $server . ':' . $client;
     $encoded_token = base64_encode($token);
 
@@ -453,7 +456,7 @@ class GameController extends Controller
       ];
       $request = Http::withHeaders([
         'Authorization' => 'Basic ' . $encoded_token,
-      ])->post('https://api.sandbox.midtrans.com/v2/charge', $data);
+      ])->post($api_url . '/v2/charge', $data);
 
       $response = json_decode($request, true);
 
@@ -497,15 +500,16 @@ class GameController extends Controller
       ], 404);
     }
 
-    $server = 'SB-Mid-server-KfTpJDOEU4aLhgdPtzf3g9IL';
-    $client = 'SB-Mid-client-NTXL6SyccpDovLoo';
+    $api_url = env('MIDTRANS_VERITRANS_URL');
+    $server = env('MIDTRANS_SERVER_KEY');
+    $client = env('MIDTRANS_CLIENT_KEY');
     $token = $server . ':' . $client;
     $encoded_token = base64_encode($token);
 
     try {
       $request = Http::withHeaders([
         'Authorization' => 'Basic ' . $encoded_token,
-      ])->get('https://api.sandbox.veritrans.co.id/v2/' . $id . '/status');
+      ])->get($api_url . '/v2/' . $id . '/status');
 
       $response = json_decode($request, true);
 

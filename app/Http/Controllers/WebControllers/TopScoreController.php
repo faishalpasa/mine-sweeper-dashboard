@@ -32,6 +32,7 @@ class TopScoreController extends Controller
       ->where('player_logs.created_at', '<', $l_date)
       ->groupBy('players.id')
       ->orderBy('total_score', 'desc')
+      ->orderBy('total_time', 'asc')
       ->get();
 
     $periods = [

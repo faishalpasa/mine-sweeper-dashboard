@@ -221,6 +221,7 @@ class PlayerController extends Controller
         ->where('players.id', $player->id)
         ->groupBy('players.id')
         ->orderBy('total_score', 'desc')
+        ->orderBy('total_time', 'asc')
         ->first();
 
       return Response::json([
