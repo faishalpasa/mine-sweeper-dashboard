@@ -25,3 +25,5 @@ Route::middleware(['api_key_token'])->get('/top-score', [GameController::class, 
 Route::middleware(['api_key_token'])->get('/winner', [GameController::class, 'winner']);
 Route::middleware(['api_key_token'])->post('/pay/ovo', [GameController::class, 'pay_ovo']);
 Route::middleware(['api_key_token'])->get('/pay/ovo/{id}', [GameController::class, 'pay_ovo_check']);
+Route::middleware(['api_key_token'])->post('/pay/gopay', [GameController::class, 'pay_gopay']);
+Route::middleware(['api_key_token'])->get('/pay/gopay/{id}', [GameController::class, 'pay_gopay_check']);

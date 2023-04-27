@@ -326,7 +326,7 @@ class GameController extends Controller
         'currency' => $response['currency'],
         'reference_id' => $response['reference_id'],
         'invoice_no' => $response['id'],
-        'status' => $response['status'],
+        'status' => $response['status'] == 'PENDING' ? 'pending' : 'success',
         'msisdn' => $response['channel_properties']['mobile_number'],
         'created_at' => date('Y-m-d H:i:s')
       ];
@@ -372,7 +372,7 @@ class GameController extends Controller
       $response = json_decode($request, true);
 
       $data = [
-        'status' => $response['status'],
+        'status' => $response['status'] == 'PENDING' ? 'pending' : 'success',
         'updated_at' => date('Y-m-d H:i:s')
       ];
 
@@ -386,6 +386,145 @@ class GameController extends Controller
         if ($response['charge_amount'] == 10000) {
           $coin = 10;
         } else if ($response['charge_amount'] == 15000) {
+          $coin = 25;
+        }
+
+        DB::table('players')
+          ->where('id', $player->id)
+          ->update(['coin' => $player->coin + $coin]);
+      }
+
+      return Response::json([
+        'success' => true,
+        'code' => 200,
+        'data' => $response
+      ], 200);
+    } catch (\Throwable $e) {
+      return Response::json([
+        'success' => false,
+        'code' => 500,
+        'message' => 'Terjadi kesalahan ketika memproses data.'
+      ], 500);
+    }
+  }
+
+  public function pay_gopay(Request $request)
+  {
+    $token = $request->header('x-token');
+    $player = DB::table('players')->where('token', $token)->first();
+
+    if (!$player) {
+      return Response::json([
+        'success' => false,
+        'code' => 404,
+        'message' => 'Data tidak ditemukan.'
+      ], 404);
+    }
+
+    $body = $request->all();
+
+    $validator = Validator::make($body, [
+      'msisdn' => 'required',
+      'amount' => 'required|numeric'
+    ]);
+
+    if ($validator->fails()) {
+      $errors = $validator->errors();
+
+      return Response::json([
+        'success' => false,
+        'code' => 500,
+        'message' => $errors->first()
+      ], 500);
+    }
+
+    $server = 'SB-Mid-server-KfTpJDOEU4aLhgdPtzf3g9IL';
+    $client = 'SB-Mid-client-NTXL6SyccpDovLoo';
+    $token = $server . ':' . $client;
+    $encoded_token = base64_encode($token);
+
+    try {
+      $data = [
+        'transaction_details' =>
+        [
+          'order_id' => 'order-id-' . date('YmdHis'),
+          'gross_amount' => $body['amount'],
+        ],
+        "payment_type" => "gopay",
+      ];
+      $request = Http::withHeaders([
+        'Authorization' => 'Basic ' . $encoded_token,
+      ])->post('https://api.sandbox.midtrans.com/v2/charge', $data);
+
+      $response = json_decode($request, true);
+
+      $data = [
+        'player_id' => $player->id,
+        'channel' => $response['payment_type'],
+        'amount' => (int)$response['gross_amount'],
+        'currency' => $response['currency'],
+        'reference_id' => $response['order_id'],
+        'invoice_no' => $response['transaction_id'],
+        'status' => $response['transaction_status'] == 'pending' ? 'pending' : 'success',
+        'msisdn' => $body['msisdn'],
+        'created_at' => date('Y-m-d H:i:s')
+      ];
+
+      DB::table('payments')->insert($data);
+      return Response::json([
+        'success' => true,
+        'code' => 200,
+        'data' => $response
+      ], 200);
+    } catch (\Throwable $e) {
+      return Response::json([
+        'success' => false,
+        'code' => 500,
+        'message' => 'Terjadi kesalahan ketika memproses data.'
+      ], 500);
+    }
+  }
+
+  public function pay_gopay_check(Request $request, $id)
+  {
+    $token = $request->header('x-token');
+    $player = DB::table('players')->where('token', $token)->first();
+
+    if (!$player) {
+      return Response::json([
+        'success' => false,
+        'code' => 404,
+        'message' => 'Data tidak ditemukan.'
+      ], 404);
+    }
+
+    $server = 'SB-Mid-server-KfTpJDOEU4aLhgdPtzf3g9IL';
+    $client = 'SB-Mid-client-NTXL6SyccpDovLoo';
+    $token = $server . ':' . $client;
+    $encoded_token = base64_encode($token);
+
+    try {
+      $request = Http::withHeaders([
+        'Authorization' => 'Basic ' . $encoded_token,
+      ])->get('https://api.sandbox.veritrans.co.id/v2/' . $id . '/status');
+
+      $response = json_decode($request, true);
+
+      $data = [
+        'status' => $response['transaction_status'] == 'pending' ? 'pending' : 'success',
+        'updated_at' => date('Y-m-d H:i:s')
+      ];
+
+      DB::table('payments')
+        ->where('invoice_no', $response['transaction_id'])
+        ->where('player_id', $player->id)
+        ->update($data);
+
+      if ($response['transaction_status'] == 'settlement') {
+        $coin = 0;
+        if ((int)$response['gross_amount'] == 10000) {
+          $coin = 10;
+        } else if ((int)$response['gross_amount'] == 15000) {
           $coin = 25;
         }
 

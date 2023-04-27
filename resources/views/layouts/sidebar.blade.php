@@ -48,10 +48,10 @@
         <div class="sb-nav-link-icon"><i class="fas fa-book"></i></div>
         Syarat & Ketentuan
       </a>
-      <a class="nav-link" href="{{ base_url('/payment-method') }}">
+      {{-- <a class="nav-link" href="{{ base_url('/payment-method') }}">
         <div class="sb-nav-link-icon"><i class="fas fa-money-bill-wave"></i></div>
         Metode Pembayaran
-      </a>
+      </a> --}}
       {{-- <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
         <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
         Layouts

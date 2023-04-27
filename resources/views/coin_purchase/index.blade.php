@@ -58,7 +58,7 @@
             <td>{{$coin_purchase->channel}}</td>
             <td>Rp{{number_format($coin_purchase->amount)}}</td>
             <td>
-              {{$coin_purchase->status != "PENDING" ? 'Terbayar' : 'Pending'}}
+              {{$coin_purchase->status != "pending" ? 'Terbayar' : 'Pending'}}
             </td>
           </tr>
           @endforeach
