@@ -47,8 +47,7 @@
           <p class="h1">{{$coin_purchases_per_day}}</p>
         </div>
         <div class="card-footer d-flex align-items-center justify-content-between">
-          <a class="small text-white stretched-link" href="{{base_url('/coin-purchase')}}">Lihat Selengkapnya</a>
-          <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+          <a class="small text-white stretched-link" style="text-decoration: none">&nbsp;</a>
         </div>
       </div>
     </div>
@@ -59,13 +58,12 @@
           <p class="h1">Rp{{number_format($total_revenue)}}</p>
         </div>
         <div class="card-footer d-flex align-items-center justify-content-between">
-          <a class="small text-white stretched-link" href="{{base_url('/coin-purchase')}}">Lihat Selengkapnya</a>
-          <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+          <a class="small text-white stretched-link" style="text-decoration: none">&nbsp;</a>
         </div>
       </div>
     </div>
   </div>
-  <div class="row">
+  {{-- <div class="row">
     <div class="col-xl-6">
       <div class="card mb-4">
         <div class="card-header">
@@ -84,7 +82,7 @@
         <div class="card-body"><canvas id="coin-chart" width="100%" height="40"></canvas></div>
       </div>
     </div>
-  </div>
+  </div> --}}
   <div class="card mb-4">
     <div class="card-header">
       <i class="fas fa-crown me-1"></i>
@@ -104,22 +102,60 @@
         <tbody>
           @foreach ($top_scores as $top_scores)
           <tr class="align-middle">
-            <td>{{$top_scores['msisdn']}}</td>
-            <td>{{$top_scores['name']}}</td>
-            <td>{{$top_scores['email']}}</td>
-            <td>{{$top_scores['level']}}</td>
-            <td>{{number_format($top_scores['score'])}}</td>
+            <td>{{$top_scores->player_msisdn}}</td>
+            <td>{{$top_scores->player_name}}</td>
+            <td>{{$top_scores->player_email}}</td>
+            <td>{{$top_scores->max_level}}</td>
+            <td>{{number_format($top_scores->total_score)}}</td>
           </tr>
           @endforeach
         </tbody>
       </table>
     </div>
   </div>
+
+  <div class="card mb-4">
+    <div class="card-header">
+      <i class="fas fa-coins me-1"></i>
+      Pembelian Koin Terbaru
+    </div>
+    <div class="card-body">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Tanggal</th>
+            <th>No. Invoice</th>
+            <th>No. Handphone</th>
+            <th>Nama</th>
+            <th>Pembayaran Via</th>
+            <th>Total</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          @foreach ($coin_purchases as $idx => $coin_purchase)
+          <tr class="align-middle">
+            <td>{{$coin_purchase->created_at}}</td>
+            <td>{{$coin_purchase->invoice_no}}</td>
+            <td>{{$coin_purchase->msisdn}}</td>
+            <td>{{$coin_purchase->player_name}}</td>
+            <td>{{$coin_purchase->channel}}</td>
+            <td>Rp{{number_format($coin_purchase->amount)}}</td>
+            <td>
+              {{$coin_purchase->status != "pending" ? 'Terbayar' : 'Pending'}}
+            </td>
+          </tr>
+          @endforeach
+        </tbody>
+      </table>
+    </div>
+  </div>
+
 </div>
 @endsection
 
 @section('script')
-<script>
+{{-- <script>
 
   Chart.defaults.global.defaultFontFamily = '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif'
   Chart.defaults.global.defaultFontColor = '#292b2c'
@@ -225,5 +261,5 @@
       }
     }
   });
-</script>
+</script> --}}
 @endsection
