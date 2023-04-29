@@ -13,8 +13,30 @@ class TopScoreController extends Controller
     $query_search = $request->query('search') ?? '';
     $query_period = $request->query('period') ?? '';
 
-    $s_date = date('Y-m-01 00:00:00');
-    $l_date = date('Y-m-t 23:59:59');
+    $periods = DB::table('prizes')
+      ->select('period')
+      ->groupBy('period')
+      ->orderBy('period', 'desc')
+      ->get();
+
+    $selected_periods = date('Y-m');
+    $query_period = $request->query('period') ?? $selected_periods;
+
+    $s_date = date('Y-m-01 00:00:00', strtotime(date($query_period)));
+    $e_date = date('Y-m-t 23:59:59', strtotime(date($query_period)));
+
+    foreach ($periods as $idx => $period) {
+      $exploded_period = explode('-', $period->period);
+      $month_number = $exploded_period[1] ?? '';
+      $period_year = $exploded_period[0] ?? '';
+
+      $month_id = month_id($month_number) ?? '';
+
+      $periods[$idx] = (object)[
+        'label' => $month_id . ' ' . $period_year,
+        'value' => $period->period,
+      ];
+    }
 
     $players = DB::table('player_logs')
       ->leftJoin('players', 'player_logs.player_id', 'players.id')
@@ -28,42 +50,16 @@ class TopScoreController extends Controller
         DB::raw('SUM(player_logs.time) as total_time'),
         DB::raw('MAX(levels.name) as max_level'),
       )
+      ->where('players.name', 'LIKE', '%' . $query_search . '%')
+      ->orWhere('players.msisdn', 'LIKE', '%' . $query_search . '%')
       ->where('player_logs.created_at', '>', $s_date)
-      ->where('player_logs.created_at', '<', $l_date)
+      ->where('player_logs.created_at', '<', $e_date)
       ->groupBy('players.id')
       ->orderBy('total_score', 'desc')
       ->orderBy('total_time', 'asc')
-      ->get();
+      ->paginate(25)
+      ->withQueryString();
 
-    $periods = [
-      [
-        'id' => '2',
-        'start_date' => '2023-03-01',
-        'end_date' => '2023-03-31',
-        'status' => '1'
-      ],
-      [
-        'id' => '1',
-        'start_date' => '2023-02-01',
-        'end_date' => '2023-02-28',
-        'status' => '0'
-      ]
-    ];
-
-    foreach ($periods as $idx => $period) {
-      $start_date = explode('-', $period['start_date'])[2] ?? '';
-      $end_date = explode('-', $period['end_date'])[2] ?? '';
-
-      $date_id = date_id($period['end_date']) ?? '';
-      $month_id = explode(' ', $date_id)[1] ?? '';
-      $year_id = explode(' ', $date_id)[2] ?? '';
-
-      $periods[$idx] = [
-        'id' => $period['id'],
-        'label' => $start_date . ' - ' . $end_date . ' ' . $month_id . ' ' . $year_id
-      ];
-    }
-
-    return view('top_score.index', ['players' => $players, 'periods' => $periods]);
+    return view('top_score.index', ['players' => $players, 'periods' => $periods, 'search' => $query_search, 'query_period' => $query_period]);
   }
 }

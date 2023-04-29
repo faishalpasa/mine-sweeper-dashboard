@@ -11,29 +11,18 @@ class CoinPurchaseController extends Controller
 {
   public function index(Request $request)
   {
-    $query = $request->query('search') ?? '';
-
-    // $coin_purchases = [
-    //   [
-    //     'id' => 3,
-    //     'name' => 'Test Pemain',
-    //     'msisdn' => '081234567890',
-    //     'invoice_no' => '1234567890',
-    //     'payment_method_name' => 'OVO',
-    //     'coin' => 10,
-    //     'status' => 0,
-    //     'amount' => 5000,
-    //     'created_at' => '2023-03-01 00:00:00',
-    //   ],
-    // ];
+    $search = $request->query('search') ?? '';
 
     $coin_purchases = DB::table('payments')
       ->leftJoin('players', 'payments.player_id', 'players.id')
       ->select('players.name as player_name', 'payments.*')
+      ->where('players.name', 'LIKE', '%' . $search . '%')
+      ->orWhere('payments.msisdn', 'LIKE', '%' . $search . '%')
       ->orderBy('id', 'desc')
-      ->get();
+      ->paginate(25)
+      ->withQueryString();
 
-    return view('coin_purchase.index', ['coin_purchases' => $coin_purchases]);
+    return view('coin_purchase.index', ['coin_purchases' => $coin_purchases, 'search' => $search]);
   }
 
   public function create()

@@ -21,8 +21,8 @@
             <i class="fas fa-calendar"></i>
           </span>
           <select class="form-select" onchange="handleChangePeriod(event)">
-            @foreach ($periods as $idx => $period)
-              <option {{$idx === 0 ? 'selected' : ''}} value="{{$period['id']}}">{{$period['label']}}</option>
+            @foreach ($periods as $period)
+              <option {{$query_period === $period->value ? 'selected' : ''}} value="{{$period->value}}">{{$period->label}}</option>
             @endforeach
           </select>
         </div>
@@ -59,7 +59,8 @@
 @section('script')
 <script>
   const handleChangePeriod = (e) => {
-    const url = new URL(window.location.href)
+    const cleanUrl = window.location.href.split('?')[0]
+    const url = new URL(cleanUrl)
     url.searchParams.set('period', e.target.value)
     window.location.href = url
   }

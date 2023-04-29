@@ -12,10 +12,16 @@ class PlayerController extends Controller
 {
   public function index(Request $request)
   {
-    $query = $request->query('search') ?? '';
+    $search = $request->query('search') ?? '';
 
-    $data = DB::table('players')->select('*')->orderBy('id', 'desc')->get();
-    return view('player.index', ['players' => $data]);
+    $data = DB::table('players')
+      ->select('*')
+      ->where('name', 'LIKE', '%' . $search . '%')
+      ->orWhere('msisdn', 'LIKE', '%' . $search . '%')
+      ->orderBy('id', 'desc')
+      ->paginate(25)
+      ->withQueryString();
+    return view('player.index', ['players' => $data, 'search' => $search]);
   }
 
   public function create()

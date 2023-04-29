@@ -15,26 +15,27 @@
     <div class="card-header d-flex align-items-center">
       <i class="fas fa-server me-1"></i>
       Daftar Log Permainan
-      <div class="ms-auto me-0">
+      <div class="ms-auto me-0 ">
         <div class="input-group input-group-sm">
           <span class="input-group-text">
             <i class="fas fa-calendar"></i>
           </span>
           <select class="form-select" onchange="handleChangePeriod(event)">
-            <option selected>Semua Periode</option>
-            @foreach ($periods as $idx => $period)
-              <option value="{{$period['id']}}">{{$period['label']}}</option>
+            @foreach ($periods as $period)
+              <option {{$query_period === $period->value ? 'selected' : ''}} value="{{$period->value}}">{{$period->label}}</option>
             @endforeach
           </select>
         </div>
       </div>
-      <div class="ms-1 me-0">
+      <div class="ms-1 me-0 d-flex gap-2">
         <div class="input-group input-group-sm">
           <span class="input-group-text">
             <i class="fas fa-search"></i>
           </span>
-          <input type="text" class="form-control" placeholder="Nama / No. Handphone" aria-label="Name" onkeypress="handleSearch(event)">
+          <input type="text" class="form-control" placeholder="Nama / No. Handphone" aria-label="Name" onkeypress="handleSearch(event)" id="search-input" value="{{ $search }}">
         </div>
+        <button class="btn btn-sm btn-secondary" onclick="handleSearchButton(event)">Cari</button>
+        <button class="btn btn-sm btn-secondary" onclick="handleResetButton(event)">Reset</button>
       </div>
     </div>
     <div class="card-body">
@@ -46,6 +47,7 @@
             <th>Nama</th>
             <th>Level</th>
             <th>Koin</th>
+            <th>Waktu</th>
             <th>Skor</th>
           </tr>
         </thead>
@@ -57,6 +59,7 @@
             <td>{{$log->player_name}}</td>
             <td>{{$log->level_name}}</td>
             <td>{{$log->player_coin}}</td>
+            <td>{{date("i:s", $log->time / 1000)}}</td>
             <td class="{{$log->score > 0 ? 'text-success' : 'text-danger'}}">
               {{$log->score > 0 ? '+'.$log->score : $log->score}}
             </td>
@@ -65,23 +68,8 @@
         </tbody>
       </table>
 
-      <nav>
-        <ul class="pagination justify-content-end">
-          <li class="page-item disabled">
-            <span class="page-link">
-              <span aria-hidden="true">&laquo;</span>
-            </span>
-          </li>
-          <li class="page-item"><a class="page-link text-black" href="#">1</a></li>
-          <li class="page-item"><a class="page-link text-black" href="#">2</a></li>
-          <li class="page-item"><a class="page-link text-black" href="#">3</a></li>
-          <li class="page-item">
-            <a class="page-link text-black" href="#" aria-label="Next">
-              <span aria-hidden="true">&raquo;</span>
-            </a>
-          </li>
-        </ul>
-      </nav>
+      {{ $player_logs->links('layouts.pagination') }}
+
     </div>
   </div>
 </div>
@@ -120,14 +108,30 @@
 
   const handleSearch = (e) => {
     if (e.key === 'Enter') {
-      const url = new URL(window.location.href)
+      const cleanUrl = window.location.href.split('?')[0]
+      const url = new URL(cleanUrl)
       url.searchParams.set('search', e.target.value)
       window.location.href = url
     }
   }
 
+  const handleSearchButton = (e) => {
+    const searchKey = document.getElementById('search-input').value
+    const cleanUrl = window.location.href.split('?')[0]
+    const url = new URL(cleanUrl)
+    url.searchParams.set('search', searchKey)
+    window.location.href = url
+  }
+
+  const handleResetButton = (e) => {
+    const cleanUrl = window.location.href.split('?')[0]
+    const url = new URL(cleanUrl)
+    window.location.href = url
+  }
+
   const handleChangePeriod = (e) => {
-    const url = new URL(window.location.href)
+    const cleanUrl = window.location.href.split('?')[0]
+    const url = new URL(cleanUrl)
     url.searchParams.set('period', e.target.value)
     window.location.href = url
   }

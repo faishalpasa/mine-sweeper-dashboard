@@ -19,9 +19,7 @@ class PrizeController extends Controller
   {
 
     $periods = DB::table('prizes')->select('period')->groupBy('period')->orderBy('period', 'desc')->get();
-
     $selected_periods = $periods[0]->period ?? '';
-
     $query_period = $request->query('period') ?? $selected_periods;
 
     $prizes = DB::table('prizes')->where('period', $query_period)->select('*')->get();
