@@ -42,10 +42,9 @@ class PlayerLogController extends Controller
       ->leftJoin('levels', 'player_logs.level_id', 'levels.id')
       ->select('player_logs.id', 'player_logs.score', 'player_logs.time', 'player_logs.created_at', 'players.name as player_name', 'players.msisdn as player_msisdn', 'players.coin as player_coin', 'levels.name as level_name')
       ->orderBy('id', 'desc')
-      ->where('players.name', 'LIKE', '%' . $search . '%')
-      ->orWhere('players.msisdn', 'LIKE', '%' . $search . '%')
       ->where('player_logs.created_at', '>', $s_date)
       ->where('player_logs.created_at', '<', $e_date)
+      ->where('players.msisdn', 'LIKE', '%' . $search . '%')
       ->paginate(25)
       ->withQueryString();
 

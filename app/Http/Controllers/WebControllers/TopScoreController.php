@@ -41,8 +41,6 @@ class TopScoreController extends Controller
     $players = DB::table('player_logs')
       ->leftJoin('players', 'player_logs.player_id', 'players.id')
       ->leftJoin('levels', 'player_logs.level_id', 'levels.id')
-      ->where('player_logs.created_at', '>', $s_date)
-      ->where('player_logs.created_at', '<', $e_date)
       ->select(
         'players.id as player_id',
         'players.name as player_name',
@@ -52,8 +50,9 @@ class TopScoreController extends Controller
         DB::raw('SUM(player_logs.time) as total_time'),
         DB::raw('MAX(levels.name) as max_level'),
       )
-      ->where('players.name', 'LIKE', '%' . $query_search . '%')
-      ->orWhere('players.msisdn', 'LIKE', '%' . $query_search . '%')
+      ->where('player_logs.created_at', '>', $s_date)
+      ->where('player_logs.created_at', '<', $e_date)
+      ->where('players.msisdn', 'LIKE', '%' . $query_search . '%')
       ->groupBy('players.id')
       ->orderBy('total_score', 'desc')
       ->orderBy('total_time', 'asc')

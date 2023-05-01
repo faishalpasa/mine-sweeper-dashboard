@@ -28,7 +28,7 @@
           <span class="input-group-text">
             <i class="fas fa-search"></i>
           </span>
-          <input type="text" class="form-control" placeholder="Nama / No. Handphone" aria-label="Name" onkeypress="handleSearch(event)" id="search-input" value="{{ $search }}">
+          <input type="text" class="form-control" placeholder="No. Handphone" aria-label="Name" onkeypress="handleSearch(event)" id="search-input" value="{{ $search }}">
         </div>
         <button class="btn btn-sm btn-secondary" onclick="handleSearchButton(event)">Cari</button>
         <button class="btn btn-sm btn-secondary" onclick="handleResetButton(event)">Reset</button>
