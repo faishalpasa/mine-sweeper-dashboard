@@ -86,7 +86,7 @@
   const handleToggleModal = () => {
     const player = @json($terms)
 
-    const innerHtml = player.id ?  `<p>Anda yakin ingin mengupdate syarat dan ketentuan?</p>` :  `<p>Anda yakin ingin menyimpan metode syarat dan ketentuan baru?</p>`
+    const innerHtml = player.id ?  `<p>Anda yakin ingin mengupdate syarat dan ketentuan?</p>` :  `<p>Anda yakin ingin menyimpan syarat dan ketentuan baru?</p>`
     document.getElementById('modal-status-body').innerHTML = innerHtml
     modal.toggle()
   }

@@ -22,11 +22,11 @@
           <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
       @endif
-      <form autocomplete="off" method="POST" action="{{base_url('/profile/update')}}">
+      <form autocomplete="off" method="POST" action="{{$action_url}}">
         @csrf
         <div class="mb-3 col-md-6">
           <label for="name" class="form-label">Nama Lengkap</label>
-          <input type="text" class="form-control" placeholder="Nama Lengkap" value="{{ $errors->has('name') ? old('name') : $profile['name'] }}" name="name">
+          <input type="text" class="form-control" placeholder="Nama Lengkap" value="{{ $errors->has('name') ? old('name') : $profile->name }}" name="name">
           <div class="invalid-feedback" id="feedback-text-name"></div>
           @error('name')
             <div class="invalid-feedback d-block">
@@ -36,7 +36,7 @@
         </div>
         <div class="mb-3 col-md-6">
           <label for="exampleFormControlInput1" class="form-label">Email</label>
-          <input type="email" class="form-control" placeholder="nama@email.com" value="{{ $errors->has('email') ? old('email') : $profile['email'] }}" name="email">
+          <input type="email" class="form-control" placeholder="nama@email.com" value="{{ $errors->has('email') ? old('email') : $profile->email }}" name="email">
           @error('email')
             <div class="invalid-feedback d-block">
               {{ $message }}

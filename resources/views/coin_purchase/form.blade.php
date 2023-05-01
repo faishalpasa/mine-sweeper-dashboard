@@ -114,7 +114,7 @@
   const handleToggleModal = () => {
     const player = @json($coin_purchase)
 
-    const innerHtml = player.id ?  `<p>Anda yakin ingin mengupdate metode pembayaran?</p>` :  `<p>Anda yakin ingin menyimpan metode pembayaran baru?</p>`
+    const innerHtml = player.id ?  `<p>Anda yakin ingin mengupdate pembelian koin?</p>` :  `<p>Anda yakin ingin menyimpan pembelian koin?</p>`
     document.getElementById('modal-status-body').innerHTML = innerHtml
     modal.toggle()
   }

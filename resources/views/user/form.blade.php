@@ -12,10 +12,10 @@
       <a class="text-decoration-none text-black" href={{base_url('/')}}>Dashboard</a>
     </li>
     <li class="breadcrumb-item">
-      <a class="text-decoration-none text-black" href={{base_url('/period')}}>Syarat dan Ketentuan</a>
+      <a class="text-decoration-none text-black" href={{base_url('/terms')}}>User Dashboard</a>
     </li>
-    @if(isset($period['id']))
-    <li class="breadcrumb-item active">Update Syarat dan Ketentuan</li>
+    @if(isset($user->id))
+    <li class="breadcrumb-item active">Update User Dashboard</li>
     @else
     <li class="breadcrumb-item active">Buat Baru</li>
     @endif
@@ -23,38 +23,47 @@
 
   <div class="card mb-4">
     <div class="card-header d-flex align-items-center">
-      <i class="fas fa-users me-1"></i>
-      @if(isset($period['id']))
-      Update Syarat dan Ketentuan
+      <i class="fas fa-user me-1"></i>
+      @if(isset($user->id))
+      Update User Dashboard
       @else
-      Buat Syarat dan Ketentuan Baru
+      Buat User Dashboard Baru
       @endif
     </div>
     <div class="card-body">
       <form autocomplete="off" method="POST" action="{{$action_url}}" enctype="multipart/form-data">
         @csrf
         <div class="mb-3 col-md-6">
-          <label for="name" class="form-label">Judul</label>
-          <input type="text" class="form-control" placeholder="Judul" value="{{ old('title') ?? $period['title'] }}" name="title">
-          @error('title')
+          <label for="name" class="form-label">Nama Lengkap</label>
+          <input type="text" class="form-control" placeholder="Nama Lengkap" value="{{ isset($user->name) ? $user->name : old('name') }}" name="name">
+          @error('name')
             <div class="invalid-feedback d-block">
               {{ $message }}
             </div>
           @enderror
         </div>
-        <div class="mb-3 col-md-2">
-          <label for="name" class="form-label">Mulai</label>
-          <input type="date" class="form-control" placeholder="Mulai" value="{{ old('start_at') ?? $period['start_at'] }}" name="start_at">
-          @error('start_at')
+        <div class="mb-3 col-md-6">
+          <label for="email" class="form-label">Email</label>
+          <input type="email" class="form-control" placeholder="Email" value="{{ isset($user->email) ? $user->email : old('email') }}" name="email">
+          @error('description')
             <div class="invalid-feedback d-block">
               {{ $message }}
             </div>
           @enderror
         </div>
-        <div class="mb-3 col-md-2">
-          <label for="name" class="form-label">Berakhir</label>
-          <input type="date" class="form-control" placeholder="Berakhir" value="{{ old('end_at') ?? $period['end_at'] }}" name="end_at">
-          @error('end_at')
+        <div class="mb-3 col-md-6">
+          <label for="name" class="form-label">Role</label>
+          <select type="text" class="form-control" placeholder="Nama" name="role_id">
+            <option selected disabled>
+              Pilih Role
+            </option>
+            @foreach($roles as $role)
+            <option @if(isset($user->role_id)) {{$user->role_id == $role->id ? 'selected' : ''}} @endif value="{{$role->id}}">
+              {{$role->name}}
+            </option>
+            @endforeach
+          </select>
+          @error('role_id')
             <div class="invalid-feedback d-block">
               {{ $message }}
             </div>
@@ -93,9 +102,9 @@
   const modal = new bootstrap.Modal(document.getElementById('modal-status'))
 
   const handleToggleModal = () => {
-    const player = @json($period)
+    const user = @json($user)
 
-    const innerHtml = player.id ?  `<p>Anda yakin ingin mengupdate periode?</p>` :  `<p>Anda yakin ingin menyimpan periode baru?</p>`
+    const innerHtml = user.id ?  `<p>Anda yakin ingin mengupdate user dashboard?</p>` :  `<p>Anda yakin ingin menyimpan user dashboard baru?</p>`
     document.getElementById('modal-status-body').innerHTML = innerHtml
     modal.toggle()
   }

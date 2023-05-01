@@ -1,3 +1,7 @@
+@php
+$auth = \App\Http\Controllers\WebControllers\UserController::get_auth();
+@endphp
+
 <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
   <div class="sb-sidenav-menu">
     <div class="nav">
@@ -48,6 +52,15 @@
         <div class="sb-nav-link-icon"><i class="fas fa-book"></i></div>
         Syarat & Ketentuan
       </a>
+
+      @if($auth->role_id == 1)
+      <div class="sb-sidenav-menu-heading">Admin Area</div>
+
+      <a class="nav-link" href="{{ base_url('/user') }}">
+        <div class="sb-nav-link-icon"><i class="fas fa-user"></i></div>
+        User Dashboard
+      </a>
+      @endif
       {{-- <a class="nav-link" href="{{ base_url('/payment-method') }}">
         <div class="sb-nav-link-icon"><i class="fas fa-money-bill-wave"></i></div>
         Metode Pembayaran

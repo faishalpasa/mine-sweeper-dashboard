@@ -14,6 +14,7 @@ use App\Http\Controllers\WebControllers\LevelController;
 use App\Http\Controllers\WebControllers\PrizeController;
 use App\Http\Controllers\WebControllers\TermsController;
 use App\Http\Controllers\WebControllers\PaymentMethodController;
+use App\Http\Controllers\WebControllers\UserController;
 
 
 Route::prefix('login')->group(function () {
@@ -110,4 +111,13 @@ Route::middleware(['web_auth'])->prefix('payment-method')->group(function () {
   Route::get('/update/{id}', [PaymentMethodController::class, 'update']);
   Route::post('/update/{id}', [PaymentMethodController::class, 'post_update']);
   Route::get('/delete/{id}', [PaymentMethodController::class, 'delete']);
+});
+
+Route::middleware(['web_auth'])->prefix('user')->group(function () {
+  Route::get('/', [UserController::class, 'index']);
+  Route::get('/create', [UserController::class, 'create']);
+  Route::post('/create', [UserController::class, 'post_create']);
+  Route::get('/update/{id}', [UserController::class, 'update']);
+  Route::post('/update/{id}', [UserController::class, 'post_update']);
+  Route::get('/delete/{id}', [UserController::class, 'delete']);
 });
