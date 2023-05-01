@@ -206,6 +206,9 @@ class PlayerController extends Controller
         ]);
       }
 
+      $s_date = date('Y-m-01 00:00:00');
+      $e_date = date('Y-m-t 23:59:59');
+
       $last_state = DB::table('player_logs')
         ->leftJoin('players', 'player_logs.player_id', 'players.id')
         ->leftJoin('levels', 'player_logs.level_id', 'levels.id')
@@ -218,6 +221,8 @@ class PlayerController extends Controller
           DB::raw('SUM(player_logs.time) as total_time'),
           DB::raw('MAX(levels.id) as max_level'),
         )
+        ->where('player_logs.created_at', '>', $s_date)
+        ->where('player_logs.created_at', '<', $e_date)
         ->where('players.id', $player->id)
         ->groupBy('players.id')
         ->orderBy('total_score', 'desc')
@@ -261,8 +266,13 @@ class PlayerController extends Controller
     }
 
     try {
+      $s_date = date('Y-m-01 00:00:00');
+      $e_date = date('Y-m-t 23:59:59');
+
       $last_state = DB::table('player_logs')
         ->where('player_id', $player->id)
+        ->where('created_at', '>', $s_date)
+        ->where('created_at', '<', $e_date)
         ->orderBy('id', 'desc')
         ->first();
 
@@ -315,6 +325,9 @@ class PlayerController extends Controller
     }
 
     try {
+      $s_date = date('Y-m-01 00:00:00');
+      $e_date = date('Y-m-t 23:59:59');
+
       $last_state = DB::table('player_logs')
         ->leftJoin('players', 'player_logs.player_id', 'players.id')
         ->leftJoin('levels', 'player_logs.level_id', 'levels.id')
@@ -327,6 +340,8 @@ class PlayerController extends Controller
           DB::raw('SUM(player_logs.time) as total_time'),
           DB::raw('MAX(levels.id) as max_level'),
         )
+        ->where('player_logs.created_at', '>', $s_date)
+        ->where('player_logs.created_at', '<', $e_date)
         ->where('players.id', $player->id)
         ->groupBy('players.id')
         ->orderBy('total_score', 'desc')
