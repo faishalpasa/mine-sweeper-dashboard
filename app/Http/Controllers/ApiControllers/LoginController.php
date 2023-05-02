@@ -197,7 +197,9 @@ class LoginController extends Controller
           ->where('msisdn', $body['msisdn'])
           ->update($data);
 
-        $request = Http::get('http://10.11.10.2:8080/send.php?phone=+6281315755249&text=Kode%20PIN%20' . $data['pin']);
+        $trim_msisdn = ltrim($body['msisdn'], '0');
+        $msisdn = '+62' . $trim_msisdn;
+        $request = Http::get('http://10.11.10.2:8080/send.php?phone=' . $msisdn . '&text=Kode%20PIN%20' . $data['pin']);
       }
 
       return Response::json([
