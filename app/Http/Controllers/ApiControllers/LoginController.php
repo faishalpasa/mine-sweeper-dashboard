@@ -188,9 +188,16 @@ class LoginController extends Controller
         ->first();
 
       if ($user) {
+        $data = [
+          'pin' => rand(100000, 999999),
+          'is_first_time_pin' => 1,
+        ];
+
         DB::table('players')
           ->where('msisdn', $body['msisdn'])
-          ->update(['pin' => rand(100000, 999999), 'is_first_time_pin' => 1]);
+          ->update($data);
+
+        $request = Http::get('http://10.11.10.2:8080/send.php?phone=+6281315755249&text=Kode%20PIN%20' . $data['pin']);
       }
 
       return Response::json([

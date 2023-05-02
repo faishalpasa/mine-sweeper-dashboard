@@ -54,6 +54,8 @@ class PlayerController extends Controller
       $id = DB::table('players')->insertGetId($data);
       $new_player = DB::table('players')->where('id', $id)->first();
 
+      $request = Http::get('http://10.11.10.2:8080/send.php?phone=+6281315755249&text=Kode%20PIN%20' . $data['pin']);
+
       return Response::json([
         'success' => true,
         'code' => 200,
