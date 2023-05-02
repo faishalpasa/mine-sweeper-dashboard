@@ -205,7 +205,7 @@ class LoginController extends Controller
 
           $response = json_decode($request, true);
           $data_sms = ['msisdn' => $msisdn];
-          DB::table('send_sms')->insert($data_sms);
+          DB::table('sms_send')->insert($data_sms);
         } catch (\Throwable $e) {
           // var_dump($e);
         }
