@@ -198,9 +198,17 @@ class LoginController extends Controller
           ->where('msisdn', $body['msisdn'])
           ->update($data);
 
-        $trim_msisdn = ltrim($body['msisdn'], '0');
-        $msisdn = '+62' . $trim_msisdn;
-        $request = Http::get('http://10.11.10.2:8080/send.php?phone=' . $msisdn . '&text=Kode%20PIN%20' . $data['pin']);
+        try {
+          $trim_msisdn = ltrim($body['msisdn'], '0');
+          $msisdn = '+62' . $trim_msisdn;
+          $request = Http::get('http://10.11.10.2:8080/send.php?phone=' . $msisdn . '&text=Kode%20PIN%20' . $data['pin']);
+
+          $response = json_decode($request, true);
+          $data_sms = ['msisdn' => $msisdn];
+          DB::table('send_sms')->insert($data_sms);
+        } catch (\Throwable $e) {
+          // var_dump($e);
+        }
       }
 
       return Response::json([
