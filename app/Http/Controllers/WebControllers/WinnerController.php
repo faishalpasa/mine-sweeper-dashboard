@@ -25,7 +25,7 @@ class WinnerController extends Controller
       ->first();
 
     $prizes = DB::table('prizes')
-      ->where('period_id', $selected_periods->id)
+      ->where('period_id', $selected_periods->id ?? 0)
       ->get();
 
     $prize_count = count($prizes);
