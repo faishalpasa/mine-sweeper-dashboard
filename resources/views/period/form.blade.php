@@ -35,7 +35,7 @@
         @csrf
         <div class="mb-3 col-md-6">
           <label for="name" class="form-label">Nama Periode</label>
-          <input type="text" class="form-control" placeholder="Nama Periode" value="{{ old('name') ?? $period->name }}" name="name">
+          <input type="text" class="form-control" placeholder="Nama Periode" value="{{ isset($user->email) ? $period->name : old('name') }}" name="name">
           @error('name')
             <div class="invalid-feedback d-block">
               {{ $message }}
@@ -44,7 +44,7 @@
         </div>
         <div class="mb-3 col-md-2">
           <label for="name" class="form-label">Mulai</label>
-          <input type="date" class="form-control" placeholder="Mulai" value="{{ old('start_at') ?? $period->start_at }}" name="start_at">
+          <input type="date" class="form-control" placeholder="Mulai" value="{{ isset($user->start_at) ? $period->start_at : old('start_at') }}" name="start_at">
           @error('start_at')
             <div class="invalid-feedback d-block">
               {{ $message }}
@@ -53,7 +53,7 @@
         </div>
         <div class="mb-3 col-md-2">
           <label for="name" class="form-label">Berakhir</label>
-          <input type="date" class="form-control" placeholder="Berakhir" value="{{ old('end_at') ?? $period->end_at }}" name="end_at">
+          <input type="date" class="form-control" placeholder="Berakhir" value="{{ isset($user->end_at) ? $period->end_at : old('end_at') }}" name="end_at">
           @error('end_at')
             <div class="invalid-feedback d-block">
               {{ $message }}
