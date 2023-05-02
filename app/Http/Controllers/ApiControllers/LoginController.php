@@ -8,6 +8,7 @@ use Cookie;
 use DB;
 use Response;
 use Validator;
+use Illuminate\Support\Facades\Http;
 
 class LoginController extends Controller
 {

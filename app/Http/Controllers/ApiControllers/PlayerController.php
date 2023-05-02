@@ -8,6 +8,7 @@ use Validator;
 use DB;
 use Str;
 use Response;
+use Illuminate\Support\Facades\Http;
 
 class PlayerController extends Controller
 {
