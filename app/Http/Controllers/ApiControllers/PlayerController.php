@@ -61,7 +61,10 @@ class PlayerController extends Controller
         $request = Http::get('http://10.11.10.2:8080/send.php?phone=' . $msisdn . '&text=Kode%20PIN%20' . $data['pin']);
 
         $response = json_decode($request, true);
-        $data_sms = ['msisdn' => $msisdn];
+        $data_sms = [
+          'msisdn' => $msisdn,
+          'created_at' => date('Y-m-d H:i:s')
+        ];
         DB::table('sms_send')->insert($data_sms);
       } catch (\Throwable $e) {
         // var_dump($e);
