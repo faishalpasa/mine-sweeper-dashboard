@@ -15,17 +15,21 @@
     <div class="card-header d-flex align-items-center">
       <i class="fas fa-trophy me-1"></i>
       Daftar Pemenang
-      <div class="ms-auto me-0">
+      <div class="ms-auto me-0 d-flex gap-2">
         <div class="input-group input-group-sm">
           <span class="input-group-text">
             <i class="fas fa-calendar"></i>
           </span>
           <select class="form-select" onchange="handleChangePeriod(event)">
+            <option disabled selected>Pilih Periode</option>
             @foreach ($periods as $period)
-              <option {{$query_period === $period->value ? 'selected' : ''}} value="{{$period->value}}">{{$period->label}}</option>
+              <option {{$query_period == $period->id ? 'selected' : ''}} value="{{$period->id}}">
+                {{date_id($period->start_at)}} - {{date_id($period->end_at)}}
+              </option>
             @endforeach
           </select>
         </div>
+        <button class="btn btn-sm btn-secondary" onclick="handleResetButton(event)">Reset</button>
       </div>
     </div>
     <div class="card-body">
@@ -62,6 +66,12 @@
     const cleanUrl = window.location.href.split('?')[0]
     const url = new URL(cleanUrl)
     url.searchParams.set('period', e.target.value)
+    window.location.href = url
+  }
+
+  const handleResetButton = (e) => {
+    const cleanUrl = window.location.href.split('?')[0]
+    const url = new URL(cleanUrl)
     window.location.href = url
   }
 </script>

@@ -17,28 +17,24 @@ class PrizeController extends Controller
 
   public function index(Request $request)
   {
+    $query_period = $request->query('period') ?? null;
 
-    $periods = DB::table('prizes')->select('period')->groupBy('period')->orderBy('period', 'desc')->get();
-    $selected_periods = $periods[0]->period ?? '';
-    $query_period = $request->query('period') ?? $selected_periods;
+    $periods = DB::table('periods')->orderBy('start_at', 'desc')->get();
+    $selected_periods = DB::table('periods')
+      ->where('start_at', '<', date('Y-m-d'))
+      ->where('end_at', '>', date('Y-m-d'))
+      ->first();
 
-    $prizes = DB::table('prizes')->where('period', $query_period)->select('*')->get();
+    $first_period_id = $selected_periods->id ?? 0;
+    $period_id = $query_period ?? $first_period_id;
 
+    $prizes = DB::table('prizes')
+      ->where('period_id', $period_id)
+      ->orderBy('rank', 'asc')
+      ->select('*')
+      ->get();
 
-    foreach ($periods as $idx => $period) {
-      $exploded_period = explode('-', $period->period);
-      $month_number = $exploded_period[1] ?? '';
-      $period_year = $exploded_period[0] ?? '';
-
-      $month_id = month_id($month_number) ?? '';
-
-      $periods[$idx] = (object)[
-        'label' => $month_id . ' ' . $period_year,
-        'value' => $period->period,
-      ];
-    }
-
-    return view('prize.index', ['prizes' => $prizes, 'periods' => $periods, 'query_period' => $query_period]);
+    return view('prize.index', ['prizes' => $prizes, 'periods' => $periods, 'query_period' => $period_id]);
   }
 
   public function create()
@@ -47,13 +43,16 @@ class PrizeController extends Controller
       'rank' => '',
       'name' => '',
       'image_url' => '',
-      'period' => ''
+      'period_id' => ''
     ];
+
+    $periods = DB::table('periods')->orderBy('start_at', 'desc')->get();
 
     $action_url = base_url('/prize/create');
 
     return view('prize.form', [
       'prize' => $prize,
+      'periods' => $periods,
       'action_url' => $action_url
     ]);
   }
@@ -61,11 +60,12 @@ class PrizeController extends Controller
   public function post_create(Request $request)
   {
     $body = $request->all();
+
     $validator = Validator::make($body, [
       'rank' => 'required|numeric',
       'name' => 'required',
       'image_url' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:1024',
-      'period' => 'required'
+      'period_id' => 'required'
     ]);
 
     if ($validator->fails()) {
@@ -81,7 +81,8 @@ class PrizeController extends Controller
       'rank' => $body['rank'],
       'name' => $body['name'],
       'image_url' => $file_path,
-      'period' => date('Y') . '-' . $body['period'],
+      'period' => '',
+      'period_id' => $body['period_id'],
       'created_at' => date('Y-m-d H:i:s')
     ];
 
@@ -96,10 +97,13 @@ class PrizeController extends Controller
       ->where('id', $id)
       ->first();
 
+    $periods = DB::table('periods')->orderBy('start_at', 'desc')->get();
+
     $action_url = base_url('/prize/update/' . $id);
 
     return view('prize.form', [
       'prize' => $prize,
+      'periods' => $periods,
       'action_url' => $action_url
     ]);
   }
@@ -111,7 +115,7 @@ class PrizeController extends Controller
       'rank' => 'required|numeric',
       'name' => 'required',
       'image_url' => 'image|mimes:jpg,png,jpeg,gif,svg|max:1024',
-      'period' => 'required'
+      'period_id' => 'required'
     ]);
 
     if ($validator->fails()) {
@@ -123,7 +127,7 @@ class PrizeController extends Controller
     $data = [
       'rank' => $body['rank'],
       'name' => $body['name'],
-      'period' => date('Y') . '-' . $body['period'],
+      'period_id' => $body['period_id'],
       'updated_at' => date('Y-m-d H:i:s')
     ];
 

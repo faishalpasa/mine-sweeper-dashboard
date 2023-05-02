@@ -36,10 +36,10 @@ $auth = \App\Http\Controllers\WebControllers\UserController::get_auth();
       </a>
 
       <div class="sb-sidenav-menu-heading">Pengaturan</div>
-      {{-- <a class="nav-link" href="{{ base_url('/period') }}">
+      <a class="nav-link" href="{{ base_url('/period') }}">
         <div class="sb-nav-link-icon"><i class="fas fa-calendar"></i></div>
         Periode
-      </a> --}}
+      </a>
       <a class="nav-link" href="{{ base_url('/level') }}">
         <div class="sb-nav-link-icon"><i class="fas fa-sort-numeric-up-alt"></i></div>
         Level
@@ -52,7 +52,7 @@ $auth = \App\Http\Controllers\WebControllers\UserController::get_auth();
         <div class="sb-nav-link-icon"><i class="fas fa-book"></i></div>
         Syarat & Ketentuan
       </a>
-
+      @isset($auth->role_id)
       @if($auth->role_id == 1)
       <div class="sb-sidenav-menu-heading">Admin Area</div>
 
@@ -61,6 +61,7 @@ $auth = \App\Http\Controllers\WebControllers\UserController::get_auth();
         User Dashboard
       </a>
       @endif
+      @endisset
       {{-- <a class="nav-link" href="{{ base_url('/payment-method') }}">
         <div class="sb-nav-link-icon"><i class="fas fa-money-bill-wave"></i></div>
         Metode Pembayaran

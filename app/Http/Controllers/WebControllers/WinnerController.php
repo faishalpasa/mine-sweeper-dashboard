@@ -10,34 +10,28 @@ class WinnerController extends Controller
 {
   public function index(Request $request)
   {
-    $query_period = $request->query('period') ?? '';
+    $query_period = $request->query('period') ?? null;
 
-    $periods = DB::table('prizes')
-      ->select('period')
-      ->groupBy('period')
-      ->orderBy('period', 'desc')
+    $periods = DB::table('periods')
+      ->where('end_at', '<', date('Y-m-d'))
+      ->orderBy('start_at', 'desc')
       ->get();
 
-    $prize_count = count($periods);
+    $first_period_id = $periods[0]->id ?? 0;
+    $period_id = $query_period ?? $first_period_id;
 
-    $selected_periods = date('Y-m', strtotime('-1 month', strtotime(date('Y-m-01'))));
-    $query_period = $request->query('period') ?? $selected_periods;
+    $selected_periods = DB::table('periods')
+      ->where('id', $period_id)
+      ->first();
 
-    $s_date = date('Y-m-01 00:00:00', strtotime(date($query_period)));
-    $e_date = date('Y-m-t 23:59:59', strtotime(date($query_period)));
+    $prizes = DB::table('prizes')
+      ->where('period_id', $selected_periods->id)
+      ->get();
 
-    foreach ($periods as $idx => $period) {
-      $exploded_period = explode('-', $period->period);
-      $month_number = $exploded_period[1] ?? '';
-      $period_year = $exploded_period[0] ?? '';
+    $prize_count = count($prizes);
 
-      $month_id = month_id($month_number) ?? '';
-
-      $periods[$idx] = (object)[
-        'label' => $month_id . ' ' . $period_year,
-        'value' => $period->period,
-      ];
-    }
+    $s_date = date('Y-m-d 00:00:00', strtotime(date($selected_periods->start_at ?? 'Y-m-d')));
+    $e_date = date('Y-m-d 23:59:59', strtotime(date($selected_periods->end_at ?? 'Y-m-d')));
 
     $players = DB::table('player_logs')
       ->leftJoin('players', 'player_logs.player_id', 'players.id')

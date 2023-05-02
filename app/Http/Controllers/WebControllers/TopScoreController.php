@@ -10,33 +10,24 @@ class TopScoreController extends Controller
 {
   public function index(Request $request)
   {
-    $query_search = $request->query('search') ?? '';
-    $query_period = $request->query('period') ?? '';
+    $query_period = $request->query('period') ?? null;
+    $query_search = $request->query('search') ?? null;
 
-    $periods = DB::table('prizes')
-      ->select('period')
-      ->groupBy('period')
-      ->orderBy('period', 'desc')
-      ->get();
+    $periods = DB::table('periods')->orderBy('start_at', 'desc')->get();
 
-    $selected_periods = date('Y-m');
-    $query_period = $request->query('period') ?? $selected_periods;
+    $current_period = DB::table('periods')
+      ->where('start_at', '<', date('Y-m-d'))
+      ->where('end_at', '>', date('Y-m-d'))
+      ->first();
+    $first_period_id = $current_period->id ?? 0;
+    $period_id = $query_period ?? $first_period_id;
 
-    $s_date = date('Y-m-01 00:00:00', strtotime(date($query_period)));
-    $e_date = date('Y-m-t 23:59:59', strtotime(date($query_period)));
+    $selected_periods = DB::table('periods')
+      ->where('id', $period_id)
+      ->first();
 
-    foreach ($periods as $idx => $period) {
-      $exploded_period = explode('-', $period->period);
-      $month_number = $exploded_period[1] ?? '';
-      $period_year = $exploded_period[0] ?? '';
-
-      $month_id = month_id($month_number) ?? '';
-
-      $periods[$idx] = (object)[
-        'label' => $month_id . ' ' . $period_year,
-        'value' => $period->period,
-      ];
-    }
+    $s_date = date('Y-m-d 00:00:00', strtotime(date($selected_periods->start_at ?? 'Y-m-d')));
+    $e_date = date('Y-m-d 23:59:59', strtotime(date($selected_periods->end_at ?? 'Y-m-d')));
 
     $players = DB::table('player_logs')
       ->leftJoin('players', 'player_logs.player_id', 'players.id')
@@ -59,6 +50,11 @@ class TopScoreController extends Controller
       ->paginate(25)
       ->withQueryString();
 
-    return view('top_score.index', ['players' => $players, 'periods' => $periods, 'search' => $query_search, 'query_period' => $query_period]);
+    return view('top_score.index', [
+      'players' => $players,
+      'periods' => $periods,
+      'query_search' => $query_search,
+      'query_period' => $period_id
+    ]);
   }
 }

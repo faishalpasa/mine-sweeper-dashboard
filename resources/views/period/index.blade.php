@@ -36,7 +36,7 @@
       <table class="table table-bordered">
         <thead>
           <tr>
-            <th>Judul</th>
+            <th>Nama Periode</th>
             <th>Tanggal Mulai</th>
             <th>Tanggal Akhir</th>
             <th>Status</th>
@@ -46,13 +46,21 @@
         <tbody>
           @foreach ($periods as $period)
           <tr class="align-middle">
-            <td>{{$period['title']}}</td>
-            <td>{{date_id($period['start_at'])}}</td>
-            <td>{{date_id($period['end_at'])}}</td>
-            <td>{{$period['status'] > 0 ? 'Aktif' : 'Berakhir'}}</td>
+            <td>{{$period->name}}</td>
+            <td>{{date_id($period->start_at)}}</td>
+            <td>{{date_id($period->end_at)}}</td>
+            <td>
+              @if(date('Y-m-d') < date($period->start_at))
+                Belum dimulai
+              @elseif(date('Y-m-d') > date($period->start_at) && date('Y-m-d') < date($period->end_at))
+                Aktif
+              @elseif(date('Y-m-d') > date($period->end_at))
+                Selesai
+              @endif
+            </td>
             <td>
               <div class="btn-group btn-group-sm" role="group">
-                <a type="button" class="btn btn-outline-secondary" href="{{base_url('/period/update/'.$period['id'])}}">
+                <a type="button" class="btn btn-outline-secondary" href="{{base_url('/period/update/'.$period->id)}}">
                   Edit
                 </a>
               </div>

@@ -12,10 +12,10 @@
       <a class="text-decoration-none text-black" href={{base_url('/')}}>Dashboard</a>
     </li>
     <li class="breadcrumb-item">
-      <a class="text-decoration-none text-black" href={{base_url('/period')}}>Syarat dan Ketentuan</a>
+      <a class="text-decoration-none text-black" href={{base_url('/period')}}>Periode</a>
     </li>
-    @if(isset($period['id']))
-    <li class="breadcrumb-item active">Update Syarat dan Ketentuan</li>
+    @if(isset($period->id))
+    <li class="breadcrumb-item active">Update Periode</li>
     @else
     <li class="breadcrumb-item active">Buat Baru</li>
     @endif
@@ -24,19 +24,19 @@
   <div class="card mb-4">
     <div class="card-header d-flex align-items-center">
       <i class="fas fa-users me-1"></i>
-      @if(isset($period['id']))
-      Update Syarat dan Ketentuan
+      @if(isset($period->id))
+      Update Periode
       @else
-      Buat Syarat dan Ketentuan Baru
+      Buat Periode Baru
       @endif
     </div>
     <div class="card-body">
       <form autocomplete="off" method="POST" action="{{$action_url}}" enctype="multipart/form-data">
         @csrf
         <div class="mb-3 col-md-6">
-          <label for="name" class="form-label">Judul</label>
-          <input type="text" class="form-control" placeholder="Judul" value="{{ old('title') ?? $period['title'] }}" name="title">
-          @error('title')
+          <label for="name" class="form-label">Nama Periode</label>
+          <input type="text" class="form-control" placeholder="Nama Periode" value="{{ old('name') ?? $period->name }}" name="name">
+          @error('name')
             <div class="invalid-feedback d-block">
               {{ $message }}
             </div>
@@ -44,7 +44,7 @@
         </div>
         <div class="mb-3 col-md-2">
           <label for="name" class="form-label">Mulai</label>
-          <input type="date" class="form-control" placeholder="Mulai" value="{{ old('start_at') ?? $period['start_at'] }}" name="start_at">
+          <input type="date" class="form-control" placeholder="Mulai" value="{{ old('start_at') ?? $period->start_at }}" name="start_at">
           @error('start_at')
             <div class="invalid-feedback d-block">
               {{ $message }}
@@ -53,7 +53,7 @@
         </div>
         <div class="mb-3 col-md-2">
           <label for="name" class="form-label">Berakhir</label>
-          <input type="date" class="form-control" placeholder="Berakhir" value="{{ old('end_at') ?? $period['end_at'] }}" name="end_at">
+          <input type="date" class="form-control" placeholder="Berakhir" value="{{ old('end_at') ?? $period->end_at }}" name="end_at">
           @error('end_at')
             <div class="invalid-feedback d-block">
               {{ $message }}

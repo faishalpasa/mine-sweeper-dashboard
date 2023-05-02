@@ -5,34 +5,13 @@ namespace App\Http\Controllers\WebControllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Validator;
+use DB;
 
 class PeriodController extends Controller
 {
   public function index()
   {
-    $periods = [
-      [
-        'id' => '1',
-        'title' => 'Periode Maret',
-        'start_at' => '2023-03-01',
-        'end_at' => '2023-03-31',
-        'status' => 1,
-      ],
-      [
-        'id' => '2',
-        'title' => 'Periode Februari',
-        'start_at' => '2023-02-01',
-        'end_at' => '2023-02-28',
-        'status' => 0,
-      ],
-      [
-        'id' => '1',
-        'title' => 'Periode Natal',
-        'start_at' => '2023-01-01',
-        'end_at' => '2023-01-31',
-        'status' => 0,
-      ],
-    ];
+    $periods = DB::table('periods')->orderBy('start_at', 'desc')->get();
 
     return view('period.index', ['periods' => $periods]);
   }
@@ -40,7 +19,7 @@ class PeriodController extends Controller
   public function create()
   {
     $period = [
-      'title' => '',
+      'name' => '',
       'start_at' => '',
       'end_at' => '',
     ];
@@ -55,8 +34,10 @@ class PeriodController extends Controller
 
   public function post_create(Request $request)
   {
-    $validator = Validator::make($request->all(), [
-      'title' => 'required',
+    $body = $request->all();
+
+    $validator = Validator::make($body, [
+      'name' => 'required',
       'start_at' => 'required',
       'end_at' => 'required',
     ]);
@@ -68,18 +49,21 @@ class PeriodController extends Controller
         ->withInput();
     }
 
+    $data = [
+      'name' => $body['name'],
+      'start_at' => $body['start_at'],
+      'end_at' => $body['end_at'],
+      'created_at' => date('Y-m-d H:i:s')
+    ];
+
+    DB::table('periods')->insert($data);
+
     return redirect('/period')->with('success_message', 'Berhasil menambah periode permainan');
   }
 
   public function update($id)
   {
-    $period = [
-      'id' => $id,
-      'title' => 'Periode Maret',
-      'start_at' => '2023-03-01',
-      'end_at' => '2023-03-31',
-      'status' => 1,
-    ];
+    $period = DB::table('periods')->where('id', $id)->first();
 
     $action_url = base_url('/period/update/' . $id);
 
@@ -91,8 +75,10 @@ class PeriodController extends Controller
 
   public function post_update(Request $request, $id)
   {
-    $validator = Validator::make($request->all(), [
-      'title' => 'required',
+    $body = $request->all();
+
+    $validator = Validator::make($body, [
+      'name' => 'required',
       'start_at' => 'required',
       'end_at' => 'required',
     ]);
@@ -102,6 +88,15 @@ class PeriodController extends Controller
         ->withErrors($validator)
         ->withInput();
     }
+
+    $data = [
+      'name' => $body['name'],
+      'start_at' => $body['start_at'],
+      'end_at' => $body['end_at'],
+      'updated_at' => date('Y-m-d H:i:s')
+    ];
+
+    DB::table('periods')->where('id', $id)->update($data);
 
     return redirect('/period')->with('success_message', 'Berhasil mengubah periode permainan');
   }

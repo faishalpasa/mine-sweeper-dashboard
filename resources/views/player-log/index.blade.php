@@ -21,8 +21,11 @@
             <i class="fas fa-calendar"></i>
           </span>
           <select class="form-select" onchange="handleChangePeriod(event)">
+            <option disabled selected>Pilih Periode</option>
             @foreach ($periods as $period)
-              <option {{$query_period === $period->value ? 'selected' : ''}} value="{{$period->value}}">{{$period->label}}</option>
+              <option {{$query_period == $period->id ? 'selected' : ''}} value="{{$period->id}}">
+                {{date_id($period->start_at)}} - {{date_id($period->end_at)}}
+              </option>
             @endforeach
           </select>
         </div>
@@ -32,7 +35,7 @@
           <span class="input-group-text">
             <i class="fas fa-search"></i>
           </span>
-          <input type="text" class="form-control" placeholder="No. Handphone" aria-label="Name" onkeypress="handleSearch(event)" id="search-input" value="{{ $search }}">
+          <input type="text" class="form-control" placeholder="No. Handphone" aria-label="Name" onkeypress="handleSearch(event)" id="search-input" value="{{ $query_search }}">
         </div>
         <button class="btn btn-sm btn-secondary" onclick="handleSearchButton(event)">Cari</button>
         <button class="btn btn-sm btn-secondary" onclick="handleResetButton(event)">Reset</button>
@@ -120,6 +123,9 @@
     const cleanUrl = window.location.href.split('?')[0]
     const url = new URL(cleanUrl)
     url.searchParams.set('search', searchKey)
+    @if($query_period)
+    url.searchParams.set('period', {{$query_period}})
+    @endif
     window.location.href = url
   }
 
@@ -133,6 +139,9 @@
     const cleanUrl = window.location.href.split('?')[0]
     const url = new URL(cleanUrl)
     url.searchParams.set('period', e.target.value)
+    @if($query_search)
+    url.searchParams.set('search', {{$query_search}})
+    @endif
     window.location.href = url
   }
 </script>

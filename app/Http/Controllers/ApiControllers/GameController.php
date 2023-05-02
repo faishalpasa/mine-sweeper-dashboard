@@ -12,28 +12,42 @@ use Response;
 
 class GameController extends Controller
 {
-  public function get_prize(Request $request)
+  public function get_prize()
   {
-    $current_period = date('Y-m');
+    try {
+      $selected_periods = DB::table('periods')
+        ->where('start_at', '<', date('Y-m-d'))
+        ->where('end_at', '>', date('Y-m-d'))
+        ->orderBy('start_at', 'asc')
+        ->first();
 
-    $prize = DB::table('prizes')
-      ->where('period', $current_period)
-      ->select('id', 'name', 'rank', 'image_url', 'period', 'id')
-      ->get();
+      $current_period_id = $selected_periods->id ?? 0;
+      $prizes = DB::table('prizes')
+        ->where('period_id', $current_period_id)
+        ->select('id', 'name', 'rank', 'image_url', 'period', 'id')
+        ->get();
 
-    if (!$prize) {
+
+      if (!$prizes) {
+        return Response::json([
+          'success' => false,
+          'code' => 404,
+          'message' => 'Data tidak ditemukan.'
+        ], 404);
+      }
+
+      return Response::json([
+        'success' => true,
+        'code' => 200,
+        'data' => $prizes
+      ], 200);
+    } catch (\Throwable $e) {
       return Response::json([
         'success' => false,
-        'code' => 404,
-        'message' => 'Data tidak ditemukan.'
-      ], 404);
+        'code' => 500,
+        'message' => 'Terjadi kesalahan ketika memproses data.'
+      ], 500);
     }
-
-    return Response::json([
-      'success' => true,
-      'code' => 200,
-      'data' => $prize
-    ], 200);
   }
 
   public function next_level(Request $request)
@@ -128,8 +142,19 @@ class GameController extends Controller
     }
 
     try {
-      $s_date = date('Y-m-01 00:00:00');
-      $l_date = date('Y-m-t 23:59:59');
+      $periods = DB::table('periods')
+        ->where('start_at', '<', date('Y-m-d'))
+        ->orderBy('start_at', 'desc')
+        ->get();
+      $first_period_id = $periods[0]->id ?? null;
+      $period_id = $query_period ?? $first_period_id;
+
+      $selected_periods = DB::table('periods')
+        ->where('id', $period_id)
+        ->first();
+
+      $s_date = date('Y-m-d 00:00:00', strtotime(date($selected_periods->start_at ?? 'Y-m-d')));
+      $e_date = date('Y-m-d 23:59:59', strtotime(date($selected_periods->end_at ?? 'Y-m-d')));
 
       $players = DB::table('player_logs')
         ->leftJoin('players', 'player_logs.player_id', 'players.id')
@@ -144,7 +169,7 @@ class GameController extends Controller
           DB::raw('MAX(levels.name) as max_level'),
         )
         ->where('player_logs.created_at', '>', $s_date)
-        ->where('player_logs.created_at', '<', $l_date)
+        ->where('player_logs.created_at', '<', $e_date)
         ->groupBy('players.id')
         ->orderBy('total_score', 'desc')
         ->limit(50)
@@ -179,16 +204,26 @@ class GameController extends Controller
     }
 
     try {
-      $prev_period = date("Y-m", strtotime('-1 month', strtotime(date('Y-m-d'))));
-      $s_date = date('Y-m-01 00:00:00', strtotime('-1 month', strtotime(date('Y-m-01'))));
-      $l_date = date('Y-m-t 23:59:59', strtotime('-1 month', strtotime(date('Y-m-t'))));
+      $periods = DB::table('periods')
+        ->where('end_at', '<', date('Y-m-d'))
+        ->orderBy('start_at', 'desc')
+        ->get();
+
+      $first_period_id = $periods[0]->id ?? null;
+      $period_id = $query_period ?? $first_period_id;
+
+      $selected_periods = DB::table('periods')
+        ->where('id', $period_id)
+        ->first();
 
       $prizes = DB::table('prizes')
-        ->where('period', $prev_period)
-        ->select('id', 'name', 'rank', 'image_url', 'period', 'id')
+        ->where('period_id', $selected_periods->id)
         ->get();
 
       $prize_count = count($prizes);
+
+      $s_date = date('Y-m-d 00:00:00', strtotime(date($selected_periods->start_at ?? 'Y-m-d')));
+      $e_date = date('Y-m-d 23:59:59', strtotime(date($selected_periods->end_at ?? 'Y-m-d')));
 
       $players = DB::table('player_logs')
         ->leftJoin('players', 'player_logs.player_id', 'players.id')
@@ -203,7 +238,7 @@ class GameController extends Controller
           DB::raw('MAX(levels.name) as max_level'),
         )
         ->where('player_logs.created_at', '>', $s_date)
-        ->where('player_logs.created_at', '<', $l_date)
+        ->where('player_logs.created_at', '<', $e_date)
         ->groupBy('players.id')
         ->orderBy('total_score', 'desc')
         ->limit($prize_count)

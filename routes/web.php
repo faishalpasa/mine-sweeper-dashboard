@@ -87,13 +87,13 @@ Route::middleware(['web_auth'])->prefix('prize')->group(function () {
   Route::get('/delete/{id}', [PrizeController::class, 'delete']);
 });
 
-// Route::middleware(['web_auth'])->prefix('period')->group(function () {
-//   Route::get('/', [PeriodController::class, 'index']);
-//   Route::get('/create', [PeriodController::class, 'create']);
-//   Route::post('/create', [PeriodController::class, 'post_create']);
-//   Route::get('/update/{id}', [PeriodController::class, 'update']);
-//   Route::post('/update/{id}', [PeriodController::class, 'post_update']);
-// });
+Route::middleware(['web_auth'])->prefix('period')->group(function () {
+  Route::get('/', [PeriodController::class, 'index']);
+  Route::get('/create', [PeriodController::class, 'create']);
+  Route::post('/create', [PeriodController::class, 'post_create']);
+  Route::get('/update/{id}', [PeriodController::class, 'update']);
+  Route::post('/update/{id}', [PeriodController::class, 'post_update']);
+});
 
 Route::middleware(['web_auth'])->prefix('terms')->group(function () {
   Route::get('/', [TermsController::class, 'index']);

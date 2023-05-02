@@ -245,7 +245,6 @@ class PlayerController extends Controller
 
   public function get_log(Request $request)
   {
-    $body = $request->all();
     $token = $request->header('x-token');
 
     $player = DB::table('players')->where('token', $token)->first();
@@ -266,8 +265,34 @@ class PlayerController extends Controller
     }
 
     try {
-      $s_date = date('Y-m-01 00:00:00');
-      $e_date = date('Y-m-t 23:59:59');
+      $current_period = DB::table('periods')
+        ->where('start_at', '<', date('Y-m-d'))
+        ->where('end_at', '>', date('Y-m-d'))
+        ->first();
+      $first_period_id = $current_period->id ?? 0;
+      $period_id = $query_period ?? $first_period_id;
+
+      $selected_period = DB::table('periods')
+        ->where('id', $period_id)
+        ->first();
+
+      $s_date = date('Y-m-d 00:00:00', strtotime(date($selected_period->start_at ?? 'Y-m-d')));
+      $e_date = date('Y-m-d 23:59:59', strtotime(date($selected_period->end_at ?? 'Y-m-d')));
+
+      if (!$selected_period) {
+        return Response::json([
+          'success' => false,
+          'code' => 200,
+          'data' => [
+            'columns' => 10,
+            'rows' => 10,
+            'mines' => 0,
+            'state' => '',
+            'is_game_over' => true
+          ],
+          'message' => 'Saat ini belum ada periode permainan yang aktif.'
+        ], 200);
+      }
 
       $last_state = DB::table('player_logs')
         ->where('player_id', $player->id)

@@ -34,25 +34,16 @@
         @csrf
         <div class="mb-3 col-md-6">
           <label for="name" class="form-label">Periode</label>
-          <div class="input-group">
-            <select class="form-select" name="period">
-              <option disabled selected>Pilih Periode</option>
-              <option value="01" @if(isset($prize->period)) {{explode('-', $prize->period)[1] == '01' ? 'selected' : ''}} @endif>Januari</option>
-              <option value="02" @if(isset($prize->period)) {{explode('-', $prize->period)[1] == '02' ? 'selected' : ''}} @endif>Februari</option>
-              <option value="03" @if(isset($prize->period)) {{explode('-', $prize->period)[1] == '03' ? 'selected' : ''}} @endif>Maret</option>
-              <option value="04" @if(isset($prize->period)) {{explode('-', $prize->period)[1] == '04' ? 'selected' : ''}} @endif>April</option>
-              <option value="05" @if(isset($prize->period)) {{explode('-', $prize->period)[1] == '05' ? 'selected' : ''}} @endif>Mei</option>
-              <option value="06" @if(isset($prize->period)) {{explode('-', $prize->period)[1] == '06' ? 'selected' : ''}} @endif>Juni</option>
-              <option value="07" @if(isset($prize->period)) {{explode('-', $prize->period)[1] == '07' ? 'selected' : ''}} @endif>Juli</option>
-              <option value="08" @if(isset($prize->period)) {{explode('-', $prize->period)[1] == '08' ? 'selected' : ''}} @endif>Agustus</option>
-              <option value="09" @if(isset($prize->period)) {{explode('-', $prize->period)[1] == '09' ? 'selected' : ''}} @endif>September</option>
-              <option value="10" @if(isset($prize->period)) {{explode('-', $prize->period)[1] == '10' ? 'selected' : ''}} @endif>Oktober</option>
-              <option value="11" @if(isset($prize->period)) {{explode('-', $prize->period)[1] == '11' ? 'selected' : ''}} @endif>November</option>
-              <option value="12" @if(isset($prize->period)) {{explode('-', $prize->period)[1] == '12' ? 'selected' : ''}} @endif>Desember</option>
-            </select>
-            <span class="input-group-text">{{date('Y')}}</span>
-          </div>
-          @error('period')
+          <select class="form-select" name="period_id">
+            <option disabled selected>Pilih Periode</option>
+            @foreach ($periods as $period)
+            <option @if(isset($prize->period_id)) {{$prize->period_id == $period->id ? 'selected' : ''}} @endif value="{{$period->id}}">
+              {{date_id($period->start_at)}} - {{date_id($period->end_at)}}
+            </option>
+            @endforeach
+          </select>
+
+          @error('period_id')
             <div class="invalid-feedback d-block">
               {{ $message }}
             </div>
