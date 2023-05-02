@@ -182,6 +182,30 @@ class LoginController extends Controller
       ], 500);
     }
 
+    $trim_msisdn = ltrim($body['msisdn'], '0');
+    $msisdn = '+62' . $trim_msisdn;
+
+    $check_sms = DB::table('sms_send')
+      ->where('msisdn', $msisdn)
+      ->orderBy('created_at', 'desc')
+      ->first();
+
+    if ($check_sms) {
+      $date_last_sms = date_create(date($check_sms->created_at));
+      $date_now = date_create(date('Y-m-d H:i:s'));
+      $diference = date_diff($date_last_sms, $date_now);
+
+      $minutes_left = 5 - (int)$diference->i;
+      $seconds_left = 60 - (int)$diference->s;
+      if ((int)$minutes_left > 0 && (int)$seconds_left > 0) {
+        return Response::json([
+          'success' => false,
+          'code' => 500,
+          'message' => 'Silakan coba kembali dalam ' . $minutes_left . ' menit lagi.'
+        ], 500);
+      }
+    }
+
     try {
       $user = DB::table('players')
         ->select('token')
@@ -192,6 +216,7 @@ class LoginController extends Controller
         $data = [
           'pin' => rand(100000, 999999),
           'is_first_time_pin' => 1,
+          'updated_at' => date('Y-m-d H:i:s')
         ];
 
         DB::table('players')
@@ -199,8 +224,6 @@ class LoginController extends Controller
           ->update($data);
 
         try {
-          $trim_msisdn = ltrim($body['msisdn'], '0');
-          $msisdn = '+62' . $trim_msisdn;
           $request = Http::get('http://10.11.10.2:8080/send.php?phone=' . $msisdn . '&text=Kode%20PIN%20' . $data['pin']);
 
           $response = json_decode($request, true);
