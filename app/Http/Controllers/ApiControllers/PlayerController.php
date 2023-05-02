@@ -383,7 +383,7 @@ class PlayerController extends Controller
       $level = $last_level ?? $first_level;
 
       return Response::json([
-        'success' => false,
+        'success' => true,
         'code' => 200,
         'data' => [
           'coins' => $player->coin ?? 0,
