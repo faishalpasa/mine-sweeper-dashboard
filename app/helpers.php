@@ -2,7 +2,7 @@
 
 function base_url($path = '')
 {
-  $host = 'http://127.0.0.1:8000';
+  $host = env('APP_URL');
   return $host . $path;
 }
 
