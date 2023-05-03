@@ -402,11 +402,11 @@ class GameController extends Controller
     $encoded_token = base64_encode($token);
 
     try {
-      $request = Http::withHeaders([
+      $request_http = Http::withHeaders([
         'Authorization' => 'Basic ' . $encoded_token,
       ])->get($api_url . '/ewallets/charges/' . $id);
 
-      $response = json_decode($request, true);
+      $response = json_decode($request_http, true);
 
       $data = [
         'status' => $response['status'] == 'PENDING' ? 'pending' : 'success',
@@ -429,6 +429,24 @@ class GameController extends Controller
         DB::table('players')
           ->where('id', $player->id)
           ->update(['coin' => $player->coin + $coin]);
+
+        $date_register = date_create(date($player->created_at));
+        $date_now = date_create(date('Y-m-d H:i:s'));
+        $date_diference = date_diff($date_register, $date_now);
+        $trx_id = $request->query('trx_id');
+        if ($date_diference->m < 1) {
+          $trim_msisdn = ltrim($player->msisdn, '0');
+          $msisdn = '+62' . $trim_msisdn;
+          $telco = get_telco($player->msisdn);
+          $price = $response['charge_amount'] ?? 0;
+
+          $postback_url = env('POSTBACK_URL');
+          try {
+            $full_postback_url = $postback_url . '?trx_id=' . $trx_id . '&msisdn=' . $msisdn . '&telco=' . $telco . '&price=' . $price;
+            Http::get($full_postback_url);
+          } catch (\Throwable $e) {
+          }
+        }
       }
 
       return Response::json([
@@ -490,11 +508,11 @@ class GameController extends Controller
         ],
         "payment_type" => "gopay",
       ];
-      $request = Http::withHeaders([
+      $request_http = Http::withHeaders([
         'Authorization' => 'Basic ' . $encoded_token,
       ])->post($api_url . '/v2/charge', $data);
 
-      $response = json_decode($request, true);
+      $response = json_decode($request_http, true);
 
       $data = [
         'player_id' => $player->id,
@@ -543,11 +561,11 @@ class GameController extends Controller
     $encoded_token = base64_encode($token);
 
     try {
-      $request = Http::withHeaders([
+      $request_http = Http::withHeaders([
         'Authorization' => 'Basic ' . $encoded_token,
       ])->get($api_url . '/v2/' . $id . '/status');
 
-      $response = json_decode($request, true);
+      $response = json_decode($request_http, true);
 
       $data = [
         'status' => $response['transaction_status'] == 'pending' ? 'pending' : 'success',
@@ -559,18 +577,6 @@ class GameController extends Controller
         ->where('player_id', $player->id)
         ->update($data);
 
-      // $date_register = date_create(date($player->created_at));
-      // $date_now = date_create(date('Y-m-d H:i:s'));
-      // $date_diference = date_diff($date_register, $date_now);
-      // if ($date_diference->m < 1) {
-      //   $trim_msisdn = ltrim($player->msisdn, '0');
-      //   $msisdn = '+62' . $trim_msisdn;
-      //   $telco = get_telco($player->msisdn);
-      //   $price = (int)$response['gross_amount'];
-
-      //   $postback_url = env('POSTBACK_URL');
-      //   dd($msisdn, $telco, $price);
-      // }
 
       if ($response['transaction_status'] == 'settlement') {
         $coin = 0;
@@ -583,6 +589,24 @@ class GameController extends Controller
         DB::table('players')
           ->where('id', $player->id)
           ->update(['coin' => $player->coin + $coin]);
+
+        $date_register = date_create(date($player->created_at));
+        $date_now = date_create(date('Y-m-d H:i:s'));
+        $date_diference = date_diff($date_register, $date_now);
+        $trx_id = $request->query('trx_id');
+        if ($date_diference->m < 1) {
+          $trim_msisdn = ltrim($player->msisdn, '0');
+          $msisdn = '+62' . $trim_msisdn;
+          $telco = get_telco($player->msisdn);
+          $price = $response['gross_amount'];
+
+          $postback_url = env('POSTBACK_URL');
+          try {
+            $full_postback_url = $postback_url . '?trx_id=' . $trx_id . '&msisdn=' . $msisdn . '&telco=' . $telco . '&price=' . $price;
+            Http::get($full_postback_url);
+          } catch (\Throwable $e) {
+          }
+        }
       }
 
       return Response::json([
