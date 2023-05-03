@@ -559,6 +559,19 @@ class GameController extends Controller
         ->where('player_id', $player->id)
         ->update($data);
 
+      // $date_register = date_create(date($player->created_at));
+      // $date_now = date_create(date('Y-m-d H:i:s'));
+      // $date_diference = date_diff($date_register, $date_now);
+      // if ($date_diference->m < 1) {
+      //   $trim_msisdn = ltrim($player->msisdn, '0');
+      //   $msisdn = '+62' . $trim_msisdn;
+      //   $telco = get_telco($player->msisdn);
+      //   $price = (int)$response['gross_amount'];
+
+      //   $postback_url = env('POSTBACK_URL');
+      //   dd($msisdn, $telco, $price);
+      // }
+
       if ($response['transaction_status'] == 'settlement') {
         $coin = 0;
         if ((int)$response['gross_amount'] == 10000) {

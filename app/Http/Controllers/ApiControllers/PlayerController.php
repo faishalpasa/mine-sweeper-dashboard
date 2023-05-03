@@ -424,8 +424,8 @@ class PlayerController extends Controller
           'coins' => (int)$player->coin ?? 0,
           'level_id' => (int)$level->id ?? 1,
           'level' => $level->name ?? 1,
-          'points' => (int)$last_state->total_score ?? 0,
-          'time' => (int)$last_time->total_time ?? 0,
+          'points' => $last_state ? (int)$last_state->total_score : 0,
+          'time' => $last_time ? (int)$last_time->total_time : 0,
         ]
       ], 200);
     } catch (\Throwable $e) {
