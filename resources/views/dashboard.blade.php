@@ -89,28 +89,30 @@
       Top Skor Periode Ini
     </div>
     <div class="card-body">
-      <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th>No. Handphone</th>
-            <th>Nama</th>
-            <th>Email</th>
-            <th>Level</th>
-            <th>Score</th>
-          </tr>
-        </thead>
-        <tbody>
-          @foreach ($top_scores as $top_scores)
-          <tr class="align-middle">
-            <td>{{$top_scores->player_msisdn}}</td>
-            <td>{{$top_scores->player_name}}</td>
-            <td>{{$top_scores->player_email}}</td>
-            <td>{{$top_scores->max_level}}</td>
-            <td>{{number_format($top_scores->total_score)}}</td>
-          </tr>
-          @endforeach
-        </tbody>
-      </table>
+      <div class="table-responsive">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>No. Handphone</th>
+              <th>Nama</th>
+              <th>Email</th>
+              <th>Level</th>
+              <th>Score</th>
+            </tr>
+          </thead>
+          <tbody>
+            @foreach ($top_scores as $top_scores)
+            <tr class="align-middle">
+              <td>{{$top_scores->player_msisdn}}</td>
+              <td>{{$top_scores->player_name}}</td>
+              <td>{{$top_scores->player_email}}</td>
+              <td>{{$top_scores->max_level}}</td>
+              <td>{{number_format($top_scores->total_score)}}</td>
+            </tr>
+            @endforeach
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 
@@ -120,34 +122,36 @@
       Pembelian Koin Terbaru
     </div>
     <div class="card-body">
-      <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th>Tanggal</th>
-            <th>No. Invoice</th>
-            <th>No. Handphone</th>
-            <th>Nama</th>
-            <th>Pembayaran Via</th>
-            <th>Total</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          @foreach ($coin_purchases as $idx => $coin_purchase)
-          <tr class="align-middle">
-            <td>{{$coin_purchase->created_at}}</td>
-            <td>{{$coin_purchase->invoice_no}}</td>
-            <td>{{$coin_purchase->msisdn}}</td>
-            <td>{{$coin_purchase->player_name}}</td>
-            <td>{{$coin_purchase->channel}}</td>
-            <td>Rp{{number_format($coin_purchase->amount)}}</td>
-            <td>
-              {{$coin_purchase->status != "pending" ? 'Terbayar' : 'Pending'}}
-            </td>
-          </tr>
-          @endforeach
-        </tbody>
-      </table>
+      <div class="table-responsive">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Tanggal</th>
+              <th>No. Invoice</th>
+              <th>No. Handphone</th>
+              <th>Nama</th>
+              <th>Pembayaran Via</th>
+              <th>Total</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            @foreach ($coin_purchases as $idx => $coin_purchase)
+            <tr class="align-middle">
+              <td>{{$coin_purchase->created_at}}</td>
+              <td>{{$coin_purchase->invoice_no}}</td>
+              <td>{{$coin_purchase->msisdn}}</td>
+              <td>{{$coin_purchase->player_name}}</td>
+              <td>{{$coin_purchase->channel}}</td>
+              <td>Rp{{number_format($coin_purchase->amount)}}</td>
+              <td>
+                {{$coin_purchase->status != "pending" ? 'Terbayar' : 'Pending'}}
+              </td>
+            </tr>
+            @endforeach
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 

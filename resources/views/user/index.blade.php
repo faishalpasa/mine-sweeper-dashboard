@@ -40,41 +40,43 @@
       <div class="mb-2">
         <a class="btn btn-sm btn-secondary" href="{{base_url('/user/create')}}">Buat baru</a>
       </div>
-      <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th>Nama</th>
-            <th>Email</th>
-            <th>Role</th>
-            @if($auth->role_id == 1)
-              <th style="width: 100px;"></th>
-            @endif
-          </tr>
-        </thead>
-        <tbody>
-          @foreach ($users as $user)
-          <tr class="align-middle">
-            <td>{{$user->name}}</td>
-            <td>{{$user->email}}</td>
-            <td>{{$user->role_name}}</td>
-            @if($auth->role_id == 1)
-            <td>
-              @if($user->id != 1)
-              <div class="btn-group btn-group-sm" role="group">
-                <a type="button" class="btn btn-outline-secondary" href="{{base_url('/user/update/'.$user->id)}}">
-                  Edit
-                </a>
-                <button type="button" class="btn btn-outline-secondary" onclick="handleToggleModalDelete({{json_encode($user)}})">
-                  Hapus
-                </button>
-              </div>
+      <div class="table-responsive">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Nama</th>
+              <th>Email</th>
+              <th>Role</th>
+              @if($auth->role_id == 1)
+                <th style="width: 100px;"></th>
               @endif
-            </td>
-            @endif
-          </tr>
-          @endforeach
-        </tbody>
-      </table>
+            </tr>
+          </thead>
+          <tbody>
+            @foreach ($users as $user)
+            <tr class="align-middle">
+              <td>{{$user->name}}</td>
+              <td>{{$user->email}}</td>
+              <td>{{$user->role_name}}</td>
+              @if($auth->role_id == 1)
+              <td>
+                @if($user->id != 1)
+                <div class="btn-group btn-group-sm" role="group">
+                  <a type="button" class="btn btn-outline-secondary" href="{{base_url('/user/update/'.$user->id)}}">
+                    Edit
+                  </a>
+                  <button type="button" class="btn btn-outline-secondary" onclick="handleToggleModalDelete({{json_encode($user)}})">
+                    Hapus
+                  </button>
+                </div>
+                @endif
+              </td>
+              @endif
+            </tr>
+            @endforeach
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>

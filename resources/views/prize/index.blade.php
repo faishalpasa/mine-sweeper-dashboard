@@ -44,35 +44,37 @@
       <div class="mb-2">
         <a class="btn btn-sm btn-secondary" href="{{base_url('/prize/create')}}">Buat baru</a>
       </div>
-      <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th>Peringkat</th>
-            <th>Nama Hadiah</th>
-            <th>Gambar Hadiah</th>
-            <th style="width: 100px;"></th>
-          </tr>
-        </thead>
-        <tbody>
-          @foreach ($prizes as $prize)
-          <tr class="align-middle">
-            <td>{{$prize->rank}}</td>
-            <td>{{$prize->name}}</td>
-            <td><img src="/files/{{$prize->image_url}}" class="image-prize" /></td>
-            <td>
-              <div class="btn-group btn-group-sm" role="group">
-                <a class="btn btn-outline-secondary" href="{{base_url('/prize/update/'.$prize->id)}}">
-                  Edit
-                </a>
-                <button type="button" class="btn btn-outline-secondary" onclick="handleToggleModalDelete({{json_encode($prize)}})">
-                  Hapus
-                </button>
-              </div>
-            </td>
-          </tr>
-          @endforeach
-        </tbody>
-      </table>
+      <div class="table-responsive">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Peringkat</th>
+              <th>Nama Hadiah</th>
+              <th>Gambar Hadiah</th>
+              <th style="width: 100px;"></th>
+            </tr>
+          </thead>
+          <tbody>
+            @foreach ($prizes as $prize)
+            <tr class="align-middle">
+              <td>{{$prize->rank}}</td>
+              <td>{{$prize->name}}</td>
+              <td><img src="/files/{{$prize->image_url}}" class="image-prize" /></td>
+              <td>
+                <div class="btn-group btn-group-sm" role="group">
+                  <a class="btn btn-outline-secondary" href="{{base_url('/prize/update/'.$prize->id)}}">
+                    Edit
+                  </a>
+                  <button type="button" class="btn btn-outline-secondary" onclick="handleToggleModalDelete({{json_encode($prize)}})">
+                    Hapus
+                  </button>
+                </div>
+              </td>
+            </tr>
+            @endforeach
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>

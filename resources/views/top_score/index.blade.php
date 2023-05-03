@@ -42,28 +42,30 @@
       </div>
     </div>
     <div class="card-body">
-      <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th>No. Handphone</th>
-            <th>Nama</th>
-            <th>Email</th>
-            <th>Level</th>
-            <th>Score</th>
-          </tr>
-        </thead>
-        <tbody>
-          @foreach ($players as $player)
-          <tr class="align-middle">
-            <td>{{$player->player_msisdn}}</td>
-            <td>{{$player->player_name}}</td>
-            <td>{{$player->player_email}}</td>
-            <td>{{$player->max_level}}</td>
-            <td>{{number_format($player->total_score)}}</td>
-          </tr>
-          @endforeach
-        </tbody>
-      </table>
+      <div class="table-responsive">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>No. Handphone</th>
+              <th>Nama</th>
+              <th>Email</th>
+              <th>Level</th>
+              <th>Score</th>
+            </tr>
+          </thead>
+          <tbody>
+            @foreach ($players as $player)
+            <tr class="align-middle">
+              <td>{{$player->player_msisdn}}</td>
+              <td>{{$player->player_name}}</td>
+              <td>{{$player->player_email}}</td>
+              <td>{{$player->max_level}}</td>
+              <td>{{number_format($player->total_score)}}</td>
+            </tr>
+            @endforeach
+          </tbody>
+        </table>
+      </div>
 
       {{ $players->links('layouts.pagination') }}
 

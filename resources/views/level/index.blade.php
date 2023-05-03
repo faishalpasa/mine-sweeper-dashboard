@@ -33,37 +33,39 @@
       <div class="mb-2">
         <a class="btn btn-sm btn-secondary" href="{{base_url('/level/create')}}">Buat baru</a>
       </div>
-      <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Kolom</th>
-            <th>Baris</th>
-            <th>Jumlah Bom</th>
-            <th style="width: 100px;"></th>
-          </tr>
-        </thead>
-        <tbody>
-          @foreach ($levels as $level)
-          <tr class="align-middle">
-            <td>Level {{$level->name}}</td>
-            <td>{{$level->cols}}</td>
-            <td>{{$level->rows}}</td>
-            <td>{{$level->mines}}</td>
-            <td>
-              <div class="btn-group btn-group-sm" role="group">
-                <a type="button" class="btn btn-outline-secondary" href="{{base_url('/level/update/'.$level->id)}}">
-                  Edit
-                </a>
-                <button type="button" class="btn btn-outline-secondary" onclick="handleToggleModalDelete({{json_encode($level)}})">
-                  Hapus
-                </button>
-              </div>
-            </td>
-          </tr>
-          @endforeach
-        </tbody>
-      </table>
+      <div class="table-responsive">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Kolom</th>
+              <th>Baris</th>
+              <th>Jumlah Bom</th>
+              <th style="width: 100px;"></th>
+            </tr>
+          </thead>
+          <tbody>
+            @foreach ($levels as $level)
+            <tr class="align-middle">
+              <td>Level {{$level->name}}</td>
+              <td>{{$level->cols}}</td>
+              <td>{{$level->rows}}</td>
+              <td>{{$level->mines}}</td>
+              <td>
+                <div class="btn-group btn-group-sm" role="group">
+                  <a type="button" class="btn btn-outline-secondary" href="{{base_url('/level/update/'.$level->id)}}">
+                    Edit
+                  </a>
+                  <button type="button" class="btn btn-outline-secondary" onclick="handleToggleModalDelete({{json_encode($level)}})">
+                    Hapus
+                  </button>
+                </div>
+              </td>
+            </tr>
+            @endforeach
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>

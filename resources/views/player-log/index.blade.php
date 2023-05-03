@@ -42,34 +42,36 @@
       </div>
     </div>
     <div class="card-body">
-      <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th>Tanggal</th>
-            <th>No. Handphone</th>
-            <th>Nama</th>
-            <th>Level</th>
-            <th>Koin</th>
-            <th>Waktu</th>
-            <th>Skor</th>
-          </tr>
-        </thead>
-        <tbody>
-          @foreach ($player_logs as $idx => $log)
-          <tr class="align-middle">
-            <td>{{$log->created_at}}</td>
-            <td>{{$log->player_msisdn}}</td>
-            <td>{{$log->player_name}}</td>
-            <td>{{$log->level_name}}</td>
-            <td>{{$log->player_coin}}</td>
-            <td>{{date("i:s", $log->time / 1000)}}</td>
-            <td class="{{$log->score > 0 ? 'text-success' : 'text-danger'}}">
-              {{$log->score > 0 ? '+'.$log->score : $log->score}}
-            </td>
-          </tr>
-          @endforeach
-        </tbody>
-      </table>
+      <div class="table-responsive">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Tanggal</th>
+              <th>No. Handphone</th>
+              <th>Nama</th>
+              <th>Level</th>
+              <th>Koin</th>
+              <th>Waktu</th>
+              <th>Skor</th>
+            </tr>
+          </thead>
+          <tbody>
+            @foreach ($player_logs as $idx => $log)
+            <tr class="align-middle">
+              <td>{{$log->created_at}}</td>
+              <td>{{$log->player_msisdn}}</td>
+              <td>{{$log->player_name}}</td>
+              <td>{{$log->level_name}}</td>
+              <td>{{$log->player_coin}}</td>
+              <td>{{date("i:s", $log->time / 1000)}}</td>
+              <td class="{{$log->score > 0 ? 'text-success' : 'text-danger'}}">
+                {{$log->score > 0 ? '+'.$log->score : $log->score}}
+              </td>
+            </tr>
+            @endforeach
+          </tbody>
+        </table>
+      </div>
 
       {{ $player_logs->links('layouts.pagination') }}
 

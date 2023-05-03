@@ -47,42 +47,44 @@
       <div class="mb-2">
         <a class="btn btn-sm btn-secondary" href="{{base_url('/player/create')}}">Buat baru</a>
       </div>
-      <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th>No. Handphone</th>
-            <th>Nama</th>
-            <th>Email</th>
-            <th>Jumlah Koin</th>
-            <th>Status</th>
-            <th style="width: 300px;"></th>
-          </tr>
-        </thead>
-        <tbody>
-          @foreach ($players as $idx => $player)
-          <tr class="align-middle">
-            <td>{{$player->msisdn}}</td>
-            <td>{{$player->name}}</td>
-            <td>{{$player->email}}</td>
-            <td>{{$player->coin}}</td>
-            <td>{{$player->status == 1 ? 'Active' : 'Banned'}}</td>
-            <td class="d-flex justify-content-center">
-              <div class="btn-group btn-group-sm" role="group">
-                <button type="button" class="btn btn-outline-secondary" onclick="handleToggleModalStatus({{json_encode($player)}})">
-                  Ubah Status
-                </button>
-                <button type="button" class="btn btn-outline-secondary" onclick="handleToggleModalCoin({{json_encode($player)}})">
-                  Ubah Koin
-                </button>
-                <a class="btn btn-outline-secondary" href="{{base_url('/player/update/'.$player->id)}}">
-                  Edit
-                </a>
-              </div>
-            </td>
-          </tr>
-          @endforeach
-        </tbody>
-      </table>
+      <div class="table-responsive">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>No. Handphone</th>
+              <th>Nama</th>
+              <th>Email</th>
+              <th>Jumlah Koin</th>
+              <th>Status</th>
+              <th style="width: 300px;"></th>
+            </tr>
+          </thead>
+          <tbody>
+            @foreach ($players as $idx => $player)
+            <tr class="align-middle">
+              <td>{{$player->msisdn}}</td>
+              <td>{{$player->name}}</td>
+              <td>{{$player->email}}</td>
+              <td>{{$player->coin}}</td>
+              <td>{{$player->status == 1 ? 'Active' : 'Banned'}}</td>
+              <td class="d-flex justify-content-center">
+                <div class="btn-group btn-group-sm" role="group">
+                  <button type="button" class="btn btn-outline-secondary" onclick="handleToggleModalStatus({{json_encode($player)}})">
+                    Ubah Status
+                  </button>
+                  <button type="button" class="btn btn-outline-secondary" onclick="handleToggleModalCoin({{json_encode($player)}})">
+                    Ubah Koin
+                  </button>
+                  <a class="btn btn-outline-secondary" href="{{base_url('/player/update/'.$player->id)}}">
+                    Edit
+                  </a>
+                </div>
+              </td>
+            </tr>
+            @endforeach
+          </tbody>
+        </table>
+      </div>
 
       {{ $players->links('layouts.pagination') }}
 

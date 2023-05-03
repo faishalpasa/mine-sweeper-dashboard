@@ -33,42 +33,44 @@
       <div class="mb-2">
         <a class="btn btn-sm btn-secondary" href="{{base_url('/period/create')}}">Buat baru</a>
       </div>
-      <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th>Nama Periode</th>
-            <th>Tanggal Mulai</th>
-            <th>Tanggal Akhir</th>
-            <th>Status</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          @foreach ($periods as $period)
-          <tr class="align-middle">
-            <td>{{$period->name}}</td>
-            <td>{{date_id($period->start_at)}}</td>
-            <td>{{date_id($period->end_at)}}</td>
-            <td>
-              @if(date('Y-m-d') < date($period->start_at))
-                Belum dimulai
-              @elseif(date('Y-m-d') > date($period->start_at) && date('Y-m-d') < date($period->end_at))
-                Aktif
-              @elseif(date('Y-m-d') > date($period->end_at))
-                Selesai
-              @endif
-            </td>
-            <td>
-              <div class="btn-group btn-group-sm" role="group">
-                <a type="button" class="btn btn-outline-secondary" href="{{base_url('/period/update/'.$period->id)}}">
-                  Edit
-                </a>
-              </div>
-            </td>
-          </tr>
-          @endforeach
-        </tbody>
-      </table>
+      <div class="table-responsive">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Nama Periode</th>
+              <th>Tanggal Mulai</th>
+              <th>Tanggal Akhir</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @foreach ($periods as $period)
+            <tr class="align-middle">
+              <td>{{$period->name}}</td>
+              <td>{{date_id($period->start_at)}}</td>
+              <td>{{date_id($period->end_at)}}</td>
+              <td>
+                @if(date('Y-m-d') < date($period->start_at))
+                  Belum dimulai
+                @elseif(date('Y-m-d') > date($period->start_at) && date('Y-m-d') < date($period->end_at))
+                  Aktif
+                @elseif(date('Y-m-d') > date($period->end_at))
+                  Selesai
+                @endif
+              </td>
+              <td>
+                <div class="btn-group btn-group-sm" role="group">
+                  <a type="button" class="btn btn-outline-secondary" href="{{base_url('/period/update/'.$period->id)}}">
+                    Edit
+                  </a>
+                </div>
+              </td>
+            </tr>
+            @endforeach
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>
