@@ -345,7 +345,6 @@ class PlayerController extends Controller
 
   public function get_data(Request $request)
   {
-    $body = $request->all();
     $token = $request->header('x-token');
 
     $player = DB::table('players')->where('token', $token)->first();
@@ -366,8 +365,19 @@ class PlayerController extends Controller
     }
 
     try {
-      $s_date = date('Y-m-01 00:00:00');
-      $e_date = date('Y-m-t 23:59:59');
+      $current_period = DB::table('periods')
+        ->where('start_at', '<', date('Y-m-d'))
+        ->where('end_at', '>', date('Y-m-d'))
+        ->first();
+      $first_period_id = $current_period->id ?? 0;
+      $period_id = $query_period ?? $first_period_id;
+
+      $selected_period = DB::table('periods')
+        ->where('id', $period_id)
+        ->first();
+
+      $s_date = date('Y-m-d 00:00:00', strtotime(date($selected_period->start_at ?? 'Y-m-d')));
+      $e_date = date('Y-m-d 23:59:59', strtotime(date($selected_period->end_at ?? 'Y-m-d')));
 
       $last_state = DB::table('player_logs')
         ->leftJoin('players', 'player_logs.player_id', 'players.id')
@@ -396,14 +406,26 @@ class PlayerController extends Controller
 
       $level = $last_level ?? $first_level;
 
+      $last_time = DB::table('player_logs')
+        ->select(
+          DB::raw('SUM(player_logs.time) as total_time'),
+        )
+        ->where('created_at', '>', $s_date)
+        ->where('created_at', '<', $e_date)
+        ->where('player_id', $player->id)
+        ->where('level_id', $level->id)
+        ->orderBy('id', 'desc')
+        ->first();
+
       return Response::json([
         'success' => true,
         'code' => 200,
         'data' => [
-          'coins' => $player->coin ?? 0,
-          'level_id' => $level->id ?? 1,
+          'coins' => (int)$player->coin ?? 0,
+          'level_id' => (int)$level->id ?? 1,
           'level' => $level->name ?? 1,
-          'points' => $last_state->total_score ?? 0,
+          'points' => (int)$last_state->total_score ?? 0,
+          'time' => (int)$last_time->total_time ?? 0,
         ]
       ], 200);
     } catch (\Throwable $e) {
