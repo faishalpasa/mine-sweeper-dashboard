@@ -142,11 +142,11 @@ class GameController extends Controller
     // }
 
     try {
-      $periods = DB::table('periods')
+      $current_period = DB::table('periods')
         ->where('start_at', '<', date('Y-m-d'))
-        ->orderBy('start_at', 'desc')
-        ->get();
-      $first_period_id = $periods[0]->id ?? null;
+        ->where('end_at', '>', date('Y-m-d'))
+        ->first();
+      $first_period_id = $current_period->id ?? 0;
       $period_id = $query_period ?? $first_period_id;
 
       $selected_periods = DB::table('periods')
@@ -170,9 +170,11 @@ class GameController extends Controller
         )
         ->where('player_logs.created_at', '>', $s_date)
         ->where('player_logs.created_at', '<', $e_date)
+        ->whereNotNull('players.id')
         ->groupBy('players.id')
         ->orderBy('total_score', 'desc')
-        ->limit(50)
+        ->orderBy('total_time', 'asc')
+        ->limit(25)
         ->get();
 
       return Response::json([
