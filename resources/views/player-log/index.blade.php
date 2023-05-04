@@ -13,8 +13,10 @@
   </ol>
   <div class="card mb-4">
     <div class="card-header d-flex align-items-center">
-      <i class="fas fa-server me-1"></i>
-      Daftar Log Permainan
+      <div class="d-none d-sm-flex align-items-center">
+        <i class="fas fa-server me-1"></i>
+        Daftar Log Permainan
+      </div>
       <div class="ms-auto me-0 ">
         <div class="input-group input-group-sm">
           <span class="input-group-text">

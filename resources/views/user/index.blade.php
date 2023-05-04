@@ -33,8 +33,10 @@
 
   <div class="card mb-4">
     <div class="card-header d-flex align-items-center">
-      <i class="fas fa-user me-1"></i>
-      Daftar User Dashboard
+      <div class="d-none d-sm-flex align-items-center">
+        <i class="fas fa-user me-1"></i>
+        Daftar User Dashboard
+      </div>
     </div>
     <div class="card-body">
       <div class="mb-2">

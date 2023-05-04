@@ -31,8 +31,10 @@
 
   <div class="card mb-4">
     <div class="card-header d-flex align-items-center">
-      <i class="fas fa-gift me-1"></i>
-      Daftar Metode Pembayaran
+      <div class="d-none d-sm-flex align-items-center">
+        <i class="fas fa-gift me-1"></i>
+        Daftar Metode Pembayaran
+      </div>
     </div>
     <div class="card-body">
       <div class="mb-2">

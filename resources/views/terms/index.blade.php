@@ -26,8 +26,10 @@
 
   <div class="card mb-4">
     <div class="card-header d-flex align-items-center">
-      <i class="fas fa-book me-1"></i>
-      Daftar Syarat dan Ketentuan
+      <div class="d-none d-sm-flex align-items-center">
+        <i class="fas fa-book me-1"></i>
+        Daftar Syarat dan Ketentuan
+      </div>
     </div>
     <div class="card-body">
       <div class="mb-2">

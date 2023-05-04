@@ -13,8 +13,10 @@
   </ol>
   <div class="card mb-4">
     <div class="card-header d-flex align-items-center">
-      <i class="fas fa-crown me-1"></i>
-      Daftar Top Skor
+      <div class="d-none d-sm-flex align-items-center">
+        <i class="fas fa-crown me-1"></i>
+        Daftar Top Skor
+      </div>
       <div class="ms-auto me-0 ">
         <div class="input-group input-group-sm">
           <span class="input-group-text">
