@@ -27,8 +27,19 @@ class DashboardController extends Controller
       ->first();
     $total_revenue = $revenue->total_amount;
 
-    $s_date = date('Y-m-01 00:00:00');
-    $l_date = date('Y-m-t 23:59:59');
+    $current_period = DB::table('periods')
+      ->where('start_at', '<', date('Y-m-d'))
+      ->where('end_at', '>', date('Y-m-d'))
+      ->first();
+    $first_period_id = $current_period->id ?? 0;
+    $period_id = $query_period ?? $first_period_id;
+
+    $selected_periods = DB::table('periods')
+      ->where('id', $period_id)
+      ->first();
+
+    $ts_s_date = date('Y-m-d 00:00:00', strtotime(date($selected_periods->start_at ?? 'Y-m-d')));
+    $ts_e_date = date('Y-m-d 23:59:59', strtotime(date($selected_periods->end_at ?? 'Y-m-d')));
 
     $top_scores = DB::table('player_logs')
       ->leftJoin('players', 'player_logs.player_id', 'players.id')
@@ -42,8 +53,8 @@ class DashboardController extends Controller
         DB::raw('SUM(player_logs.time) as total_time'),
         DB::raw('MAX(levels.name) as max_level'),
       )
-      ->where('player_logs.created_at', '>', $s_date)
-      ->where('player_logs.created_at', '<', $l_date)
+      ->where('player_logs.created_at', '>', $ts_s_date)
+      ->where('player_logs.created_at', '<', $ts_e_date)
       ->groupBy('players.id')
       ->orderBy('total_score', 'desc')
       ->limit(10)
