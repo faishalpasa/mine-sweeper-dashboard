@@ -80,6 +80,9 @@
                   <a class="btn btn-outline-secondary" href="{{base_url('/player/update/'.$player->id)}}">
                     Edit
                   </a>
+                  <button type="button" class="btn btn-outline-secondary" onclick="handleToggleModalDelete({{json_encode($player)}})">
+                    Hapus
+                  </button>
                 </div>
               </td>
             </tr>
@@ -139,12 +142,30 @@
     </form>
   </div>
 </div>
+
+<div class="modal fade" id="modal-delete" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Hapus Data</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="modal-delete-status-body">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn" onclick="handleCloseModalDelete()">Tutup</button>
+        <button type="button" class="btn btn-secondary" id="delete-button" onclick="handleClickDeleteButton(this)">Hapus</button>
+      </div>
+    </div>
+  </div>
+</div>
 @endsection
 
 @section('script')
 <script>
   const modalStatus = new bootstrap.Modal(document.getElementById('modal-status'))
   const modalCoin = new bootstrap.Modal(document.getElementById('modal-coin'))
+  const modalDelete = new bootstrap.Modal(document.getElementById('modal-delete'))
 
   const handleToggleModalStatus = (player) => {
     document.getElementById('modal-status-body').innerHTML = `<p>Anda yakin ingin mengubah status pemain <b>${player.name || player.msisdn}</b> menjadi <b>${player.status == 1 ? 'Banned' : 'Active'}</b>?</p>`
@@ -171,6 +192,24 @@
 
   const handleCloseModalCoin = () => {
     modalCoin.hide()
+  }
+
+  const handleToggleModalDelete = (user) => {
+    document.getElementById('modal-delete-status-body').innerHTML = `<p>Anda yakin ingin menghapus <b>${user.name || user.msisdn}</b>?`
+    document.getElementById('delete-button').setAttribute('data-user-id', user.id)
+
+    modalDelete.toggle()
+  }
+
+  const handleCloseModalDelete = () => {
+    modalDelete.hide()
+  }
+
+  const handleClickDeleteButton = (e) => {
+    const id = e.dataset.userId
+    const cleanUrl = window.location.href.split('?')[0]
+    const url = new URL(`${cleanUrl}/delete/${id}`)
+    window.location.href = url.toString()
   }
 
   const handleSearch = (e) => {

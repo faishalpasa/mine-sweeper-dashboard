@@ -151,4 +151,13 @@ class PlayerController extends Controller
 
     return redirect('/player')->with('success_message', 'Berhasil mengubah pemain');
   }
+
+  public function delete($id)
+  {
+    DB::table('players')
+      ->where('id', $id)
+      ->delete();
+
+    return redirect('/player')->with('success_message', 'Berhasil menghapus pemain');
+  }
 }

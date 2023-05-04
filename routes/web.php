@@ -39,6 +39,7 @@ Route::middleware(['web_auth'])->prefix('player')->group(function () {
   Route::get('/update-status/{id}', [PlayerController::class, 'update_status']);
   Route::post('/update-coin/{id}', [PlayerController::class, 'update_coin']);
   Route::post('/update/{id}', [PlayerController::class, 'post_update']);
+  Route::get('/delete/{id}', [PlayerController::class, 'delete']);
 });
 
 Route::middleware(['web_auth'])->prefix('top-score')->group(function () {
