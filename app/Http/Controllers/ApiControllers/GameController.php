@@ -130,16 +130,16 @@ class GameController extends Controller
 
   public function top_score(Request $request)
   {
-    $token = $request->header('x-token');
-    $player = DB::table('players')->where('token', $token)->first();
+    // $token = $request->header('x-token');
+    // $player = DB::table('players')->where('token', $token)->first();
 
-    if (!$player) {
-      return Response::json([
-        'success' => false,
-        'code' => 404,
-        'message' => 'Data tidak ditemukan.'
-      ], 404);
-    }
+    // if (!$player) {
+    //   return Response::json([
+    //     'success' => false,
+    //     'code' => 404,
+    //     'message' => 'Data tidak ditemukan.'
+    //   ], 404);
+    // }
 
     try {
       $periods = DB::table('periods')
@@ -191,17 +191,15 @@ class GameController extends Controller
 
   public function winner(Request $request)
   {
-    $token = $request->header('x-token');
-    $player = DB::table('players')->where('token', $token)->first();
-
-    $player = DB::table('players')->where('token', $token)->first();
-    if (!$player) {
-      return Response::json([
-        'success' => false,
-        'code' => 404,
-        'message' => 'Data tidak ditemukan.'
-      ], 404);
-    }
+    // $token = $request->header('x-token');
+    // $player = DB::table('players')->where('token', $token)->first();
+    // if (!$player) {
+    //   return Response::json([
+    //     'success' => false,
+    //     'code' => 404,
+    //     'message' => 'Data tidak ditemukan.'
+    //   ], 404);
+    // }
 
     try {
       $periods = DB::table('periods')

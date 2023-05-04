@@ -46,7 +46,7 @@ class LoginController extends Controller
         return Response::json([
           'success' =>  false,
           'code' =>  401,
-          'message' =>  'Nomor handphone telah di banned.'
+          'message' =>  'Nomor handphone telah di banned, silakan daftar dengan nomor lain.'
         ], 401);
       }
 
@@ -54,7 +54,7 @@ class LoginController extends Controller
         'success' => $user ? true : false,
         'code' => $user ? 200 : 404,
         'data' => $user,
-        'message' =>  $user ? '' : 'Nomor handphone tidak ditemukan.'
+        'message' =>  $user ? '' : 'Nomer HP tidak terdaftar, silahkan daftar terlebih dahulu dengan menekan tombol daftar.'
       ], $user ? 200 : 404);
     } catch (\Throwable $e) {
 
