@@ -43,7 +43,7 @@
     <div class="col-xl-3 col-md-6">
       <div class="card bg-secondary text-white mb-4">
         <div class="card-body">
-          <p>Transaksi Koin <span class="small-text">(Periode Ini)</span></p>
+          <p>Pembelian Koin <span class="small-text">(Periode Ini)</span></p>
           <p class="h1">{{$coin_purchases_per_period}}</p>
         </div>
         <div class="card-footer d-flex align-items-center justify-content-between">
