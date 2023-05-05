@@ -52,7 +52,11 @@
               <td>Level {{$level->name}}</td>
               <td>{{$level->cols}}</td>
               <td>{{$level->rows}}</td>
-              <td>{{$level->mines}} ({{ (int)$level->mines / ((int)$level->cols * (int)$level->rows) * 100 }}%)</td>
+              @php
+                $calculate_bomb_percentage = (int)$level->mines / ((int)$level->cols * (int)$level->rows) * 100;
+                $bomb_percentage = number_format((float)$calculate_bomb_percentage, 2, '.', '');
+              @endphp
+              <td>{{$level->mines}} ({{ $bomb_percentage }}%)</td>
               <td>
                 <div class="btn-group btn-group-sm" role="group">
                   <a type="button" class="btn btn-outline-secondary" href="{{base_url('/level/update/'.$level->id)}}">
