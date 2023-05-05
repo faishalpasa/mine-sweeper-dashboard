@@ -26,18 +26,20 @@ class DashboardController extends Controller
     $period_end_date = date('Y-m-d 23:59:59', strtotime(date($selected_periods->end_at ?? 'Y-m-d')));
 
     $total_players = DB::table('players')->count();
+
     $total_coin_purchases = DB::table('payments')->count();
+
     $coin_purchases_per_period = DB::table('payments')
       ->where('created_at', '>', $period_start_date)
       ->where('created_at', '<', $period_end_date)
       ->count();
+
     $revenue = DB::table('payments')
       ->where('status', 'success')
       ->select(DB::raw('SUM(amount) as total_amount'))
       ->first();
+
     $total_revenue = $revenue->total_amount;
-
-
 
     $top_scores = DB::table('player_logs')
       ->leftJoin('players', 'player_logs.player_id', 'players.id')
