@@ -42,7 +42,7 @@
               <th>Name</th>
               <th>Kolom</th>
               <th>Baris</th>
-              <th>Jumlah Bom</th>
+              <th>Jumlah Bom (%)</th>
               <th style="width: 100px;"></th>
             </tr>
           </thead>
@@ -52,7 +52,7 @@
               <td>Level {{$level->name}}</td>
               <td>{{$level->cols}}</td>
               <td>{{$level->rows}}</td>
-              <td>{{$level->mines}}</td>
+              <td>{{$level->mines}} ({{ (int)$level->mines / ((int)$level->cols * (int)$level->rows) * 100 }}%)</td>
               <td>
                 <div class="btn-group btn-group-sm" role="group">
                   <a type="button" class="btn btn-outline-secondary" href="{{base_url('/level/update/'.$level->id)}}">

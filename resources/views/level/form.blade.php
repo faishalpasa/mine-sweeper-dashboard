@@ -54,7 +54,7 @@
 
         <div class="mb-3 col-md-6">
           <label for="name" class="form-label">Jumlah Kolom</label>
-          <input type="text" class="form-control" placeholder="Kolom" value="{{ isset($level->cols) ? $level->cols : old('cols') }}" name="cols">
+          <input id="input-column" type="text" class="form-control" placeholder="Kolom" value="{{ isset($level->cols) ? $level->cols : old('cols') }}" name="cols" onkeyup="handleCalculateBombPerentage()">
           @error('cols')
             <div class="invalid-feedback d-block">
               {{ $message }}
@@ -64,7 +64,7 @@
 
         <div class="mb-3 col-md-6">
           <label for="name" class="form-label">Jumlah Baris</label>
-          <input type="text" class="form-control" placeholder="Baris" value="{{ isset($level->rows) ? $level->rows : old('rows') }}" name="rows">
+          <input id="input-row" type="text" class="form-control" placeholder="Baris" value="{{ isset($level->rows) ? $level->rows : old('rows') }}" name="rows" onkeyup="handleCalculateBombPerentage()">
           @error('rows')
             <div class="invalid-feedback d-block">
               {{ $message }}
@@ -74,12 +74,22 @@
 
         <div class="mb-3 col-md-6">
           <label for="name" class="form-label">Jumlah Bom</label>
-          <input type="text" class="form-control" placeholder="Jumlah Bom" value="{{ isset($level->mines) ? $level->mines : old('mines') }}" name="mines">
-          @error('mines')
-            <div class="invalid-feedback d-block">
-              {{ $message }}
+          <div class="d-flex gap-2">
+            <div class="d-flex flex-column w-50">
+              <input id="input-bomb" type="text" class="form-control" placeholder="Jumlah Bom" value="{{ isset($level->mines) ? $level->mines : old('mines') }}" name="mines" onkeyup="handleCalculateBombPerentage()">
+              @error('mines')
+                <div class="invalid-feedback d-block">
+                  {{ $message }}
+                </div>
+              @enderror
             </div>
-          @enderror
+            <div class="input-group w-50">
+              <input disabled class="form-control" id="input-bom-percentage">
+              <span class="input-group-text">
+                %
+              </span>
+            </div>
+          </div>
         </div>
 
         <div class="mb-3 col-md-6">
@@ -112,6 +122,22 @@
 @section('script')
 <script>
   const modal = new bootstrap.Modal(document.getElementById('modal-status'))
+
+  const decimal = (value) => {
+    return Math.round(value * 100) / 100
+  }
+
+  const handleCalculateBombPerentage = () => {
+    const columnValue = document.getElementById('input-column').value
+    const rowValue = document.getElementById('input-row').value
+    const bombValue = document.getElementById('input-bomb').value
+    const bombPercentage = bombValue / (columnValue * rowValue) * 100
+
+    const bombPercentageValue = isFinite(bombPercentage) ? decimal(bombPercentage) : 0
+    document.getElementById('input-bom-percentage').value = bombPercentageValue
+  }
+
+  handleCalculateBombPerentage()
 
   const handleToggleModal = () => {
     const player = @json($level)
