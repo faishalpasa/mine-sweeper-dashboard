@@ -11,22 +11,6 @@ class DashboardController extends Controller
 {
   public function index()
   {
-
-    $s_date = date('Y-m-d 00:00:00');
-    $e_date = date('Y-m-d 23:59:59');
-
-    $total_players = DB::table('players')->count();
-    $total_coin_purchases = DB::table('payments')->count();
-    $coin_purchases_per_day = DB::table('payments')
-      ->where('created_at', '>', $s_date)
-      ->where('created_at', '<', $e_date)
-      ->count();
-    $revenue = DB::table('payments')
-      ->where('status', 'success')
-      ->select(DB::raw('SUM(amount) as total_amount'))
-      ->first();
-    $total_revenue = $revenue->total_amount;
-
     $current_period = DB::table('periods')
       ->where('start_at', '<', date('Y-m-d'))
       ->where('end_at', '>', date('Y-m-d'))
@@ -38,8 +22,22 @@ class DashboardController extends Controller
       ->where('id', $period_id)
       ->first();
 
-    $ts_s_date = date('Y-m-d 00:00:00', strtotime(date($selected_periods->start_at ?? 'Y-m-d')));
-    $ts_e_date = date('Y-m-d 23:59:59', strtotime(date($selected_periods->end_at ?? 'Y-m-d')));
+    $period_start_date = date('Y-m-d 00:00:00', strtotime(date($selected_periods->start_at ?? 'Y-m-d')));
+    $period_end_date = date('Y-m-d 23:59:59', strtotime(date($selected_periods->end_at ?? 'Y-m-d')));
+
+    $total_players = DB::table('players')->count();
+    $total_coin_purchases = DB::table('payments')->count();
+    $coin_purchases_per_period = DB::table('payments')
+      ->where('created_at', '>', $period_start_date)
+      ->where('created_at', '<', $period_end_date)
+      ->count();
+    $revenue = DB::table('payments')
+      ->where('status', 'success')
+      ->select(DB::raw('SUM(amount) as total_amount'))
+      ->first();
+    $total_revenue = $revenue->total_amount;
+
+
 
     $top_scores = DB::table('player_logs')
       ->leftJoin('players', 'player_logs.player_id', 'players.id')
@@ -53,8 +51,8 @@ class DashboardController extends Controller
         DB::raw('SUM(player_logs.time) as total_time'),
         DB::raw('MAX(levels.name) as max_level'),
       )
-      ->where('player_logs.created_at', '>', $ts_s_date)
-      ->where('player_logs.created_at', '<', $ts_e_date)
+      ->where('player_logs.created_at', '>', $period_start_date)
+      ->where('player_logs.created_at', '<', $period_end_date)
       ->groupBy('players.id')
       ->orderBy('total_score', 'desc')
       ->limit(10)
@@ -70,7 +68,7 @@ class DashboardController extends Controller
     return view('dashboard', [
       'total_players' => $total_players,
       'total_coin_purchases' => $total_coin_purchases,
-      'coin_purchases_per_day' => $coin_purchases_per_day,
+      'coin_purchases_per_period' => $coin_purchases_per_period,
       'total_revenue' => $total_revenue,
       'top_scores' => $top_scores,
       'coin_purchases' => $coin_purchases

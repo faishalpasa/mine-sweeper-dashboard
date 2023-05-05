@@ -31,7 +31,7 @@
     <div class="col-xl-3 col-md-6">
       <div class="card bg-secondary text-white mb-4">
         <div class="card-body">
-          <p>Total Transaksi Pembelian Koin</p>
+          <p>Total Pembelian Koin</p>
           <p class="h1">{{number_format($total_coin_purchases)}}</p>
         </div>
         <div class="card-footer d-flex align-items-center justify-content-between">
@@ -43,8 +43,8 @@
     <div class="col-xl-3 col-md-6">
       <div class="card bg-secondary text-white mb-4">
         <div class="card-body">
-          <p>Transaksi Pembelian Koin <span class="small-text">(Hari Ini)</span></p>
-          <p class="h1">{{$coin_purchases_per_day}}</p>
+          <p>Transaksi Koin <span class="small-text">(Periode Ini)</span></p>
+          <p class="h1">{{$coin_purchases_per_period}}</p>
         </div>
         <div class="card-footer d-flex align-items-center justify-content-between">
           <a class="small text-white stretched-link" style="text-decoration: none">&nbsp;</a>
