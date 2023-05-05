@@ -35,9 +35,9 @@ class PlayerController extends Controller
     if ($check_msisdn) {
       return Response::json([
         'success' => false,
-        'code' => 500,
+        'code' => 409,
         'message' => 'Nomor handphone telah digunakan.'
-      ], 500);
+      ], 409);
     }
 
     try {
