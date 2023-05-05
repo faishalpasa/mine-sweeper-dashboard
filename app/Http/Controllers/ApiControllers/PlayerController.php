@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Http;
 class PlayerController extends Controller
 {
 
-  public function create(Request $request)
+  public function pre_create(Request $request)
   {
     $body = $request->all();
 
@@ -40,11 +40,163 @@ class PlayerController extends Controller
       ], 409);
     }
 
+    $trim_msisdn = ltrim($body['msisdn'], '0');
+    $msisdn = '+62' . $trim_msisdn;
+    $pin = rand(1000, 9999);
+
+    $check_sms = DB::table('sms_send')
+      ->where('msisdn', $msisdn)
+      ->orderBy('created_at', 'desc')
+      ->first();
+
+    if ($check_sms) {
+      $date_last_sms = date_create(date($check_sms->created_at));
+      $date_now = date_create(date('Y-m-d H:i:s'));
+      $diference = date_diff($date_last_sms, $date_now);
+
+      $minutes_left = 1 - (int)$diference->i;
+      $seconds_left = 60 - (int)$diference->s;
+      if ((int)$minutes_left > 0 && (int)$seconds_left > 0) {
+        return Response::json([
+          'success' => false,
+          'code' => 409,
+          'message' => 'SMS sudah terkirim ke nomor HP Anda. Silakan coba kembali dalam 1 menit lagi.'
+        ], 409);
+      }
+    }
+
+    try {
+      $request = Http::get('http://10.11.10.2:8080/send.php?phone=' . $msisdn . '&text=Kode%20PIN%20' . $pin);
+      $response = json_decode($request, true);
+
+      $data_sms = [
+        'msisdn' => $msisdn,
+        'pin' => $pin,
+        'created_at' => date('Y-m-d H:i:s')
+      ];
+      DB::table('sms_send')->insert($data_sms);
+
+      return Response::json([
+        'success' => true,
+        'code' => 200,
+        'message' => 'SMS terkirim.'
+      ], 200);
+    } catch (\Throwable $e) {
+      // $response_error = json_decode($e, true);
+      // dd($e->getMessage());
+      return Response::json([
+        'success' => false,
+        'code' => 500,
+        'message' => 'Terjadi kesalahan ketika mengirim SMS.'
+      ], 500);
+    }
+  }
+
+  public function pre_create_check(Request $request)
+  {
+    $body = $request->all();
+
+    $validator = Validator::make($body, [
+      'msisdn' => 'required',
+      'pin' => 'required'
+    ]);
+
+    if ($validator->fails()) {
+      $errors = $validator->errors();
+
+      return Response::json([
+        'success' => false,
+        'code' => 500,
+        'message' => $errors->first()
+      ], 500);
+    }
+
+    try {
+      $trim_msisdn = ltrim($body['msisdn'], '0');
+      $msisdn = '+62' . $trim_msisdn;
+      $pin = $body['pin'];
+
+      $check_sms = DB::table('sms_send')
+        ->where('msisdn', $msisdn)
+        ->where('pin', $pin)
+        ->orderBy('created_at', 'desc')
+        ->first();
+
+      if ($check_sms) {
+        return Response::json([
+          'success' => true,
+          'code' => 200,
+          'data' => $check_sms
+        ], 200);
+      } else {
+        return Response::json([
+          'success' => false,
+          'code' => 404,
+          'message' => 'PIN tidak sesuai.'
+        ], 404);
+      }
+    } catch (\Throwable $e) {
+      return Response::json([
+        'success' => false,
+        'code' => 500,
+        'message' => 'Terjadi kesalahan ketika memproses data.'
+      ], 500);
+    }
+  }
+
+  public function msisdn_check($msisdn)
+  {
+    try {
+      $check_msisdn = DB::table('players')->select('id', 'msisdn', 'name', 'email')->where('msisdn', $msisdn)->first();
+
+      return Response::json([
+        'success' => true,
+        'code' => 200,
+        'data' => $check_msisdn
+      ], 200);
+    } catch (\Throwable $e) {
+
+      return Response::json([
+        'success' => false,
+        'code' => 500,
+        'message' => 'Terjadi kesalahan ketika memproses data.'
+      ], 500);
+    }
+  }
+
+  public function create(Request $request)
+  {
+    $body = $request->all();
+
+    $validator = Validator::make($body, [
+      'msisdn' => 'required',
+      'pin' => 'required'
+    ]);
+
+    if ($validator->fails()) {
+      $errors = $validator->errors();
+
+      return Response::json([
+        'success' => false,
+        'code' => 500,
+        'message' => $errors->first()
+      ], 500);
+    }
+
+    $check_msisdn = DB::table('players')->where('msisdn', $body['msisdn'])->first();
+    if ($check_msisdn) {
+      return Response::json([
+        'success' => false,
+        'code' => 409,
+        'message' => 'Nomor handphone telah digunakan.'
+      ], 409);
+    }
+
     try {
       $data = [
         'msisdn' => $body['msisdn'],
         'token' => Str::random(20),
-        'pin' => rand(100000, 999999),
+        'pin' => $body['pin'],
         'status' => 1,
         'is_first_time_pin' => 1,
         'is_game_over' => 0,
@@ -54,21 +206,6 @@ class PlayerController extends Controller
 
       $id = DB::table('players')->insertGetId($data);
       $new_player = DB::table('players')->where('id', $id)->first();
-
-      try {
-        $trim_msisdn = ltrim($data['msisdn'], '0');
-        $msisdn = '+62' . $trim_msisdn;
-        $request = Http::get('http://10.11.10.2:8080/send.php?phone=' . $msisdn . '&text=Kode%20PIN%20' . $data['pin']);
-
-        $response = json_decode($request, true);
-        $data_sms = [
-          'msisdn' => $msisdn,
-          'created_at' => date('Y-m-d H:i:s')
-        ];
-        DB::table('sms_send')->insert($data_sms);
-      } catch (\Throwable $e) {
-        // var_dump($e);
-      }
 
       return Response::json([
         'success' => true,

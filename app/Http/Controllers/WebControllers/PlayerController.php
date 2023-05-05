@@ -58,7 +58,7 @@ class PlayerController extends Controller
       'email' => $body['email'],
       'msisdn' => $body['msisdn'],
       'token' => Str::random(20),
-      'pin' => rand(100000, 999999),
+      'pin' => rand(1000, 9999),
       'status' => 1,
       'is_first_time_pin' => 1,
       'is_game_over' => 0,

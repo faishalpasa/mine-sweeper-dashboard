@@ -195,14 +195,14 @@ class LoginController extends Controller
       $date_now = date_create(date('Y-m-d H:i:s'));
       $diference = date_diff($date_last_sms, $date_now);
 
-      $minutes_left = 5 - (int)$diference->i;
+      $minutes_left = 1 - (int)$diference->i;
       $seconds_left = 60 - (int)$diference->s;
       if ((int)$minutes_left > 0 && (int)$seconds_left > 0) {
         return Response::json([
           'success' => false,
-          'code' => 500,
-          'message' => 'Silakan coba kembali dalam ' . $minutes_left . ' menit lagi.'
-        ], 500);
+          'code' => 409,
+          'message' => 'Silakan coba kembali dalam 1 menit lagi.'
+        ], 409);
       }
     }
 
@@ -214,7 +214,7 @@ class LoginController extends Controller
 
       if ($user) {
         $data = [
-          'pin' => rand(100000, 999999),
+          'pin' => rand(1000, 9999),
           'is_first_time_pin' => 1,
           'updated_at' => date('Y-m-d H:i:s')
         ];
@@ -229,6 +229,7 @@ class LoginController extends Controller
           $response = json_decode($request, true);
           $data_sms = [
             'msisdn' => $msisdn,
+            'pin' => $data['pin'],
             'created_at' => date('Y-m-d H:i:s')
           ];
           DB::table('sms_send')->insert($data_sms);
