@@ -409,7 +409,7 @@ class GameController extends Controller
       $response = json_decode($request_http, true);
 
       $data = [
-        'status' => $response['status'] == 'PENDING' ? 'pending' : 'success',
+        'status' => $response['status'] == 'SUCCEEDED' ? 'success' : $response['status'],
         'updated_at' => date('Y-m-d H:i:s')
       ];
 
@@ -570,7 +570,7 @@ class GameController extends Controller
       $response = json_decode($request_http, true);
 
       $data = [
-        'status' => $response['transaction_status'] == 'pending' ? 'pending' : 'success',
+        'status' => $response['transaction_status'] == 'settlement' ? 'success' : $response['transaction_status'],
         'updated_at' => date('Y-m-d H:i:s')
       ];
 
