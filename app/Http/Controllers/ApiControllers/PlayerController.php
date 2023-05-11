@@ -132,7 +132,7 @@ class PlayerController extends Controller
         return Response::json([
           'success' => false,
           'code' => 404,
-          'message' => 'PIN tidak sesuai.'
+          'message' => 'PIN salah, silahkan coba lagi.'
         ], 404);
       }
     } catch (\Throwable $e) {
