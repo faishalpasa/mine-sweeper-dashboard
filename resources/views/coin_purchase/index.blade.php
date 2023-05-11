@@ -60,7 +60,13 @@
               <td>{{$coin_purchase->invoice_no}}</td>
               <td>{{$coin_purchase->msisdn}}</td>
               <td>{{$coin_purchase->player_name}}</td>
-              <td>{{$coin_purchase->channel}}</td>
+              <td>
+                @if($coin_purchase->channel == 'gopay')
+                Gopay
+                @elseif($coin_purchase->channel == 'ID_OVO')
+                OVO
+                @endif
+              </td>
               <td>Rp{{number_format($coin_purchase->amount)}}</td>
               <td>
                 {{strtoupper($coin_purchase->status)}}
