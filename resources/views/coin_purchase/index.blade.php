@@ -63,7 +63,7 @@
               <td>{{$coin_purchase->channel}}</td>
               <td>Rp{{number_format($coin_purchase->amount)}}</td>
               <td>
-                {{$coin_purchase->status == "success" ? 'Success' : $coin_purchase->status}}
+                {{strtoupper($coin_purchase->status)}}
               </td>
             </tr>
             @endforeach
