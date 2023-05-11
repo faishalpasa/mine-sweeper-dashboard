@@ -55,6 +55,7 @@ class DashboardController extends Controller
       )
       ->where('player_logs.created_at', '>', $period_start_date)
       ->where('player_logs.created_at', '<', $period_end_date)
+      ->whereNotNull('players.id')
       ->groupBy('players.id')
       ->orderBy('total_score', 'desc')
       ->limit(10)
