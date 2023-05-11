@@ -97,7 +97,7 @@ class LoginController extends Controller
         'success' => $user ? true : false,
         'code' => $user ? 200 : 404,
         'data' => $user,
-        'message' =>  $user ? '' : 'PIN yang kamu masukan salah.'
+        'message' =>  $user ? '' : 'PIN salah, silahkan coba lagi.'
       ], $user ? 200 : 404);
     } catch (\Throwable $e) {
 
