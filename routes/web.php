@@ -15,6 +15,7 @@ use App\Http\Controllers\WebControllers\PrizeController;
 use App\Http\Controllers\WebControllers\TermsController;
 use App\Http\Controllers\WebControllers\PaymentMethodController;
 use App\Http\Controllers\WebControllers\UserController;
+use App\Http\Controllers\WebControllers\MessageController;
 
 
 Route::prefix('login')->group(function () {
@@ -121,4 +122,12 @@ Route::middleware(['web_auth'])->prefix('user')->group(function () {
   Route::get('/update/{id}', [UserController::class, 'update']);
   Route::post('/update/{id}', [UserController::class, 'post_update']);
   Route::get('/delete/{id}', [UserController::class, 'delete']);
+});
+
+Route::middleware(['web_auth'])->prefix('message')->group(function () {
+  Route::get('/', [MessageController::class, 'index']);
+  Route::get('/create', [MessageController::class, 'create']);
+  Route::post('/create', [MessageController::class, 'post_create']);
+  Route::get('/update/{id}', [MessageController::class, 'update']);
+  Route::post('/update/{id}', [MessageController::class, 'post_update']);
 });

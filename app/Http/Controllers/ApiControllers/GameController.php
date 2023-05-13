@@ -625,4 +625,68 @@ class GameController extends Controller
       ], 500);
     }
   }
+
+  public function post_message(Request $request)
+  {
+    $token = $request->header('x-token');
+    $player = DB::table('players')->where('token', $token)->first();
+
+    if (!$player) {
+      return Response::json([
+        'success' => false,
+        'code' => 404,
+        'message' => 'Data tidak ditemukan.'
+      ], 404);
+    }
+
+    $body = $request->all();
+
+    $validator = Validator::make($body, [
+      'message' => 'required|string|max:1000',
+    ]);
+
+    if ($validator->fails()) {
+      $errors = $validator->errors();
+
+      return Response::json([
+        'success' => false,
+        'code' => 500,
+        'message' => $errors->first()
+      ], 500);
+    }
+
+    $check_limit = DB::table('messages')
+      ->where('player_id', $player->id)
+      ->whereDate('created_at', date('Y-m-d'))
+      ->count();
+
+    if ($check_limit > 4) {
+      return Response::json([
+        'success' => false,
+        'code' => 403,
+        'message' => 'Anda telah mencapai batas maksimal.'
+      ], 403);
+    }
+
+    try {
+      $data = [
+        'message' => $body['message'],
+        'player_id' => $player->id,
+        'created_at' => date('Y-m-d H:i:s')
+      ];
+
+      DB::table('messages')->insert($data);
+
+      return Response::json([
+        'success' => true,
+        'code' => 200,
+      ], 200);
+    } catch (\Throwable $e) {
+      return Response::json([
+        'success' => false,
+        'code' => 500,
+        'message' => 'Terjadi kesalahan ketika memproses data.'
+      ], 500);
+    }
+  }
 }

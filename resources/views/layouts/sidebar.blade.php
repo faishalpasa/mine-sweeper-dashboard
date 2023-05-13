@@ -29,7 +29,11 @@ $auth = \App\Http\Controllers\WebControllers\UserController::get_auth();
         Log Permainan
       </a>
 
-      <div class="sb-sidenav-menu-heading">Pembayaran</div>
+      <div class="sb-sidenav-menu-heading">Customer Care</div>
+      <a class="nav-link" href="{{ base_url('/message') }}">
+        <div class="sb-nav-link-icon"><i class="fas fa-message"></i></div>
+        Pesan
+      </a>
       <a class="nav-link" href="{{ base_url('/coin-purchase') }}">
         <div class="sb-nav-link-icon"><i class="fas fa-coins"></i></div>
         Pembelian Koin
