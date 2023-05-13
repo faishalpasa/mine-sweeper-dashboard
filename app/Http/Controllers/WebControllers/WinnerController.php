@@ -36,6 +36,7 @@ class WinnerController extends Controller
     $players = DB::table('player_logs')
       ->leftJoin('players', 'player_logs.player_id', 'players.id')
       ->leftJoin('levels', 'player_logs.level_id', 'levels.id')
+      ->whereNotNull('players.id')
       ->where('player_logs.created_at', '>', $s_date)
       ->where('player_logs.created_at', '<', $e_date)
       ->select(
