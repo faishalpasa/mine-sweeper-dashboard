@@ -239,7 +239,7 @@ class GameController extends Controller
       )
       ->where('player_logs.created_at', '>', $s_date)
       ->where('player_logs.created_at', '<', $e_date)
-      ->whereNotNull('players.id')
+      // ->whereNotNull('players.id')
       ->groupBy('players.id')
       ->orderBy('total_score', 'desc')
       ->limit($prize_count)
