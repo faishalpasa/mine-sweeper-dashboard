@@ -664,7 +664,7 @@ class GameController extends Controller
       return Response::json([
         'success' => false,
         'code' => 403,
-        'message' => 'Anda telah mencapai batas maksimal.'
+        'message' => 'Anda mencapai batas maksimal pengiriman pesan, coba lagi besok.'
       ], 403);
     }
 
