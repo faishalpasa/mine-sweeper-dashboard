@@ -248,7 +248,7 @@ class GameController extends Controller
     $winners = [];
 
     foreach ($prizes as $idx => $prize) {
-      if ($players[$idx]) {
+      if (isset($players[$idx])) {
         $winners[$idx] = [
           'player_id' => $players[$idx]->player_id,
           'player_name' => $players[$idx]->player_name,
