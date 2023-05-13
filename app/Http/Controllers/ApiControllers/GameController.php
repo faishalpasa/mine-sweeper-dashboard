@@ -247,15 +247,17 @@ class GameController extends Controller
 
     $winners = [];
 
-    // foreach ($prizes as $idx => $prize) {
-    //   $winners[$idx] = [
-    //     'player_id' => $players[$idx]->player_id,
-    //     'player_name' => $players[$idx]->player_name,
-    //     'player_msisdn' => $players[$idx]->player_msisdn,
-    //     'total_score' => $players[$idx]->total_score,
-    //     'prize_name' => $prize->name,
-    //   ];
-    // }
+    foreach ($prizes as $idx => $prize) {
+      if ($players[$idx]) {
+        $winners[$idx] = [
+          'player_id' => $players[$idx]->player_id,
+          'player_name' => $players[$idx]->player_name,
+          'player_msisdn' => $players[$idx]->player_msisdn,
+          'total_score' => $players[$idx]->total_score,
+          'prize_name' => $prize->name,
+        ];
+      }
+    }
 
     return Response::json([
       'success' => true,
