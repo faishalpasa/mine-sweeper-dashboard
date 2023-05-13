@@ -228,6 +228,9 @@ class GameController extends Controller
     $players = DB::table('player_logs')
       ->leftJoin('players', 'player_logs.player_id', 'players.id')
       ->leftJoin('levels', 'player_logs.level_id', 'levels.id')
+      ->whereNotNull('players.id')
+      ->where('player_logs.created_at', '>', $s_date)
+      ->where('player_logs.created_at', '<', $e_date)
       ->select(
         'players.id as player_id',
         'players.name as player_name',
@@ -237,9 +240,6 @@ class GameController extends Controller
         DB::raw('SUM(player_logs.time) as total_time'),
         DB::raw('MAX(levels.name) as max_level'),
       )
-      ->where('player_logs.created_at', '>', $s_date)
-      ->where('player_logs.created_at', '<', $e_date)
-      // ->whereNotNull('players.id')
       ->groupBy('players.id')
       ->orderBy('total_score', 'desc')
       ->limit($prize_count)
