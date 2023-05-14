@@ -16,7 +16,7 @@ class GameController extends Controller
   {
     try {
       $selected_periods = DB::table('periods')
-        ->where('start_at', '<', date('Y-m-d'))
+        ->where('start_at', '<=', date('Y-m-d'))
         ->where('end_at', '>', date('Y-m-d'))
         ->orderBy('start_at', 'asc')
         ->first();
