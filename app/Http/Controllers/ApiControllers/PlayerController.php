@@ -419,7 +419,7 @@ class PlayerController extends Controller
 
     try {
       $current_period = DB::table('periods')
-        ->where('start_at', '<', date('Y-m-d'))
+        ->where('start_at', '<=', date('Y-m-d'))
         ->where('end_at', '>', date('Y-m-d'))
         ->first();
       $first_period_id = $current_period->id ?? 0;

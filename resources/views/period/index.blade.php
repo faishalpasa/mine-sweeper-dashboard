@@ -55,9 +55,9 @@
               <td>
                 @if(date('Y-m-d') < date($period->start_at))
                   Belum dimulai
-                @elseif(date('Y-m-d') > date($period->start_at) && date('Y-m-d') < date($period->end_at))
+                @elseif(date('Y-m-d') >= date($period->start_at) && date('Y-m-d') < date($period->end_at))
                   Aktif
-                @elseif(date('Y-m-d') > date($period->end_at))
+                @elseif(date('Y-m-d') >= date($period->end_at))
                   Selesai
                 @endif
               </td>
