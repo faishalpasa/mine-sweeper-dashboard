@@ -50,6 +50,7 @@ class WinnerController extends Controller
       )
       ->groupBy('players.id')
       ->orderBy('total_score', 'desc')
+      ->orderBy('total_time', 'asc')
       ->limit($prize_count)
       ->get();
 
