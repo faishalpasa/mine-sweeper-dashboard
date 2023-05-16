@@ -54,6 +54,10 @@ class WinnerController extends Controller
       ->limit($prize_count)
       ->get();
 
-    return view('winner.index', ['players' => $players, 'periods' => $periods, 'query_period' => $query_period]);
+    return view('winner.index', [
+      'players' => $players,
+      'periods' => $periods,
+      'query_period' => $period_id
+    ]);
   }
 }
