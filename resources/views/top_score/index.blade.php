@@ -48,11 +48,12 @@
         <table class="table table-bordered">
           <thead>
             <tr>
-              <th>No. Handphone</th>
+              <th>No. HP</th>
               <th>Nama</th>
               <th>Email</th>
               <th>Level</th>
-              <th>Score</th>
+              <th>Total Skor</th>
+              <th>Total Waktu</th>
             </tr>
           </thead>
           <tbody>
@@ -63,6 +64,7 @@
               <td>{{$player->player_email}}</td>
               <td>{{$player->max_level}}</td>
               <td>{{number_format($player->total_score)}}</td>
+              <td>{{date("i:s", $player->total_time / 1000)}}</td>
             </tr>
             @endforeach
           </tbody>
