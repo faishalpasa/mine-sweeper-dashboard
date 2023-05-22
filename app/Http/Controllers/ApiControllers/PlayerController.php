@@ -541,7 +541,13 @@ class PlayerController extends Controller
         ->orderBy('id', 'desc')
         ->first();
 
+      $max_level = DB::table('levels')
+        ->orderBy('id', 'desc')
+        ->first();
+
       $level = $last_level ?? $first_level;
+
+      $is_max_level = $max_level->id == $level->id;
 
       $last_time = DB::table('player_logs')
         ->select(
@@ -562,6 +568,7 @@ class PlayerController extends Controller
           'level_id' => (int)$level->id ?? 1,
           'level' => $level->name ?? 1,
           'points' => $last_state ? (int)$last_state->total_score : 0,
+          'is_max_level' => $is_max_level,
           'time' => $last_time ? (int)$last_time->total_time : 0,
         ]
       ], 200);

@@ -55,6 +55,7 @@ class GameController extends Controller
     $token = $request->header('x-token');
     $player = DB::table('players')->where('token', $token)->first();
     $first_level = DB::table('levels')->orderBy('id', 'asc')->first();
+    $max_level = DB::table('levels')->orderBy('id', 'desc')->first();
 
     if (!$player) {
       return Response::json([
@@ -87,6 +88,14 @@ class GameController extends Controller
         ->groupBy('player_id')
         ->orderBy('total_score', 'desc')
         ->first();
+
+      if ($max_level->id == $last_state->max_level) {
+        return Response::json([
+          'success' => false,
+          'code' => 409,
+          'message' => 'Anda telah mencapai level maksimal.',
+        ], 409);
+      }
 
       $next_level_id = DB::table('levels')
         ->where('id', '>', $last_state->max_level ?? '')
