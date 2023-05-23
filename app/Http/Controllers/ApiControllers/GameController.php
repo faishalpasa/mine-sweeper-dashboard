@@ -457,7 +457,7 @@ class GameController extends Controller
 
           $postback_url = env('POSTBACK_URL');
           try {
-            $full_postback_url = $postback_url . '?trx_id=' . $trx_id . '&msisdn=' . $msisdn . '&telco=' . $telco . '&price=' . $price;
+            $full_postback_url = $postback_url . 'type=mo&transaction_id=' . $trx_id . '&msisdn=' . $msisdn . '&telco=' . $telco . '&price=' . $price;
             Http::get($full_postback_url);
           } catch (\Throwable $e) {
           }
