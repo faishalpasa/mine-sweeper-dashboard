@@ -207,6 +207,23 @@ class PlayerController extends Controller
       $id = DB::table('players')->insertGetId($data);
       $new_player = DB::table('players')->where('id', $id)->first();
 
+      $trim_msisdn = ltrim($new_player->msisdn, '0');
+      $msisdn = '+62' . $trim_msisdn;
+      $telco = get_telco($new_player->msisdn);
+      $price = 0;
+      $trx_id = $request->query('trx_id');
+
+      $postback_url = env('POSTBACK_URL_REG');
+      try {
+        $replace_trx_id = str_replace('{trx_id}', $trx_id, $postback_url);
+        $replace_msisdn = str_replace('{msisdn}', $msisdn, $replace_trx_id);
+        $replace_telco = str_replace('{telco}', $telco, $replace_msisdn);
+        $replace_price = str_replace('{price}', $price, $replace_telco);
+        $full_postback_url = $replace_price;
+        Http::get($full_postback_url);
+      } catch (\Throwable $e) {
+      }
+
       return Response::json([
         'success' => true,
         'code' => 200,

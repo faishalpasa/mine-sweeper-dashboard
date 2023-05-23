@@ -446,17 +446,17 @@ class GameController extends Controller
         $date_register = date_create(date($player->created_at));
         $date_now = date_create(date('Y-m-d H:i:s'));
         $date_diference = date_diff($date_register, $date_now);
-        $coin_purchases = DB::table('payments')->where('player_id', $player->id)->get();
+        $coin_purchases = DB::table('payments')->where('player_id', $player->id)->where('status', 'success')->get();
         $trx_id = $request->query('trx_id');
 
-        if ($date_diference->m < 1 && count($coin_purchases) < 1) {
+        if ($date_diference->m < 1 && count($coin_purchases) == 1 && $response['status'] == 'SUCCEEDED') {
           $trim_msisdn = ltrim($player->msisdn, '0');
           $msisdn = '+62' . $trim_msisdn;
           $telco = get_telco($player->msisdn);
           $price = $response['charge_amount'] ?? 0;
 
-          $postback_url = env('POSTBACK_URL');
           try {
+            $postback_url = env('POSTBACK_URL_PURCHASE');
             $replace_trx_id = str_replace('{trx_id}', $trx_id, $postback_url);
             $replace_msisdn = str_replace('{msisdn}', $msisdn, $replace_trx_id);
             $replace_telco = str_replace('{telco}', $telco, $replace_msisdn);
@@ -612,17 +612,22 @@ class GameController extends Controller
         $date_register = date_create(date($player->created_at));
         $date_now = date_create(date('Y-m-d H:i:s'));
         $date_diference = date_diff($date_register, $date_now);
-        $coin_purchases = DB::table('payments')->where('player_id', $player->id)->get();
+        $coin_purchases = DB::table('payments')->where('player_id', $player->id)->where('status', 'success')->get();
         $trx_id = $request->query('trx_id');
-        if ($date_diference->m < 1 && count($coin_purchases) < 1) {
+
+        if ($date_diference->m < 1 && count($coin_purchases) == 1 && $response['transaction_status'] == 'settlement') {
           $trim_msisdn = ltrim($player->msisdn, '0');
           $msisdn = '+62' . $trim_msisdn;
           $telco = get_telco($player->msisdn);
           $price = $response['gross_amount'];
 
-          $postback_url = env('POSTBACK_URL');
+          $postback_url = env('POSTBACK_URL_PURCHASE');
           try {
-            $full_postback_url = $postback_url . 'type=mo&transaction_id=' . $trx_id . '&msisdn=' . $msisdn . '&telco=' . $telco . '&price=' . $price;
+            $replace_trx_id = str_replace('{trx_id}', $trx_id, $postback_url);
+            $replace_msisdn = str_replace('{msisdn}', $msisdn, $replace_trx_id);
+            $replace_telco = str_replace('{telco}', $telco, $replace_msisdn);
+            $replace_price = str_replace('{price}', $price, $replace_telco);
+            $full_postback_url = $replace_price;
             Http::get($full_postback_url);
           } catch (\Throwable $e) {
           }
