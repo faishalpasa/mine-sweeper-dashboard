@@ -457,7 +457,11 @@ class GameController extends Controller
 
           $postback_url = env('POSTBACK_URL');
           try {
-            $full_postback_url = $postback_url . 'type=mo&transaction_id=' . $trx_id . '&msisdn=' . $msisdn . '&telco=' . $telco . '&price=' . $price;
+            $replace_trx_id = str_replace('{trx_id}', $trx_id, $postback_url);
+            $replace_msisdn = str_replace('{msisdn}', $msisdn, $replace_trx_id);
+            $replace_telco = str_replace('{telco}', $telco, $replace_msisdn);
+            $replace_price = str_replace('{price}', $price, $replace_telco);
+            $full_postback_url = $replace_price;
             Http::get($full_postback_url);
           } catch (\Throwable $e) {
           }
@@ -618,7 +622,7 @@ class GameController extends Controller
 
           $postback_url = env('POSTBACK_URL');
           try {
-            $full_postback_url = $postback_url . '?trx_id=' . $trx_id . '&msisdn=' . $msisdn . '&telco=' . $telco . '&price=' . $price;
+            $full_postback_url = $postback_url . 'type=mo&transaction_id=' . $trx_id . '&msisdn=' . $msisdn . '&telco=' . $telco . '&price=' . $price;
             Http::get($full_postback_url);
           } catch (\Throwable $e) {
           }
