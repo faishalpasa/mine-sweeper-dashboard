@@ -46,7 +46,7 @@
           <tbody>
             @foreach ($terms as $term)
             <tr class="align-middle">
-              <td>{{$term->description}}</td>
+              <td>{{$term->title}}</td>
               <td>
                 <div class="btn-group btn-group-sm" role="group">
                   <a type="button" class="btn btn-outline-secondary" href="{{base_url('/terms/update/'.$term->id)}}">

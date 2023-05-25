@@ -3,6 +3,9 @@
 @section('meta')
 <title>Minesweeper Admin | Pemain</title>
 <meta name="description" content="Minesweeper Admin" />
+
+{{-- <script src="https://cdn.ckeditor.com/4.21.0/standard/ckeditor.js"></script> --}}
+<script src="{{ base_url('/js/ckeditor/ckeditor.js') }}"></script>
 @endsection
 
 @section('content')
@@ -42,9 +45,18 @@
             </div>
           @enderror
         </div>
-        <div class="mb-3 col-md-6">
+        {{-- <div class="mb-3 col-md-6">
           <label class="form-label">Deskripsi</label>
           <textarea type="text" class="form-control" placeholder="Deskripsi" name="description" rows="4">{{ isset($terms->description) ? $terms->description : old('description') }}</textarea>
+          @error('description')
+            <div class="invalid-feedback d-block">
+              {{ $message }}
+            </div>
+          @enderror
+        </div> --}}
+        <div class="mb-3 col-md-6">
+          <label class="form-label">Deskripsi</label>
+          <textarea name="ckeditor">{{ isset($terms->description) ? $terms->description : old('description') }}</textarea>
           @error('description')
             <div class="invalid-feedback d-block">
               {{ $message }}
@@ -94,5 +106,7 @@
   const handleCloseModal = () => {
     modal.hide()
   }
+
+  CKEDITOR.replace('ckeditor');
 </script>
 @endsection

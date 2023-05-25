@@ -307,7 +307,7 @@ class PlayerController extends Controller
   public function terms()
   {
     try {
-      $terms = DB::table('terms')->select('*')->orderBy('id', 'desc')->get();
+      $terms = DB::table('terms')->select('*')->orderBy('id', 'asc')->get();
       return Response::json([
         'success' => true,
         'code' => 200,

@@ -11,7 +11,7 @@ class TermsController extends Controller
 {
   public function index()
   {
-    $terms = DB::table('terms')->select('*')->get();
+    $terms = DB::table('terms')->select('*')->orderBy('id', 'asc')->get();
 
     return view('terms.index', ['terms' => $terms]);
   }
@@ -37,7 +37,7 @@ class TermsController extends Controller
 
     $validator = Validator::make($body, [
       'title' => 'required',
-      'description' => 'required',
+      'ckeditor' => 'required',
     ]);
 
 
@@ -49,7 +49,7 @@ class TermsController extends Controller
 
     $data = [
       'title' => $body['title'],
-      'description' => $body['description'],
+      'description' => $body['ckeditor'],
       'created_at' => date('Y-m-d H:i:s')
     ];
 
@@ -76,7 +76,7 @@ class TermsController extends Controller
 
     $validator = Validator::make($body, [
       'title' => 'required',
-      'description' => 'required',
+      'ckeditor' => 'required',
     ]);
 
     if ($validator->fails()) {
@@ -87,7 +87,7 @@ class TermsController extends Controller
 
     $data = [
       'title' => $body['title'],
-      'description' => $body['description'],
+      'description' => $body['ckeditor'],
       'updated_at' => date('Y-m-d H:i:s')
     ];
 
