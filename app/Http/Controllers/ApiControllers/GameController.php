@@ -287,7 +287,9 @@ class GameController extends Controller
   {
     try {
       $periods = DB::table('periods')
-        ->orderBy('id', 'desc')
+        // ->orderBy('id', 'asc')
+        ->where('end_at', '<', date('Y-m-d'))
+        ->orderBy('start_at', 'desc')
         ->limit($limit)
         ->get();
 
