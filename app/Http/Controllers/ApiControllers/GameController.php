@@ -381,10 +381,17 @@ class GameController extends Controller
     }
 
     try {
-      DB::table('players')->where('id', $player->id)->update([
-        'coin' => $player->coin - 1,
-        'is_game_over' => 0
-      ]);
+      if ($player->coin > 0) {
+        DB::table('players')->where('id', $player->id)->update([
+          'coin' => $player->coin - 1,
+          'is_game_over' => 0
+        ]);
+      } else {
+        DB::table('players')->where('id', $player->id)->update([
+          'coin' => 0,
+          'is_game_over' => 0
+        ]);
+      }
 
       return Response::json([
         'success' => true,
