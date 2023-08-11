@@ -58,6 +58,7 @@
               <th>Email</th>
               <th>Jumlah Koin</th>
               <th>Status</th>
+              <th>Tgl. Daftar</th>
               <th style="width: 300px;"></th>
             </tr>
           </thead>
@@ -69,6 +70,7 @@
               <td>{{$player->email}}</td>
               <td>{{$player->coin}}</td>
               <td>{{$player->status == 1 ? 'Active' : 'Banned'}}</td>
+              <td>{{$player->created_at}}</td>
               <td class="d-flex justify-content-center">
                 <div class="btn-group btn-group-sm" role="group">
                   <button type="button" class="btn btn-outline-secondary" onclick="handleToggleModalStatus({{json_encode($player)}})">
