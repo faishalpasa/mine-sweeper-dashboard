@@ -802,4 +802,64 @@ class GameController extends Controller
       ], 500);
     }
   }
+
+  public function coin_topup(Request $request)
+  {
+    $body = $request->all();
+
+    $validator = Validator::make($body, [
+      'msisdn' => 'required',
+      'msisdn_enc' => 'required',
+      'pin' => 'required',
+      'amount_coin' => 'required',
+    ]);
+
+    if ($validator->fails()) {
+      $errors = $validator->errors();
+
+      return Response::json([
+        'success' => false,
+        'code' => 500,
+        'message' => $errors->first()
+      ], 500);
+    }
+
+    $player = DB::table('players')
+      ->where('token', $body['msisdn'])
+      ->where('msisdn_enc', $body['msisdn_enc'])
+      ->where('pin', $body['pin'])
+      ->first();
+
+    if (!$player) {
+      return Response::json([
+        'success' => false,
+        'code' => 404,
+        'message' => 'Data tidak ditemukan.'
+      ], 404);
+    }
+
+    try {
+      $data = [
+        'coin' => $player->coin + $body['amount_coin'],
+        'updated_at' => date('Y-m-d H:i:s')
+      ];
+
+      DB::table('players')
+        ->where('token', $body['msisdn'])
+        ->where('msisdn_enc', $body['msisdn_enc'])
+        ->where('pin', $body['pin'])
+        ->update($data);
+
+      return Response::json([
+        'success' => true,
+        'code' => 200,
+      ], 200);
+    } catch (\Throwable $e) {
+      return Response::json([
+        'success' => false,
+        'code' => 500,
+        'message' => 'Terjadi kesalahan ketika memproses data.'
+      ], 500);
+    }
+  }
 }

@@ -29,6 +29,7 @@ Route::middleware(['api_key_token'])->post('/continue-play', [GameController::cl
 Route::middleware(['api_key'])->get('/top-score', [GameController::class, 'top_score']);
 Route::middleware(['api_key'])->get('/winner', [GameController::class, 'winner']);
 Route::middleware(['api_key'])->get('/winner/{limit}', [GameController::class, 'winner_limit']);
+Route::middleware(['api_key'])->post('/coin/topup', [GameController::class, 'coin_topup']);
 Route::middleware(['api_key_token'])->post('/pay/ovo', [GameController::class, 'pay_ovo']);
 Route::middleware(['api_key_token'])->get('/pay/ovo/{id}', [GameController::class, 'pay_ovo_check']);
 Route::middleware(['api_key_token'])->post('/pay/gopay', [GameController::class, 'pay_gopay']);
