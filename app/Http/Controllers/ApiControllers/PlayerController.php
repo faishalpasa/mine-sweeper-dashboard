@@ -223,7 +223,7 @@ class PlayerController extends Controller
 
     $validator = Validator::make($body, [
       'msisdn' => 'required',
-      'msisdn_enc' => 'msisdn_enc',
+      'msisdn_enc' => 'required',
       'pin' => 'required'
     ]);
 
