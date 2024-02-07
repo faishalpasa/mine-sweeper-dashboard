@@ -185,10 +185,22 @@ class PlayerController extends Controller
 
     try {
       // Send external api
-      $data = [
-        'msisdn_enc' => 'kmzway87aa',
-        'pin' => 'ASD123'
-      ];
+      if ($body['token'] == '123456') {
+        $data = [
+          'msisdn_enc' => 'kmzway87aa',
+          'pin' => 'ASD123'
+        ];
+      } else if ($body['token'] == 'asdfgh') {
+        $data = [
+          'msisdn_enc' => 'kmzway87aa',
+          'pin' => null
+        ];
+      } else {
+        $data = [
+          'msisdn_enc' => 'kmzway87aa',
+          'pin' => null
+        ];
+      }
 
       return Response::json([
         'success' => true,
