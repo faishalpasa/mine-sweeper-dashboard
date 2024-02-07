@@ -658,7 +658,7 @@ class PlayerController extends Controller
   {
     $token = $request->header('x-token');
 
-    $player = DB::table('players')->where('token', $token)->select('name', 'email', 'pin', 'token', 'msisdn', 'id', 'coin', 'is_game_over', 'status')->first();
+    $player = DB::table('players')->where('token', $token)->select('name', 'email', 'pin', 'token', 'msisdn', 'msisdn_enc', 'id', 'coin', 'is_game_over', 'status')->first();
 
     if (!$player) {
       return Response::json([
