@@ -825,7 +825,7 @@ class GameController extends Controller
     }
 
     $player = DB::table('players')
-      ->where('token', $body['msisdn'])
+      ->where('msisdn', $body['msisdn'])
       ->where('msisdn_enc', $body['msisdn_enc'])
       ->where('pin', $body['pin'])
       ->first();
@@ -845,7 +845,7 @@ class GameController extends Controller
       ];
 
       DB::table('players')
-        ->where('token', $body['msisdn'])
+        ->where('msisdn', $body['msisdn'])
         ->where('msisdn_enc', $body['msisdn_enc'])
         ->where('pin', $body['pin'])
         ->update($data);
