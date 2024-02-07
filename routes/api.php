@@ -15,6 +15,7 @@ Route::middleware(['api_key'])->post('/reset-pin', [LoginController::class, 'log
 Route::middleware(['api_key'])->post('/pre-register', [PlayerController::class, 'pre_create']);
 Route::middleware(['api_key'])->post('/pre-register/check', [PlayerController::class, 'pre_create_check']);
 Route::middleware(['api_key'])->get('/msisdn-check/{msisdn}', [PlayerController::class, 'msisdn_check']);
+Route::middleware(['api_key'])->post('/validate-token', [PlayerController::class, 'validate_token']);
 Route::middleware(['api_key'])->post('/register', [PlayerController::class, 'create']);
 Route::middleware(['api_key'])->get('/terms', [PlayerController::class, 'terms']);
 Route::middleware(['api_key'])->get('/prize', [GameController::class, 'get_prize']);

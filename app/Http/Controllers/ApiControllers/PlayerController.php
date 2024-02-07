@@ -164,6 +164,47 @@ class PlayerController extends Controller
     }
   }
 
+  public function validate_token(Request $request)
+  {
+    $body = $request->all();
+
+    $validator = Validator::make($body, [
+      'msisdn' => 'required',
+      'token' => 'required'
+    ]);
+
+    if ($validator->fails()) {
+      $errors = $validator->errors();
+
+      return Response::json([
+        'success' => false,
+        'code' => 500,
+        'message' => $errors->first()
+      ], 500);
+    }
+
+    try {
+      // Send external api
+      $data = [
+        'msisdn_enc' => 'kmzway87aa',
+        'pin' => 'ASD123'
+      ];
+
+      return Response::json([
+        'success' => true,
+        'code' => 200,
+        'data' => $data
+      ], 200);
+    } catch (\Throwable $e) {
+
+      return Response::json([
+        'success' => false,
+        'code' => 500,
+        'message' => 'Terjadi kesalahan ketika memproses data.'
+      ], 500);
+    }
+  }
+
   public function create(Request $request)
   {
     $body = $request->all();
