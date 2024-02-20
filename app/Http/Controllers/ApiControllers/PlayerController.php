@@ -184,22 +184,22 @@ class PlayerController extends Controller
     }
 
     try {
-      // Send external api
-      if ($body['token'] == '123456') {
-        $data = [
-          'msisdn_enc' => 'kmzway87aa',
-          'pin' => 'ASD123'
-        ];
-      } else if ($body['token'] == 'asdfgh') {
-        $data = [
-          'msisdn_enc' => 'kmzway87aa',
-          'pin' => null
-        ];
-      } else {
-        $data = [
-          'msisdn_enc' => 'kmzway87aa',
-          'pin' => null
-        ];
+      $data = [
+        'valid' => false,
+        'msisdn_enc' => null,
+        'pin' => null
+      ];
+
+      $tsel_rdfe_url = env('TSEL_RDFE');
+      $replace_msisdn = str_replace('{msisdn}', $body['msisdn'], $tsel_rdfe_url);
+      $replace_token = str_replace('{token}', $body['token'], $replace_msisdn);
+      $full_rsel_rdfe_url = $replace_token;
+      $request_http = Http::get($full_rsel_rdfe_url);
+
+      $response = json_decode($request_http, true);
+
+      if ($response['valid']) {
+        $data = $response;
       }
 
       return Response::json([
@@ -223,7 +223,6 @@ class PlayerController extends Controller
 
     $validator = Validator::make($body, [
       'msisdn' => 'required',
-      'msisdn_enc' => 'required',
       'pin' => 'required'
     ]);
 
@@ -247,44 +246,60 @@ class PlayerController extends Controller
     }
 
     try {
-      $data = [
-        'msisdn' => $body['msisdn'],
-        'msisdn_enc' => $body['msisdn_enc'],
-        'token' => Str::random(20),
-        'pin' => $body['pin'],
-        'status' => 1,
-        'is_first_time_pin' => 1,
-        'is_game_over' => 0,
-        'coin' => 5,
-        'created_at' => date('Y-m-d H:i:s')
-      ];
+      $tsel_rdfe_pin_url = env('TSEL_RDFE_PIN');
+      $replace_msisdn = str_replace('{msisdn}', $body['msisdn'], $tsel_rdfe_pin_url);
+      $replace_pin = str_replace('{pin}', $body['pin'], $replace_msisdn);
+      $full_rsel_rdfe_pin_url = $replace_pin;
+      $request_http = Http::get($full_rsel_rdfe_pin_url);
 
-      $id = DB::table('players')->insertGetId($data);
-      $new_player = DB::table('players')->where('id', $id)->first();
+      $response = json_decode($request_http, true);
 
-      // DEPRECATED
-      // $trim_msisdn = ltrim($new_player->msisdn, '0');
-      // $msisdn = '+62' . $trim_msisdn;
-      // $telco = get_telco($new_player->msisdn);
-      // $price = 0;
-      // $trx_id = $request->query('trx_id');
+      if ($response['valid']) {
+        $data = [
+          'msisdn' => $body['msisdn'],
+          'msisdn_enc' => $response['msisdn_enc'],
+          'token' => Str::random(20),
+          'pin' => $response['pin'],
+          'status' => 1,
+          'is_first_time_pin' => 1,
+          'is_game_over' => 0,
+          'coin' => 5,
+          'created_at' => date('Y-m-d H:i:s')
+        ];
 
-      // $postback_url = env('POSTBACK_URL_REG');
-      // try {
-      //   $replace_trx_id = str_replace('{trx_id}', $trx_id, $postback_url);
-      //   $replace_msisdn = str_replace('{msisdn}', $msisdn, $replace_trx_id);
-      //   $replace_telco = str_replace('{telco}', $telco, $replace_msisdn);
-      //   $replace_price = str_replace('{price}', $price, $replace_telco);
-      //   $full_postback_url = $replace_price;
-      //   Http::get($full_postback_url);
-      // } catch (\Throwable $e) {
-      // }
+        $id = DB::table('players')->insertGetId($data);
+        $new_player = DB::table('players')->where('id', $id)->first();
 
-      return Response::json([
-        'success' => true,
-        'code' => 200,
-        'data' => $new_player
-      ], 200);
+        // DEPRECATED
+        // $trim_msisdn = ltrim($new_player->msisdn, '0');
+        // $msisdn = '+62' . $trim_msisdn;
+        // $telco = get_telco($new_player->msisdn);
+        // $price = 0;
+        // $trx_id = $request->query('trx_id');
+
+        // $postback_url = env('POSTBACK_URL_REG');
+        // try {
+        //   $replace_trx_id = str_replace('{trx_id}', $trx_id, $postback_url);
+        //   $replace_msisdn = str_replace('{msisdn}', $msisdn, $replace_trx_id);
+        //   $replace_telco = str_replace('{telco}', $telco, $replace_msisdn);
+        //   $replace_price = str_replace('{price}', $price, $replace_telco);
+        //   $full_postback_url = $replace_price;
+        //   Http::get($full_postback_url);
+        // } catch (\Throwable $e) {
+        // }
+
+        return Response::json([
+          'success' => true,
+          'code' => 200,
+          'data' => $new_player
+        ], 200);
+      } else {
+        return Response::json([
+          'success' => false,
+          'code' => 401,
+          'message' => 'Pin tidak sesuai, silakan coba lagi.'
+        ], 500);
+      }
     } catch (\Throwable $e) {
 
       return Response::json([
