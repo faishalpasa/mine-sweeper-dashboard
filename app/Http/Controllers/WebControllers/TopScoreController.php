@@ -38,6 +38,7 @@ class TopScoreController extends Controller
         'players.msisdn as player_msisdn',
         'players.email as player_email',
         'levels.name as level_name',
+        'player_logs.level_id as level_id',
         DB::raw('SUM(player_logs.score) as total_score'),
         DB::raw('SUM(player_logs.time) as total_time'),
         DB::raw('MAX(levels.name) as max_level'),
