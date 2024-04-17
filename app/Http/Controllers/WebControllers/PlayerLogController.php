@@ -40,6 +40,8 @@ class PlayerLogController extends Controller
       ->paginate(25)
       ->withQueryString();
 
+    dd($player_logs);
+
     return view('player-log.index', [
       'player_logs' => $player_logs,
       'periods' => $periods,
