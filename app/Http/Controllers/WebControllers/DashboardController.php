@@ -60,6 +60,8 @@ class DashboardController extends Controller
       ->orderBy('total_score', 'desc')
       ->limit(10)
       ->get();
+
+    dd($top_scores);
     // foreach ($top_scores as $player) {
     //   $player_current_level = DB::table('player_logs')
     //     ->leftJoin('levels', 'player_logs.level_id', 'levels.id')
