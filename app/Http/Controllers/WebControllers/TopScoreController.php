@@ -37,21 +37,29 @@ class TopScoreController extends Controller
         'players.name as player_name',
         'players.msisdn as player_msisdn',
         'players.email as player_email',
-        'levels.name as level_name',
-        'player_logs.level_id as level_id',
         DB::raw('SUM(player_logs.score) as total_score'),
         DB::raw('SUM(player_logs.time) as total_time'),
-        DB::raw('MAX(levels.name) as max_level'),
+        // DB::raw('MAX(levels.name) as max_level'),
       )
       ->where('player_logs.created_at', '>', $s_date)
       ->where('player_logs.created_at', '<', $e_date)
       ->where('players.msisdn', 'LIKE', '%' . $query_search . '%')
       ->groupBy('players.id')
-      // ->orderBy('player_logs.level_id', 'desc')
       ->orderBy('total_score', 'desc')
       ->orderBy('total_time', 'asc')
       ->paginate(25)
       ->withQueryString();
+
+    foreach ($players as $player) {
+      $player_current_level = DB::table('player_logs')
+        ->leftJoin('levels', 'player_logs.level_id', 'levels.id')
+        ->select('levels.name as level_name')
+        ->where('player_logs.player_id', $player->player_id)
+        ->orderBy('player_logs.id', 'desc')
+        ->first();
+
+      $player->max_level = $player_current_level->level_name ?? '';
+    }
 
     dd($players);
 
