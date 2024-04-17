@@ -37,6 +37,7 @@ class TopScoreController extends Controller
         'players.name as player_name',
         'players.msisdn as player_msisdn',
         'players.email as player_email',
+        'levels.name as level_name',
         DB::raw('SUM(player_logs.score) as total_score'),
         DB::raw('SUM(player_logs.time) as total_time'),
         DB::raw('MAX(levels.name) as max_level'),
@@ -49,6 +50,8 @@ class TopScoreController extends Controller
       ->orderBy('total_time', 'asc')
       ->paginate(25)
       ->withQueryString();
+
+    dd($players);
 
     return view('top_score.index', [
       'players' => $players,
