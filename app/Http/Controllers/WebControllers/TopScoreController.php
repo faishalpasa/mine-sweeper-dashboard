@@ -46,9 +46,9 @@ class TopScoreController extends Controller
       ->where('player_logs.created_at', '<', $e_date)
       ->where('players.msisdn', 'LIKE', '%' . $query_search . '%')
       ->orderBy('player_logs.level_id', 'desc')
-      // ->groupBy('players.id')
-      ->orderBy('total_score', 'desc')
-      ->orderBy('total_time', 'asc')
+      ->groupBy('players.id')
+      // ->orderBy('total_score', 'desc')
+      // ->orderBy('total_time', 'asc')
       ->paginate(25)
       ->withQueryString();
 
