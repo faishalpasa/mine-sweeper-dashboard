@@ -54,7 +54,7 @@
               <th>Level</th>
               <th>Waktu</th>
               <th>Skor</th>
-              <th>Status</th>
+              <th>Keterangan</th>
             </tr>
           </thead>
           <tbody>
