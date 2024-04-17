@@ -61,8 +61,6 @@ class TopScoreController extends Controller
       $player->max_level = $player_current_level->level_name ?? '';
     }
 
-    dd($players);
-
     return view('top_score.index', [
       'players' => $players,
       'periods' => $periods,
