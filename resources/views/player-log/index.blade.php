@@ -52,9 +52,9 @@
               <th>No. Handphone</th>
               <th>Nama</th>
               <th>Level</th>
-              <th>Koin</th>
               <th>Waktu</th>
               <th>Skor</th>
+              <th>Status</th>
             </tr>
           </thead>
           <tbody>
@@ -64,10 +64,18 @@
               <td>{{$log->player_msisdn}}</td>
               <td>{{$log->player_name}}</td>
               <td>{{$log->level_name}}</td>
-              <td>{{$log->player_coin}}</td>
               <td>{{date("i:s", $log->time / 1000)}}</td>
               <td class="{{$log->score > 0 ? 'text-success' : 'text-danger'}}">
                 {{$log->score > 0 ? '+'.$log->score : $log->score}}
+              </td>
+              <td>
+                @if($log->score == 0 && $log->time == 0)
+                <span class="text-info">+ Level</span>
+                @elseif($log->score == 0 && $log->time != 0)
+                <span class="text-danger">Bom</span>
+                @else
+                <span class="text-success">+ Poin</span>
+                @endif
               </td>
             </tr>
             @endforeach
