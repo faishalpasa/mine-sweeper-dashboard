@@ -48,6 +48,7 @@ class TopScoreController extends Controller
       ->groupBy('players.id')
       ->orderBy('total_score', 'desc')
       ->orderBy('total_time', 'asc')
+      ->orderBy('player_logs.id', 'desc')
       ->paginate(25)
       ->withQueryString();
 
