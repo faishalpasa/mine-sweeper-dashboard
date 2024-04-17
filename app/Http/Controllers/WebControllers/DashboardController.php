@@ -51,7 +51,7 @@ class DashboardController extends Controller
         'players.email as player_email',
         DB::raw('SUM(player_logs.score) as total_score'),
         DB::raw('SUM(player_logs.time) as total_time'),
-        DB::raw('MAX(levels.name) as max_level'),
+        // DB::raw('MAX(levels.name) as max_level'),
       )
       ->where('player_logs.created_at', '>', $period_start_date)
       ->where('player_logs.created_at', '<', $period_end_date)
@@ -60,6 +60,16 @@ class DashboardController extends Controller
       ->orderBy('total_score', 'desc')
       ->limit(10)
       ->get();
+    foreach ($top_scores as $player) {
+      $player_current_level = DB::table('player_logs')
+        ->leftJoin('levels', 'player_logs.level_id', 'levels.id')
+        ->select('levels.name as level_name')
+        ->where('player_logs.player_id', $player->player_id)
+        ->orderBy('player_logs.id', 'desc')
+        ->first();
+
+      $top_scores->max_level = $player_current_level->level_name ?? '';
+    }
 
     $coin_purchases = DB::table('payments')
       ->leftJoin('players', 'payments.player_id', 'players.id')
