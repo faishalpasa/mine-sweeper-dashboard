@@ -65,8 +65,14 @@
               <td>{{$log->player_name}}</td>
               <td>{{$log->level_name}}</td>
               <td>{{date("i:s", $log->time / 1000)}}</td>
-              <td class="{{$log->score > 0 ? 'text-success' : 'text-danger'}}">
-                {{$log->score > 0 ? '+'.$log->score : $log->score}}
+              <td>
+                @if($log->score == 0 && $log->time == 0)
+                <span class="text-info">-</span>
+                @elseif($log->score == 0 && $log->time != 0)
+                <span class="text-danger">{{$log->score}}</span>
+                @else
+                <span class="text-success">+ {{$log->score}}</span>
+                @endif
               </td>
               <td>
                 @if($log->score == 0 && $log->time == 0)
